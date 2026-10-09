@@ -110,7 +110,9 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 24 dari 27 lulus
     `EXPORT_TEMPLATE_DIR` = `/data/templates`, `DB_MAX_CONNS` = 20, `RIVER_WORKERS` = 10,
     `RULE_POOL_SIZE` = 8, `RULE_PARALLELISM` = 4, `LOG_LEVEL` = info, `METRICS_ALLOW` =
     `127.0.0.1/32`, `DEV_MODE` = false, `DEV_FAKE_TODAY` kosong.
-  - Representasi log konfigurasi tidak memuat kata sandi dari `DATABASE_URL`.
+  - Representasi log konfigurasi tidak memuat kata sandi dari `DATABASE_URL`, baik di bagian
+    `user:sandi@` maupun di parameter `?password=` / `?sslpassword=`.
+  - URL socket Unix `postgres:///pfmea?host=/var/run/postgresql` diterima.
 - **Test otomatis:** `backend/internal/config/config_test.go` › `TestLoad_TC_M00_005`
 - **Status:** lulus
 
@@ -143,6 +145,9 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 24 dari 27 lulus
     (10 masalah: `DATABASE_URL`, `APP_BASE_URL`, `HTTP_ADDR`, `SESSION_TTL`, `DB_MAX_CONNS`,
     `RIVER_WORKERS`, `RULE_PARALLELISM` > `RULE_POOL_SIZE`, `LOG_LEVEL`, `METRICS_ALLOW`,
     `DEV_MODE`), setiap pesan menyebut nama variabelnya, dalam bahasa Inggris.
+  - `APP_BASE_URL` harus berupa origin: `http://:8080` (tanpa host), `http://localhost:5173/app`
+    (dengan path), `http://localhost:5173?x=1` (dengan query) masing-masing ditolak; garis miring
+    di akhir (`http://localhost:5173/`) diterima dan disimpan sebagai `http://localhost:5173`.
 - **Test otomatis:** `backend/internal/config/config_test.go` › `TestLoad_TC_M00_007`
 - **Status:** lulus
 
@@ -257,10 +262,14 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 24 dari 27 lulus
   2. Baca alamat dari log JSON "listening".
   3. `GET http://<alamat>/healthz`.
   4. Batalkan konteks (setara SIGINT/SIGTERM).
+  5. Ulangi dengan batas shutdown pendek (200 ms) sementara satu klien membuka koneksi dan
+     mengirim header `Content-Length: 10` tanpa body.
 - **Hasil yang diharapkan:**
   - Log "listening" berisi alamat; `/healthz` → 200.
   - Setelah konteks dibatalkan `run` selesai dengan kode 0 dalam waktu batas shutdown.
   - Log tidak memuat kata sandi dari `DATABASE_URL`.
+  - Klien yang menahan body tidak menahan shutdown: koneksi diputus paksa setelah batas
+    shutdown, proses selesai dengan kode 0 dan log peringatan "forcing close".
 - **Test otomatis:** `backend/cmd/pfmea/main_test.go` › `TestServe_TC_M00_014`
 - **Status:** lulus
 
@@ -347,7 +356,9 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 24 dari 27 lulus
 - **Hasil yang diharapkan:**
   1. `/` → "Dashboard"; `/findings` → "Dashboard / Consistency check"; `/packages` →
      "Dashboard / Packages"; `/template-general` → "Dashboard / Template General";
-     `/packages/PS-07` → "Dashboard / Packages" (detail paket baru ada di M4).
+     `/packages/PS-07` → "Dashboard / Packages" (detail paket baru ada di M4); path yang tidak
+     dikenal, termasuk nama properti JavaScript seperti `/constructor` dan `/__proto__/x`, →
+     "Dashboard" saja.
   2. Hanya menu "Consistency check" yang punya `aria-current="page"`; breadcrumb tampil dengan
      item terakhir sebagai halaman saat ini.
 - **Test otomatis:** `web/src/lib/navigation.test.ts` ›
