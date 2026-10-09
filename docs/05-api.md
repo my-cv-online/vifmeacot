@@ -375,7 +375,7 @@ Roles: **R** = any authenticated user, **E** = `canEditPackage`, **AP** = approv
 
 | Method and path | Who | Purpose | M |
 | --- | --- | --- | --- |
-| `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`, `POST /auth/password` | public / R | Session, current user (+ settings needed by the UI), change own password | M2 |
+| `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`, `POST /auth/password` | public / R | Session, current user (+ settings and `devMode` needed by the UI), change own password | M2 |
 | `GET /users` · `POST /users` · `PATCH /users/{userId}` | R · AD · AD | User list (pickers), create, update/deactivate/reset password | M2 |
 | `GET/POST /customers`, `GET/PATCH /customers/{customerId}`, `PUT /customers/{customerId}/sc-symbols` | R / AD | Customers, CSR settings, symbol conversion table | M3 |
 | `GET/POST /sc-symbols`, `PATCH/DELETE /sc-symbols/{scSymbolId}` | R / AD | Special-characteristic classes | M3 |

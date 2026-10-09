@@ -141,6 +141,11 @@ the findings and package screens for the same filters.
 
 Until real inputs arrive, build and test with `db/seed/demo.sql` and the default export layout.
 
+Decision (2026-10-09): the project uses **fictitious dummy data** instead of these inputs. Each
+milestone that needs an input designs its dummy version (in its own words, never copied from the
+licensed AIAG manuals) and documents it; the repository is public and must never receive real
+company data. Gate 1 item 1 uses a dummy package until the owner names a real one.
+
 ## 6. Open decisions (owner: project team)
 
 - [ ] Use Active Directory login in Phase 1 or local accounts only.

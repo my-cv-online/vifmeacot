@@ -151,6 +151,10 @@ rencana dan ditetapkan saat milestone itu dikerjakan.
 
 Setelah milestone selesai, kolom Status diisi "selesai (<tanggal>)".
 
+Keputusan 9 Oktober 2026: kolom "Input dari perusahaan" diisi dengan **data dummy** yang dirancang
+di milestone tersebut (fiktif, tidak menyalin teks manual AIAG berlisensi). Repository tetap
+public dan tidak pernah berisi data asli perusahaan.
+
 ## 5. Gate 1 (penerimaan Tahap 1)
 
 Tahap 1 selesai bila semua kriteria ini terpenuhi (`docs/11-testing.md` §6):
@@ -206,8 +210,8 @@ berubah.
   (awal M0).
 - **Dilarang:** force-push, mengubah commit yang sudah di-push, membuat branch lain,
   meng-commit rahasia (`.env`, token, kata sandi asli) atau hasil build, serta meng-commit data
-  perusahaan asli (form Excel, paket nyata, teks kriteria S/O/D berlisensi) selama repository
-  masih public (lihat `README.md`). Teks kriteria berlisensi tidak pernah masuk ke kode, seed
+  perusahaan asli (form Excel, paket nyata, teks kriteria S/O/D berlisensi): repository ini
+  public dan hanya memakai data dummy (lihat `README.md`). Teks kriteria berlisensi tidak pernah masuk ke kode, seed
   atau test.
 - **Melihat CI:** GitHub Actions menjalankan `make tools` dan `make check` di setiap push ke
   `main` (mulai M2 juga `make e2e`).
@@ -232,7 +236,7 @@ berubah.
 | --- | --- |
 | Semua yang dilihat pengguna: label UI, pesan, error, pesan aturan cek, teks buatan aplikasi di file Excel, nama file ekspor | Inggris (`web/src/lib/i18n/en.ts`, `backend/internal/i18n/en.go`, header SQL aturan). Isi FMEA tetap dalam bahasa yang ditulis perusahaan (`docs/00-vision.md` §6) |
 | Komentar di semua file yang ditulis tangan (Go, TypeScript, JavaScript, Svelte, HTML, CSS, SQL, Makefile, YAML, Dockerfile, shell) | Indonesia |
-| Identifier, nama file dan folder, field API, nama database, pesan log, commit message | Inggris |
+| Identifier, nama file dan folder, field API, nama database, pesan log, nama test dan pesan kegagalan test, output perkakas (`make help`, CLI), commit message | Inggris |
 | Dokumen spesifikasi untuk AI (`CLAUDE.md`, `docs/00`–`docs/11`) | Inggris |
 | Dokumen untuk tim (`README.md`, `docs/build-guide.md`, `docs/spec-package.md`, `docs/test-cases/`) | Indonesia (nama file bahasa Inggris) |
 

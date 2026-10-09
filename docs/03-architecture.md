@@ -246,6 +246,13 @@ are created by `pfmea migrate`.
 - Headers: `Content-Security-Policy: default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'`
   (inline styles are needed by the grid and diagram libraries), `X-Content-Type-Options: nosniff`,
   `Referrer-Policy: same-origin`.
+  SvelteKit's SPA fallback page starts the app with one inline `<script>`, which
+  `default-src 'self'` would block. Decision (2026-10-09): the server computes the SHA-256 hash of
+  every inline script of the embedded `index.html` once at start-up (`webui`) and sends
+  `script-src 'self' 'sha256-…'` in the same header. The CSP stays a response header (a `<meta>`
+  CSP cannot carry `frame-ancestors`), no `'unsafe-inline'` is allowed for scripts, and the
+  hash follows every rebuild automatically. In `make dev` the Vite server serves the pages, so
+  the header applies to the binary only.
 - The database user of the app owns the schema in Phase 1; `audit_log` is append-only by
   convention (no UPDATE/DELETE statements exist in the code).
 - Uploaded/pasted text is data only; the UI renders it as text, never as HTML.

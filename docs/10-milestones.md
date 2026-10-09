@@ -107,9 +107,9 @@ everything.
 - Repository-level tests live in `backend/internal/repotest`.
 - `pfmea serve` force-closes connections still open 8 s after a shutdown signal; per-request read
   deadlines come with the M2 middleware chain (a global `ReadTimeout` would cut WebSockets).
-- Open for M2: the API contract has no field telling the SPA that `DEV_MODE` is on (needed for
-  the "DEMO DATA" badge, `docs/08-screens.md` §1); the CSP of `docs/03-architecture.md` §8 blocks
-  SvelteKit's inline start-up script unless `kit.csp` (hash mode) is configured.
+- Decided after M0 (2026-10-09): `Me.devMode` in the contract tells the SPA to show the
+  "DEMO DATA" badge; the CSP allows SvelteKit's inline start-up script by its SHA-256 hash
+  computed by the server (`docs/03-architecture.md` §8). Both are built in M2.
 
 ## M1 · Database, seed, sqlc, test harness
 
@@ -164,7 +164,9 @@ extension remain.
 - Endpoints: `login`, `logout`, `getMe`, `changeOwnPassword`, `listUsers`, `createUser`,
   `updateUser`. `pfmea init --admin <name>` (admin + empty Template General).
 - Web: API client (`openapi-fetch`, credentials, `X-Request-Id`, Problem → typed error),
-  login page, auth guard, user menu, `/master/users`.
+  login page, auth guard, user menu, `/master/users`, "DEMO DATA" badge from `Me.devMode`.
+- Security headers of `docs/03-architecture.md` §8, with `script-src` hashes of the inline
+  scripts of the embedded `index.html` computed at start-up.
 
 **Done when:** API tests for 401, 403 (role and Origin), 415, 429; the demo hash verifies
 `pfmea-dev-2026`; Playwright: log in as `apratama`, see the shell, log out; `make lint`

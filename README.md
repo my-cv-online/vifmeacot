@@ -175,15 +175,17 @@ Pengguna demo (**hanya untuk pengembangan, jangan pernah dipakai di produksi**):
 | Satu paket nyata (Excel) untuk Gate 1 | M12 |
 | Server, jaringan, sertifikat TLS, detail Active Directory (jika dipakai) | M13 |
 
-Sebelum input asli tersedia, pengembangan dan pengujian memakai data demo.
+**Keputusan 9 Oktober 2026:** project memakai **data dummy** (fiktif) sebagai pengganti input
+perusahaan. Data dummy dirancang di milestone yang membutuhkannya, ditulis dengan kata-kata
+sendiri (tidak menyalin teks manual AIAG berlisensi), dan boleh ada di repository public.
 
 ## Keputusan yang masih terbuka
 
 - [ ] Login Active Directory di Tahap 1 atau akun lokal saja.
 - [ ] Pola nomor dokumen (bawaan `SF-{customer}-{seq:03}`).
 - [ ] Pemilik Template General dan siapa yang menyetujui rilis template.
-- [ ] Paket nyata mana yang dipakai untuk Gate 1.
+- [ ] Paket nyata mana yang dipakai untuk Gate 1 (sementara memakai paket dummy).
 - [ ] Spesifikasi server dan tujuan backup.
-- [ ] Visibilitas repository: saat ini **public** (keputusan 9 Oktober 2026, karena isinya baru
-  spesifikasi dan data demo). Data perusahaan asli (form Excel, paket nyata, teks kriteria
-  berlisensi) **tidak boleh** masuk ke repository sebelum repository dijadikan private.
+- [x] Visibilitas repository: **public** (keputusan 9 Oktober 2026), karena project memakai data
+  dummy. Data perusahaan asli (form Excel, paket nyata, teks kriteria berlisensi) tetap **tidak
+  boleh** masuk ke repository.

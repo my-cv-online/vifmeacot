@@ -11,7 +11,7 @@ forms. §14 maps the main mockup labels to their English labels.
 
 - **Top bar** (`#14181D`): logo + "PFD · PFMEA · CP System" (link to `/`), global search
   "Search packages, steps, characteristics" (`GET /search`, results grouped Packages / Steps /
-  Characteristics, Enter opens the first hit), badge "DEMO DATA" only when `DEV_MODE`, user menu
+  Characteristics, Enter opens the first hit), badge "DEMO DATA" only when `DEV_MODE` (the UI reads `devMode` from `getMe`), user menu
   (name, role, "Change password", "Log out"). The notification bell is Phase 3: do not render it.
 - **Sidebar**: MONITORING (Dashboard `/`, Consistency check `/findings`), PACKAGES (All packages
   `/packages`), TEMPLATE (Template General `/template-general`), then one group per recently

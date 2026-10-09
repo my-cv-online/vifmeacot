@@ -29,7 +29,7 @@
 			aria-label={en.topbar.searchLabel}
 			disabled
 		/>
-		<!-- TODO(M2): badge "DEMO DATA" bila DEV_MODE (kontrak API belum punya penandanya) dan
+		<!-- TODO(M2): badge "DEMO DATA" bila Me.devMode (getMe) bernilai true, dan
 		     menu pengguna (nama, peran, "Change password", "Log out"). Lonceng notifikasi adalah
 		     Tahap 3 dan tidak dirender. -->
 	</header>

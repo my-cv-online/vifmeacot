@@ -2005,11 +2005,14 @@ components:
         canWaive: {type: boolean}
     Me:
       type: object
-      required: [user, permissions, settings]
+      required: [user, permissions, settings, devMode]
       properties:
         user: {$ref: '#/components/schemas/User'}
         permissions: {$ref: '#/components/schemas/GlobalPermissions'}
         settings: {$ref: '#/components/schemas/Settings'}
+        devMode:
+          type: boolean
+          description: True when the server runs with DEV_MODE=true (development or demo data). The UI then shows the "DEMO DATA" badge. Always false in production.
     CustomerScSymbol:
       type: object
       required: [scSymbolId, customerSymbol]

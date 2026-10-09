@@ -82,9 +82,13 @@ Demo users (development only, never production): `admin`, `rsaputri` (approver),
 | --- | --- |
 | Everything a user sees: UI labels, messages, errors, rule messages, Excel output, file names | English (`web/src/lib/i18n/en.ts`, `backend/internal/i18n/en.go`, rule SQL headers) |
 | Comments in every hand-written file (Go, TypeScript, JavaScript, Svelte, HTML, CSS, SQL, Makefile, YAML, Dockerfile, shell) | Bahasa Indonesia |
-| Identifiers, file and folder names, API fields, database names, log messages, commit messages | English |
+| Identifiers, file and folder names, API fields, database names, log messages, test names and test failure messages, tool output (`make help`, CLI), commit messages | English |
 | Specification docs for the AI (`CLAUDE.md`, `docs/0*.md`, `docs/1*.md`) | English |
 | Docs for the team (`README.md`, `docs/build-guide.md`, `docs/spec-package.md`, `docs/test-cases/*.md`) | Bahasa Indonesia (file names English) |
+
+Decision (2026-10-09): everything printed at run time is English too, including test failure
+messages and `make help`, so that a later Indonesian UI translation never mixes with developer
+output; only comments and the team docs are Indonesian.
 
 Comments are there so the team can follow the code, so write them everywhere: a short header
 comment in every hand-written file saying what it is for, a comment on every function, type,

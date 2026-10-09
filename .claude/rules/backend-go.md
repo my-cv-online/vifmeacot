@@ -28,7 +28,8 @@ paths:
 - Logging with `log/slog` (JSON); include `request_id`, `user_id`, `package_id` attributes.
 - Tests: table-driven; database tests use `testdb.New(t)` (real PostgreSQL 18, demo seed);
   run with `-race` in `make test`. Test names contain the test-case ID from `docs/test-cases/`
-  (e.g. `TestCreatePackage_TC_M04_001`), with an Indonesian comment describing the scenario.
+  (e.g. `TestCreatePackage_TC_M04_001`), with an Indonesian comment describing the scenario;
+  subtest names and failure messages (`t.Errorf`, `t.Fatalf`) are English.
   A bug fix starts with a new test case and a failing test.
 - Keep packages within the dependency direction of `docs/03-architecture.md` §3.1; services
   talk to realtime and jobs through small interfaces so they stay testable.
