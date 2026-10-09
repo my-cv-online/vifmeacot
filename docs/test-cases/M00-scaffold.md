@@ -3,7 +3,7 @@
 Milestone: M0 · Kebutuhan: P1-13 (konfigurasi lewat environment variable, endpoint health),
 `docs/10-milestones.md` M0, `docs/03-architecture.md` §2–3, §8 · User story: — (E2E Playwright
 baru dipakai mulai M2)
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 0 dari 26 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 4 dari 26 lulus
 
 ## Ringkasan
 
@@ -13,10 +13,10 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 0 dari 26 lulus
 | TC-M00-002 | `/readyz` menjawab 200 bila tidak ada pemeriksaan terdaftar | unit | belum dibuat |
 | TC-M00-003 | `/readyz` menjawab 200 bila semua pemeriksaan lulus | unit | belum dibuat |
 | TC-M00-004 | `/readyz` menjawab 503 bila ada pemeriksaan gagal atau melewati batas waktu | unit | belum dibuat |
-| TC-M00-005 | Konfigurasi memasang semua nilai bawaan | unit | belum dibuat |
-| TC-M00-006 | `DATABASE_URL` dan `APP_BASE_URL` kosong dilaporkan sekaligus | unit | belum dibuat |
-| TC-M00-007 | Semua nilai konfigurasi yang salah dilaporkan sekaligus | unit | belum dibuat |
-| TC-M00-008 | `DEV_FAKE_TODAY` hanya dipakai bila `DEV_MODE=true` | unit | belum dibuat |
+| TC-M00-005 | Konfigurasi memasang semua nilai bawaan | unit | lulus |
+| TC-M00-006 | `DATABASE_URL` dan `APP_BASE_URL` kosong dilaporkan sekaligus | unit | lulus |
+| TC-M00-007 | Semua nilai konfigurasi yang salah dilaporkan sekaligus | unit | lulus |
+| TC-M00-008 | `DEV_FAKE_TODAY` hanya dipakai bila `DEV_MODE=true` | unit | lulus |
 | TC-M00-009 | SPA belum di-build → "UI not built yet" | unit | belum dibuat |
 | TC-M00-010 | Path non-API yang tidak dikenal mendapat `index.html` | unit | belum dibuat |
 | TC-M00-011 | Path `/api/...` yang tidak dikenal mendapat 404 Problem, bukan `index.html` | unit | belum dibuat |
@@ -111,7 +111,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 0 dari 26 lulus
     `127.0.0.1/32`, `DEV_MODE` = false, `DEV_FAKE_TODAY` kosong.
   - Representasi log konfigurasi tidak memuat kata sandi dari `DATABASE_URL`.
 - **Test otomatis:** `backend/internal/config/config_test.go` › `TestLoad_TC_M00_005`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-006 — `DATABASE_URL` dan `APP_BASE_URL` kosong dilaporkan sekaligus
 
@@ -125,7 +125,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 0 dari 26 lulus
     "DATABASE_URL is required" dan "APP_BASE_URL is required".
   - Teks error memuat keduanya, satu baris per masalah.
 - **Test otomatis:** `backend/internal/config/config_test.go` › `TestLoad_TC_M00_006`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-007 — Semua nilai konfigurasi yang salah dilaporkan sekaligus
 
@@ -143,7 +143,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 0 dari 26 lulus
     `RIVER_WORKERS`, `RULE_PARALLELISM` > `RULE_POOL_SIZE`, `LOG_LEVEL`, `METRICS_ALLOW`,
     `DEV_MODE`), setiap pesan menyebut nama variabelnya, dalam bahasa Inggris.
 - **Test otomatis:** `backend/internal/config/config_test.go` › `TestLoad_TC_M00_007`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-008 — `DEV_FAKE_TODAY` hanya dipakai bila `DEV_MODE=true`
 
@@ -159,7 +159,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 0 dari 26 lulus
   2. Tanggal palsu kosong (diabaikan) dan ada satu peringatan yang menyebut `DEV_FAKE_TODAY`.
   3. Error validasi yang menyebut `DEV_FAKE_TODAY` dan format `YYYY-MM-DD`.
 - **Test otomatis:** `backend/internal/config/config_test.go` › `TestLoad_TC_M00_008`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-009 — SPA belum di-build → "UI not built yet"
 

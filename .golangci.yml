@@ -1,0 +1,38 @@
+# Konfigurasi golangci-lint v2 untuk kode Go di backend/ dan db/ (dijalankan oleh `make lint`).
+version: "2"
+
+run:
+  # Batas waktu satu kali lint; cukup longgar untuk CI yang dingin.
+  timeout: 5m
+
+linters:
+  # Linter standar (errcheck, govet, ineffassign, staticcheck, unused) ditambah beberapa yang
+  # menangkap kesalahan umum di server HTTP. misspell sengaja tidak dipakai karena menandai
+  # kata bahasa Indonesia di komentar sebagai salah eja.
+  default: standard
+  enable:
+    - bodyclose
+    - errorlint
+    - revive
+    - unconvert
+  settings:
+    revive:
+      rules:
+        # Setiap identifier yang diekspor wajib punya doc comment yang diawali namanya
+        # (komentarnya sendiri berbahasa Indonesia, CLAUDE.md).
+        - name: exported
+        # Setiap paket wajib punya komentar paket.
+        - name: package-comments
+  exclusions:
+    # Kode hasil generator (oapi-codegen, sqlc) tidak di-lint.
+    generated: strict
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      # Import dari module ini dikelompokkan terpisah dari stdlib dan pustaka luar.
+      local-prefixes:
+        - pfmea
