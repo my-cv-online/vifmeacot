@@ -282,6 +282,8 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   4. Insert karakteristik dengan step id yang tidak ada.
   5. Insert step tanpa `name`.
   6. Hapus step 50 PS-07 (masih punya failure mode, `ON DELETE RESTRICT`).
+  7. Insert step dengan `symbol` yang bukan nilai enum `step_symbol` (ditambahkan setelah review
+     M1).
 - **Hasil yang diharapkan:**
   1. `ErrDuplicate` dengan constraint `process_steps_op_no_uq`.
   2. Sukses.
@@ -289,6 +291,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   4. `ErrForeignKey` dengan nama tabel.
   5. `ErrNotNull` dengan kolom `name`.
   6. `ErrForeignKey` (SQLSTATE 23001 `restrict_violation`, dipetakan sama dengan 23503).
+  7. `ErrInvalidValue` (SQLSTATE kelas 22, di sini 22P02).
   - Error asli `*pgconn.PgError` tetap bisa diambil dengan `errors.As`.
 - **Test otomatis:** `backend/internal/store/store_test.go` › `TestErrorMapping_TC_M01_017`
 - **Status:** lulus
