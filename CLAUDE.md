@@ -50,7 +50,8 @@ api/            openapi.yaml (contract), oapi-codegen.yaml, redocly.yaml
 db/             migrations/ (goose), seed/demo.sql, embed.go
 backend/cmd/pfmea/            single binary: serve, migrate, init, seed-demo, perf-gen, perf, xlsx-compare
 backend/internal/<module>/    config, apperr, clock, i18n, testdb, httpapi(+gen), auth, store(+queries, sqlc),
-                              domain, worksheet, changes, rules(sql, testdata), template, export, realtime, jobs, webui
+                              domain, worksheet, changes, rules(sql, testdata), template, export, realtime, jobs, webui,
+                              repotest (repository-level tests: Makefile targets, .gitignore; no production code)
 web/            SvelteKit app: src/routes, src/lib/{api,components,stores,i18n}, tests/e2e
 deploy/         Dockerfile, Caddyfile, postgresql.conf, backup/restore scripts
 .github/        workflows/ci.yml (M0)

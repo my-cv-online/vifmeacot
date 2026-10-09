@@ -34,7 +34,7 @@ comment.
 
 ## Checklist
 
-- [ ] M0 Scaffold
+- [x] M0 Scaffold
 - [ ] M1 Database, seed, sqlc, test harness
 - [ ] M2 API contract, auth, users
 - [ ] M3 Master data
@@ -95,6 +95,21 @@ everything.
 - Every hand-written file has its comments in Indonesian; every visible text is English.
 
 **Not in M0:** database access, API endpoints.
+
+**Decisions recorded in M0** (2026-10-09)
+
+- `make tools` also installs air (live reload for `make dev`); tool versions are pinned in the
+  Makefile and built with the Go version of `go.mod`. `make lint` runs `redocly lint` from M0.
+- `docker-compose.yml` publishes Postgres on `127.0.0.1:${PG_PORT:-5432}`; the Vite proxy follows
+  the port of `HTTP_ADDR`. Response bodies of `/healthz` and `/readyz`: `docs/03-architecture.md`
+  §8. `APP_BASE_URL` must be an origin (scheme and host only) because M2 compares it with
+  `Origin`.
+- Repository-level tests live in `backend/internal/repotest`.
+- `pfmea serve` force-closes connections still open 8 s after a shutdown signal; per-request read
+  deadlines come with the M2 middleware chain (a global `ReadTimeout` would cut WebSockets).
+- Open for M2: the API contract has no field telling the SPA that `DEV_MODE` is on (needed for
+  the "DEMO DATA" badge, `docs/08-screens.md` §1); the CSP of `docs/03-architecture.md` §8 blocks
+  SvelteKit's inline start-up script unless `kit.csp` (hash mode) is configured.
 
 ## M1 · Database, seed, sqlc, test harness
 

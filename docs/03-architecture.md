@@ -100,7 +100,8 @@ pfmea-system/
 │       ├── export/            Excel writers, layouts, cache
 │       ├── realtime/          pg_notify publisher, LISTEN loop, WebSocket hub, presence
 │       ├── jobs/              River client, workers, periodic jobs
-│       └── webui/             //go:embed all:dist (copied from web/build by make)
+│       ├── webui/             //go:embed all:dist (copied from web/build by make)
+│       └── repotest/          repository-level tests (Makefile targets, .gitignore); no production code
 ├── web/                       SvelteKit app (docs/08-screens.md)
 │   └── src/lib/{api,components/grid,components/flow,stores,i18n}
 ├── deploy/                    Dockerfile, Caddyfile, postgresql.conf, backup.sh, restore.sh
@@ -146,11 +147,11 @@ pfmea-system/
 
 ### 3.3 Make targets
 
-`make tools` (install pinned sqlc, goose, oapi-codegen, golangci-lint, the web dependencies with
-`npm ci` and, from M2, Playwright Chromium), `make db` (start
-PostgreSQL in Docker), `make migrate`, `make migrate-down`, `make seed`, `make gen`
-(oapi-codegen + sqlc + openapi-typescript), `make dev` (Go server with live reload + Vite dev
-server proxying `/api`), `make test` (Go + Vitest), `make test-rules`, `make e2e`
+`make tools` (install pinned sqlc, goose, oapi-codegen, golangci-lint and air (live reload of
+`make dev`) into `bin/`, the web dependencies with `npm ci` and, from M2, Playwright Chromium),
+`make db` (start PostgreSQL in Docker; host port `PG_PORT`, default 5432, bound to 127.0.0.1), `make migrate`, `make migrate-down`, `make seed`, `make gen`
+(oapi-codegen + sqlc + openapi-typescript), `make dev` (loads `.env`; Go server with live reload
++ Vite dev server proxying `/api` to the port of `HTTP_ADDR`), `make test` (Go + Vitest), `make test-rules`, `make e2e`
 (Playwright), `make lint` (golangci-lint, `svelte-check`, eslint, redocly), `make perf`,
 `make build` (web build → copy to `backend/internal/webui/dist` → `go build`), `make check`
 (gen + lint + test + test-rules; must pass before every commit).
@@ -284,6 +285,11 @@ during upgrades.
 - `/metrics` (Prometheus): HTTP duration histogram per route, pool stats, check duration per
   trigger, sync duration, export duration, WebSocket connections, River queue depth.
 - `/healthz` (process alive) and `/readyz` (database reachable and migrations current).
+  Bodies (decided in M0): `/healthz` → 200 `{"status":"ok"}`; `/readyz` runs the registered
+  checks in parallel (2 s timeout each) → 200 `{"status":"ready","checks":[{"name":…,"status":"ok"}]}`
+  or 503 `{"status":"not_ready",…}` with `failed` checks; error details go to the log only. Both
+  send `Cache-Control: no-store`. Unknown paths under `/api` answer 404 Problem `not_found`,
+  never the SPA; a binary built without the web build answers 503 "UI not built yet".
 
 **Deployment and backups**
 

@@ -3,7 +3,7 @@
 Milestone: M0 · Kebutuhan: P1-13 (konfigurasi lewat environment variable, endpoint health),
 `docs/10-milestones.md` M0, `docs/03-architecture.md` §2–3, §8 · User story: — (E2E Playwright
 baru dipakai mulai M2)
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 24 dari 27 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 27 dari 27 lulus
 
 ## Ringkasan
 
@@ -31,10 +31,10 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 24 dari 27 lulus
 | TC-M00-020 | Proxy dev Vite meneruskan `/api` (termasuk WebSocket) ke server Go | unit | lulus |
 | TC-M00-021 | `make build` lalu `./bin/pfmea serve` menyajikan SPA di :8080 | integrasi | lulus |
 | TC-M00-022 | `make db` menjalankan PostgreSQL 18 yang sehat dengan JIT mati | integrasi | lulus |
-| TC-M00-023 | `make tools` + `make check` hijau di CI dan tidak mengubah file | integrasi | belum dibuat |
+| TC-M00-023 | `make tools` + `make check` hijau di CI dan tidak mengubah file | integrasi | lulus |
 | TC-M00-024 | `make dev` menampilkan app shell di :5173 dan `/healthz` di :8080 | manual | lulus |
-| TC-M00-025 | Clone baru mengikuti panduan instalasi sampai `make check` hijau | manual | belum dibuat |
-| TC-M00-026 | Komentar bahasa Indonesia dan teks tampilan bahasa Inggris | manual | belum dibuat |
+| TC-M00-025 | Clone baru mengikuti panduan instalasi sampai `make check` hijau | manual | lulus |
+| TC-M00-026 | Komentar bahasa Indonesia dan teks tampilan bahasa Inggris | manual | lulus |
 | TC-M00-027 | Path SPA yang tidak dikenal menampilkan halaman error bahasa Inggris dari `en.ts` | unit | lulus |
 
 ## TC-M00-001 — `/healthz` menjawab 200 selama proses berjalan
@@ -433,7 +433,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 24 dari 27 lulus
   - Semua langkah hijau; working tree tetap bersih.
 - **Test otomatis:** `.github/workflows/ci.yml` › job `check` (langkah `make check` dan
   `TC-M00-023 working tree stays clean`)
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-024 — `make dev` menampilkan app shell di :5173 dan `/healthz` di :8080
 
@@ -466,8 +466,12 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 24 dari 27 lulus
 - **Hasil yang diharapkan:**
   - Setiap perintah berhasil tanpa langkah tambahan; `make check` hijau. Bila ada perbedaan,
     panduan diperbaiki.
+- **Catatan hasil (9 Oktober 2026):** dijalankan di container cloud dengan `git clone` (alternatif
+  langkah 1, karena `gh` di sesi itu belum login): `make tools`, `cp .env.example .env`,
+  `make db`, `make migrate`/`make seed` (placeholder M1), `make check`, `make build` +
+  `./bin/pfmea serve` dan `make dev` semuanya berhasil seperti tertulis.
 - **Test otomatis:** — (manual)
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-026 — Komentar bahasa Indonesia dan teks tampilan bahasa Inggris
 
@@ -482,7 +486,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 24 dari 27 lulus
   - Tidak ada temuan blocker atau major tentang bahasa; semua teks UI dan server berbahasa
     Inggris, semua komentar berbahasa Indonesia.
 - **Test otomatis:** — (manual; agen `spec-reviewer`)
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-027 — Path SPA yang tidak dikenal menampilkan halaman error bahasa Inggris dari `en.ts`
 
