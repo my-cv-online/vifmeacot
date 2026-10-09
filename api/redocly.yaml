@@ -1,0 +1,7 @@
+# Konfigurasi lint untuk api/openapi.yaml (make lint menjalankan: npx @redocly/cli lint api/openapi.yaml --config api/redocly.yaml)
+extends:
+  - recommended
+rules:
+  # Setiap operasi memakai respons `default` Problem, bukan daftar kode 4xx satu per satu.
+  operation-4xx-response: off
+  info-license: off

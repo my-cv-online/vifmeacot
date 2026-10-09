@@ -1,0 +1,3668 @@
+# Kontrak API Tahap 1 (OpenAPI 3.0.3). Ubah file ini lebih dulu, lalu jalankan `make gen`.
+# Aturan yang tidak bisa dinyatakan skema (semantik edit, kunci, realtime) ada di docs/05-api.md.
+# Deskripsi di dalam kontrak ditulis dalam bahasa Inggris (dokumentasi API); kode hasil generate tidak diedit.
+openapi: 3.0.3
+info:
+  title: PFMEA / Control Plan / PFD system API
+  version: 1.0.0-phase1
+  description: 'Contract for Phase 1. Source of truth for Go (oapi-codegen v2, strict server) and TypeScript (openapi-typescript
+    + openapi-fetch). Rules that a schema cannot express are in docs/05-api.md. Not in this file: the WebSocket /api/v1/ws
+    (docs/05-api.md section 10) and /healthz, /readyz, /metrics. All mutating requests need Content-Type application/json,
+    an Origin header equal to APP_BASE_URL and should send X-Request-Id. Enum values are the database values.'
+servers:
+- {url: /api/v1}
+security:
+- cookieAuth: []
+tags:
+- {name: auth, description: Login and session}
+- {name: users, description: User accounts}
+- {name: master, description: 'Master data, rules and settings'}
+- {name: packages, description: Packages and documents}
+- {name: views, description: Screen read models}
+- {name: editing, description: Content changes}
+- {name: template, description: Template General and links}
+- {name: checks, description: Consistency checks and findings}
+- {name: exports, description: Excel export}
+- {name: monitoring, description: 'Dashboard, activity and search'}
+paths:
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Log in with username and password
+      description: 401 unauthenticated on wrong credentials, 429 rate_limited after repeated failures.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/LoginRequest'}
+      responses:
+        '200':
+          description: Logged in; sets the pfmea_session cookie
+          headers:
+            Set-Cookie:
+              schema: {type: string}
+              description: pfmea_session=<token>; HttpOnly; SameSite=Lax; Path=/
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Me'}
+        default: {$ref: '#/components/responses/Problem'}
+      security: []
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Log out (deletes the session)
+      responses:
+        '204': {$ref: '#/components/responses/NoContent'}
+        default: {$ref: '#/components/responses/Problem'}
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Current user, global permissions and settings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Me'}
+        default: {$ref: '#/components/responses/Problem'}
+  /auth/password:
+    post:
+      operationId: changeOwnPassword
+      tags: [auth]
+      summary: Change own password (local users)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ChangePasswordRequest'}
+      responses:
+        '204': {$ref: '#/components/responses/NoContent'}
+        default: {$ref: '#/components/responses/Problem'}
+  /users:
+    get:
+      operationId: listUsers
+      tags: [users]
+      summary: List users (for pickers; admin screen)
+      parameters:
+      - name: active
+        in: query
+        required: false
+        schema: {type: boolean}
+        description: Filter by isActive
+      - name: q
+        in: query
+        required: false
+        schema: {type: string}
+        description: Search username or name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/UserList'}
+        default: {$ref: '#/components/responses/Problem'}
+    post:
+      operationId: createUser
+      tags: [users]
+      summary: Create a user (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/UserCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/User'}
+        default: {$ref: '#/components/responses/Problem'}
+  /users/{userId}:
+    patch:
+      operationId: updateUser
+      tags: [users]
+      summary: Update, deactivate or reset password (admin)
+      parameters:
+      - {$ref: '#/components/parameters/userId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/UserUpdate'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/User'}
+        default: {$ref: '#/components/responses/Problem'}
+  /customers:
+    get:
+      operationId: listCustomers
+      tags: [master]
+      summary: List customers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/CustomerList'}
+        default: {$ref: '#/components/responses/Problem'}
+    post:
+      operationId: createCustomer
+      tags: [master]
+      summary: Create a customer (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CustomerCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Customer'}
+        default: {$ref: '#/components/responses/Problem'}
+  /customers/{customerId}:
+    get:
+      operationId: getCustomer
+      tags: [master]
+      summary: Get a customer
+      parameters:
+      - {$ref: '#/components/parameters/customerId'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Customer'}
+        default: {$ref: '#/components/responses/Problem'}
+    patch:
+      operationId: updateCustomer
+      tags: [master]
+      summary: Update a customer (admin)
+      description: Changing CSR settings schedules a full check of the customer's packages.
+      parameters:
+      - {$ref: '#/components/parameters/customerId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CustomerUpdate'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Customer'}
+        default: {$ref: '#/components/responses/Problem'}
+  /customers/{customerId}/sc-symbols:
+    put:
+      operationId: replaceCustomerScSymbols
+      tags: [master]
+      summary: Replace the customer's symbol conversion table (admin)
+      description: Clears cached exports of the customer's packages and schedules checks (S02).
+      parameters:
+      - {$ref: '#/components/parameters/customerId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CustomerScSymbolsReplace'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Customer'}
+        default: {$ref: '#/components/responses/Problem'}
+  /sc-symbols:
+    get:
+      operationId: listScSymbols
+      tags: [master]
+      summary: List special-characteristic classes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ScSymbolList'}
+        default: {$ref: '#/components/responses/Problem'}
+    post:
+      operationId: createScSymbol
+      tags: [master]
+      summary: Create a class (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ScSymbolCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ScSymbol'}
+        default: {$ref: '#/components/responses/Problem'}
+  /sc-symbols/{scSymbolId}:
+    patch:
+      operationId: updateScSymbol
+      tags: [master]
+      summary: Update a class (admin)
+      parameters:
+      - {$ref: '#/components/parameters/scSymbolId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ScSymbolUpdate'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ScSymbol'}
+        default: {$ref: '#/components/responses/Problem'}
+    delete:
+      operationId: deleteScSymbol
+      tags: [master]
+      summary: Delete an unused class (admin)
+      description: 409 delete_blocked while characteristics use it.
+      parameters:
+      - {$ref: '#/components/parameters/scSymbolId'}
+      responses:
+        '204': {$ref: '#/components/responses/NoContent'}
+        default: {$ref: '#/components/responses/Problem'}
+  /parts:
+    get:
+      operationId: listParts
+      tags: [master]
+      summary: List parts
+      parameters:
+      - name: customerId
+        in: query
+        required: false
+        schema: {type: string, format: uuid}
+      - name: active
+        in: query
+        required: false
+        schema: {type: boolean}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/PartList'}
+        default: {$ref: '#/components/responses/Problem'}
+    post:
+      operationId: createPart
+      tags: [master]
+      summary: Create a part (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/PartCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Part'}
+        default: {$ref: '#/components/responses/Problem'}
+  /parts/{partId}:
+    patch:
+      operationId: updatePart
+      tags: [master]
+      summary: Update a part (admin)
+      description: A new change level schedules checks (K06) of the packages using the part.
+      parameters:
+      - {$ref: '#/components/parameters/partId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/PartUpdate'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Part'}
+        default: {$ref: '#/components/responses/Problem'}
+  /control-library:
+    get:
+      operationId: listControlLibrary
+      tags: [master]
+      summary: List control library items
+      parameters:
+      - name: kind
+        in: query
+        required: false
+        schema: {$ref: '#/components/schemas/ControlKind'}
+      - name: active
+        in: query
+        required: false
+        schema: {type: boolean}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ControlLibraryList'}
+        default: {$ref: '#/components/responses/Problem'}
+    post:
+      operationId: createControlLibraryItem
+      tags: [master]
+      summary: Create a library item (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ControlLibraryCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ControlLibraryItem'}
+        default: {$ref: '#/components/responses/Problem'}
+  /control-library/{itemId}:
+    patch:
+      operationId: updateControlLibraryItem
+      tags: [master]
+      summary: Update a library item (admin)
+      parameters:
+      - {$ref: '#/components/parameters/itemId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ControlLibraryUpdate'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ControlLibraryItem'}
+        default: {$ref: '#/components/responses/Problem'}
+  /rating-criteria:
+    get:
+      operationId: listRatingCriteria
+      tags: [master]
+      summary: S/O/D criteria text
+      parameters:
+      - name: methodology
+        in: query
+        required: false
+        schema: {$ref: '#/components/schemas/Methodology'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/RatingCriteriaList'}
+        default: {$ref: '#/components/responses/Problem'}
+  /rating-criteria/{methodology}/{dimension}:
+    put:
+      operationId: replaceRatingCriteria
+      tags: [master]
+      summary: Replace the criteria of one methodology and dimension (admin)
+      parameters:
+      - {$ref: '#/components/parameters/methodology'}
+      - {$ref: '#/components/parameters/dimension'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RatingCriteriaReplace'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/RatingCriteriaList'}
+        default: {$ref: '#/components/responses/Problem'}
+  /banned-terms:
+    get:
+      operationId: listBannedTerms
+      tags: [master]
+      summary: List banned terms (F12)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/BannedTermList'}
+        default: {$ref: '#/components/responses/Problem'}
+    post:
+      operationId: createBannedTerm
+      tags: [master]
+      summary: Create a banned term (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/BannedTermCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/BannedTerm'}
+        default: {$ref: '#/components/responses/Problem'}
+  /banned-terms/{bannedTermId}:
+    patch:
+      operationId: updateBannedTerm
+      tags: [master]
+      summary: Update a banned term (admin)
+      parameters:
+      - {$ref: '#/components/parameters/bannedTermId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/BannedTermUpdate'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/BannedTerm'}
+        default: {$ref: '#/components/responses/Problem'}
+    delete:
+      operationId: deleteBannedTerm
+      tags: [master]
+      summary: Delete a banned term (admin)
+      parameters:
+      - {$ref: '#/components/parameters/bannedTermId'}
+      responses:
+        '204': {$ref: '#/components/responses/NoContent'}
+        default: {$ref: '#/components/responses/Problem'}
+  /rules:
+    get:
+      operationId: listRules
+      tags: [master]
+      summary: Rule catalog with customer overrides
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/RuleList'}
+        default: {$ref: '#/components/responses/Problem'}
+  /rules/{ruleCode}:
+    patch:
+      operationId: updateRule
+      tags: [master]
+      summary: Enable/disable a rule or change its default level (admin)
+      parameters:
+      - {$ref: '#/components/parameters/ruleCode'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RuleUpdate'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Rule'}
+        default: {$ref: '#/components/responses/Problem'}
+  /rules/{ruleCode}/customer-overrides:
+    put:
+      operationId: replaceRuleCustomerOverrides
+      tags: [master]
+      summary: Replace per-customer level / enable overrides of a rule (admin)
+      parameters:
+      - {$ref: '#/components/parameters/ruleCode'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RuleCustomerOverridesReplace'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Rule'}
+        default: {$ref: '#/components/responses/Problem'}
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [master]
+      summary: Application settings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Settings'}
+        default: {$ref: '#/components/responses/Problem'}
+    patch:
+      operationId: updateSettings
+      tags: [master]
+      summary: Update settings (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/SettingsUpdate'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Settings'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages:
+    get:
+      operationId: listPackages
+      tags: [packages]
+      summary: List packages
+      parameters:
+      - name: kind
+        in: query
+        required: false
+        schema: {$ref: '#/components/schemas/PackageKind'}
+      - name: customerId
+        in: query
+        required: false
+        schema: {type: string, format: uuid}
+      - name: ownerId
+        in: query
+        required: false
+        schema: {type: string, format: uuid}
+      - name: q
+        in: query
+        required: false
+        schema: {type: string}
+        description: Code or name contains
+      - name: health
+        in: query
+        required: false
+        schema: {$ref: '#/components/schemas/Health'}
+      - {$ref: '#/components/parameters/limit'}
+      - {$ref: '#/components/parameters/cursor'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/PackageList'}
+        default: {$ref: '#/components/responses/Problem'}
+    post:
+      operationId: createPackage
+      tags: [packages]
+      summary: Create a model package from the released Template General
+      description: Copies mandatory and selected optional general processes as linked rows, numbers the three documents and
+        runs a check. See docs/07-template-general.md section 2.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/PackageCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/PackageDetail'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}:
+    get:
+      operationId: getPackage
+      tags: [packages]
+      summary: Package detail with documents, members and permissions
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/PackageDetail'}
+        default: {$ref: '#/components/responses/Problem'}
+    patch:
+      operationId: updatePackage
+      tags: [packages]
+      summary: Update package settings
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/PackageUpdate'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/PackageDetail'}
+        default: {$ref: '#/components/responses/Problem'}
+    delete:
+      operationId: deletePackage
+      tags: [packages]
+      summary: Delete a model package (admin)
+      description: The general package cannot be deleted.
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - name: confirm
+        in: query
+        required: true
+        schema: {type: string}
+        description: Must equal the package code
+      responses:
+        '204': {$ref: '#/components/responses/NoContent'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/members:
+    put:
+      operationId: replacePackageMembers
+      tags: [packages]
+      summary: Replace members (owner, approver, admin)
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/MembersReplace'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/PackageDetail'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/mark-reviewed:
+    post:
+      operationId: markPackageReviewed
+      tags: [packages]
+      summary: Set last reviewed date to now (clears W04)
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/PackageDetail'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/views/pfd:
+    get:
+      operationId: getPfdView
+      tags: [views]
+      summary: PFD screen data
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/PfdView'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/views/pfmea:
+    get:
+      operationId: getPfmeaView
+      tags: [views]
+      summary: PFMEA worksheet data
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/PfmeaView'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/views/control-plan:
+    get:
+      operationId: getControlPlanView
+      tags: [views]
+      summary: Control Plan data for one phase
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - name: phase
+        in: query
+        required: false
+        schema: {$ref: '#/components/schemas/CpPhase'}
+        description: Default production
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ControlPlanView'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/changes:
+    post:
+      operationId: applyChanges
+      tags: [editing]
+      summary: Save cell edits (batch, all or nothing)
+      description: 'Semantics in docs/05-api.md section 6. Errors: 409 version_conflict, 409 locked_by_template, 422 validation_failed,
+        422 override_reason_required.'
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ChangeRequest'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/move:
+    post:
+      operationId: moveRow
+      tags: [editing]
+      summary: Reorder a row among its siblings
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/MoveRequest'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/paste:
+    post:
+      operationId: pasteRows
+      tags: [editing]
+      summary: Bulk paste rows copied from Excel
+      description: 'docs/05-api.md section 8. Invalid input is not an error: 200 with valid=false, performed=false and the
+        per-row report; nothing is created.'
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/PasteRequest'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/PasteResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/steps:
+    post:
+      operationId: createStep
+      tags: [editing]
+      summary: Create a process step
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/StepCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/steps/{rowId}:
+    delete:
+      operationId: deleteStep
+      tags: [editing]
+      summary: Delete a process step
+      description: 409 delete_blocked lists blocking rows; dryRun=true reports what would be deleted or unlinked.
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - {$ref: '#/components/parameters/rowId'}
+      - {$ref: '#/components/parameters/version'}
+      - {$ref: '#/components/parameters/dryRun'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/step-flows:
+    post:
+      operationId: createStepFlow
+      tags: [editing]
+      summary: Create a flow (NG, rework, scrap, return)
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/StepFlowCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/step-flows/{rowId}:
+    delete:
+      operationId: deleteStepFlow
+      tags: [editing]
+      summary: Delete a flow (NG, rework, scrap, return)
+      description: 409 delete_blocked lists blocking rows; dryRun=true reports what would be deleted or unlinked.
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - {$ref: '#/components/parameters/rowId'}
+      - {$ref: '#/components/parameters/version'}
+      - {$ref: '#/components/parameters/dryRun'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/characteristics:
+    post:
+      operationId: createCharacteristic
+      tags: [editing]
+      summary: Create a characteristic
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CharacteristicCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/characteristics/{rowId}:
+    delete:
+      operationId: deleteCharacteristic
+      tags: [editing]
+      summary: Delete a characteristic
+      description: 409 delete_blocked lists blocking rows; dryRun=true reports what would be deleted or unlinked.
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - {$ref: '#/components/parameters/rowId'}
+      - {$ref: '#/components/parameters/version'}
+      - {$ref: '#/components/parameters/dryRun'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/pfmea-rows:
+    post:
+      operationId: createPfmeaRow
+      tags: [editing]
+      summary: Create a complete PFMEA row (failure mode, effect, cause, chain, controls)
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/PfmeaRowCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/failure-modes/{rowId}:
+    delete:
+      operationId: deleteFailureMode
+      tags: [editing]
+      summary: Delete a failure mode with its effects, causes, chains, controls and actions
+      description: 409 delete_blocked lists blocking rows; dryRun=true reports what would be deleted or unlinked.
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - {$ref: '#/components/parameters/rowId'}
+      - {$ref: '#/components/parameters/version'}
+      - {$ref: '#/components/parameters/dryRun'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/failure-chains/{rowId}:
+    delete:
+      operationId: deleteFailureChain
+      tags: [editing]
+      summary: Delete a failure chain (its cause, controls and actions; the failure mode too when it was the last chain)
+      description: 409 delete_blocked lists blocking rows; dryRun=true reports what would be deleted or unlinked.
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - {$ref: '#/components/parameters/rowId'}
+      - {$ref: '#/components/parameters/version'}
+      - {$ref: '#/components/parameters/dryRun'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/failure-effects:
+    post:
+      operationId: createFailureEffect
+      tags: [editing]
+      summary: Create a failure effect
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/FailureEffectCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/failure-effects/{rowId}:
+    delete:
+      operationId: deleteFailureEffect
+      tags: [editing]
+      summary: Delete a failure effect
+      description: 409 delete_blocked lists blocking rows; dryRun=true reports what would be deleted or unlinked.
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - {$ref: '#/components/parameters/rowId'}
+      - {$ref: '#/components/parameters/version'}
+      - {$ref: '#/components/parameters/dryRun'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/controls:
+    post:
+      operationId: createControl
+      tags: [editing]
+      summary: Create a prevention or detection control
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ControlCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/controls/{rowId}:
+    delete:
+      operationId: deleteControl
+      tags: [editing]
+      summary: Delete a prevention or detection control
+      description: 409 delete_blocked lists blocking rows; dryRun=true reports what would be deleted or unlinked.
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - {$ref: '#/components/parameters/rowId'}
+      - {$ref: '#/components/parameters/version'}
+      - {$ref: '#/components/parameters/dryRun'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/actions:
+    post:
+      operationId: createAction
+      tags: [editing]
+      summary: Create a recommended action
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ActionCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/actions/{rowId}:
+    delete:
+      operationId: deleteAction
+      tags: [editing]
+      summary: Delete a recommended action
+      description: 409 delete_blocked lists blocking rows; dryRun=true reports what would be deleted or unlinked.
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - {$ref: '#/components/parameters/rowId'}
+      - {$ref: '#/components/parameters/version'}
+      - {$ref: '#/components/parameters/dryRun'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/cp-lines:
+    post:
+      operationId: createCpLine
+      tags: [editing]
+      summary: Create a Control Plan line (with its reaction plan)
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CpLineCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/cp-lines/{rowId}:
+    delete:
+      operationId: deleteCpLine
+      tags: [editing]
+      summary: Delete a Control Plan line (with its reaction plan)
+      description: 409 delete_blocked lists blocking rows; dryRun=true reports what would be deleted or unlinked.
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - {$ref: '#/components/parameters/rowId'}
+      - {$ref: '#/components/parameters/version'}
+      - {$ref: '#/components/parameters/dryRun'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/cp-lines/from-pfmea:
+    post:
+      operationId: createCpLinesFromPfmea
+      tags: [editing]
+      summary: Create CP lines from selected PFMEA controls
+      description: Controls that already have a line in the phase are returned in skipped.
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CpLinesFromPfmea'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/template-link:
+    get:
+      operationId: getTemplateLink
+      tags: [template]
+      summary: Template link state of a model package
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/TemplateLinkInfo'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/general-steps:
+    post:
+      operationId: addGeneralSteps
+      tags: [template]
+      summary: Add general steps (optional or missing mandatory) from the synced revision
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/AddGeneralStepsRequest'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/linked-rows/detach:
+    post:
+      operationId: detachLinkedRow
+      tags: [template]
+      summary: Detach a linked row from the template
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/DetachRequest'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/linked-rows/revert:
+    post:
+      operationId: revertLinkedRow
+      tags: [template]
+      summary: Restore template values (remove overrides) or re-attach a detached row
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RevertRequest'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/sync-conflicts/{conflictId}/resolve:
+    post:
+      operationId: resolveSyncConflict
+      tags: [template]
+      summary: Resolve a sync conflict (follow template or keep local)
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - {$ref: '#/components/parameters/conflictId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ResolveConflictRequest'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MutationResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/checks:
+    post:
+      operationId: runCheck
+      tags: [checks]
+      summary: Run a full consistency check now
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/CheckRun'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/findings:
+    get:
+      operationId: listPackageFindings
+      tags: [checks]
+      summary: Findings of a package
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - name: status
+        in: query
+        required: false
+        schema: {$ref: '#/components/schemas/FindingStatus'}
+        description: Default open
+      - name: level
+        in: query
+        required: false
+        schema: {$ref: '#/components/schemas/FindingLevel'}
+      - name: rule
+        in: query
+        required: false
+        schema: {type: string}
+      - name: docType
+        in: query
+        required: false
+        schema: {$ref: '#/components/schemas/DocType'}
+      - {$ref: '#/components/parameters/limit'}
+      - {$ref: '#/components/parameters/cursor'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/FindingList'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/findings/{findingId}/waive:
+    post:
+      operationId: waiveFinding
+      tags: [checks]
+      summary: Waive a Warning or Info finding (approver, admin)
+      description: 422 waive_not_allowed for Errors.
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - {$ref: '#/components/parameters/findingId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/WaiveRequest'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Finding'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/findings/{findingId}/unwaive:
+    post:
+      operationId: unwaiveFinding
+      tags: [checks]
+      summary: Undo a waiver (approver, admin)
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      - {$ref: '#/components/parameters/findingId'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Finding'}
+        default: {$ref: '#/components/responses/Problem'}
+  /findings:
+    get:
+      operationId: listFindings
+      tags: [checks]
+      summary: Findings across packages (dashboard drill-down)
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema: {$ref: '#/components/schemas/FindingStatus'}
+        description: Default open
+      - name: level
+        in: query
+        required: false
+        schema: {$ref: '#/components/schemas/FindingLevel'}
+      - name: rule
+        in: query
+        required: false
+        schema: {type: string}
+      - name: customerId
+        in: query
+        required: false
+        schema: {type: string, format: uuid}
+      - name: packageId
+        in: query
+        required: false
+        schema: {type: string, format: uuid}
+      - {$ref: '#/components/parameters/limit'}
+      - {$ref: '#/components/parameters/cursor'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/FindingList'}
+        default: {$ref: '#/components/responses/Problem'}
+  /templates/general:
+    get:
+      operationId: getTemplateGeneral
+      tags: [template]
+      summary: Template General overview
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/TemplateGeneral'}
+        default: {$ref: '#/components/responses/Problem'}
+  /templates/general/revisions:
+    get:
+      operationId: listTemplateRevisions
+      tags: [template]
+      summary: Released revisions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/TemplateRevisionList'}
+        default: {$ref: '#/components/responses/Problem'}
+  /templates/general/diff:
+    get:
+      operationId: getTemplateDiff
+      tags: [template]
+      summary: Diff between two revisions or a revision and the working copy
+      parameters:
+      - name: from
+        in: query
+        required: false
+        schema: {type: string}
+        description: Revision number or 'working'; default latest revision
+      - name: to
+        in: query
+        required: false
+        schema: {type: string}
+        description: Revision number or 'working'; default working
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/TemplateDiff'}
+        default: {$ref: '#/components/responses/Problem'}
+  /templates/general/impact:
+    get:
+      operationId: getTemplateImpact
+      tags: [template]
+      summary: Preview what releasing the working copy would change in each linked package
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ImpactPreview'}
+        default: {$ref: '#/components/responses/Problem'}
+  /templates/general/release:
+    post:
+      operationId: releaseTemplate
+      tags: [template]
+      summary: Release the working copy as a new revision
+      description: Approver or admin. 409 version_conflict when the working copy changed after review; 409 release_blocked
+        when it has open Errors or no changes.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ReleaseRequest'}
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ReleaseResult'}
+        default: {$ref: '#/components/responses/Problem'}
+  /templates/general/restore:
+    post:
+      operationId: restoreTemplateRevision
+      tags: [template]
+      summary: Restore an older revision into the working copy (rollback = restore, then release)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RestoreRequest'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/TemplateGeneral'}
+        default: {$ref: '#/components/responses/Problem'}
+  /templates/general/override-policy:
+    put:
+      operationId: updateOverridePolicy
+      tags: [template]
+      summary: Change which fields models may override
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/OverridePolicyUpdate'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/TemplateGeneral'}
+        default: {$ref: '#/components/responses/Problem'}
+  /sync-runs:
+    get:
+      operationId: listSyncRuns
+      tags: [template]
+      summary: Recent sync runs
+      parameters:
+      - {$ref: '#/components/parameters/limit'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/SyncRunList'}
+        default: {$ref: '#/components/responses/Problem'}
+  /sync-runs/{syncRunId}:
+    get:
+      operationId: getSyncRun
+      tags: [template]
+      summary: Sync run progress per package
+      parameters:
+      - {$ref: '#/components/parameters/syncRunId'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/SyncRun'}
+        default: {$ref: '#/components/responses/Problem'}
+  /sync-runs/{syncRunId}/retry:
+    post:
+      operationId: retrySyncRun
+      tags: [template]
+      summary: Re-queue the failed packages of a run
+      parameters:
+      - {$ref: '#/components/parameters/syncRunId'}
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/SyncRun'}
+        default: {$ref: '#/components/responses/Problem'}
+  /packages/{packageId}/exports:
+    post:
+      operationId: createExport
+      tags: [exports]
+      summary: Export a document as Excel (A3)
+      description: 200 when a file for the current contentVersion is cached, 202 when queued. phase is required for CP.
+      parameters:
+      - {$ref: '#/components/parameters/packageId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ExportCreate'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ExportFile'}
+        '202':
+          description: Queued; wait for export.ready or poll GET /exports/{exportId}
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ExportFile'}
+        default: {$ref: '#/components/responses/Problem'}
+  /exports/{exportId}:
+    get:
+      operationId: getExport
+      tags: [exports]
+      summary: Export status
+      parameters:
+      - {$ref: '#/components/parameters/exportId'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ExportFile'}
+        default: {$ref: '#/components/responses/Problem'}
+  /exports/{exportId}/file:
+    get:
+      operationId: downloadExport
+      tags: [exports]
+      summary: Download the exported file
+      parameters:
+      - {$ref: '#/components/parameters/exportId'}
+      responses:
+        '200':
+          description: The .xlsx file
+          headers:
+            Content-Disposition:
+              schema: {type: string}
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: {type: string, format: binary}
+        default: {$ref: '#/components/responses/Problem'}
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [monitoring]
+      summary: Dashboard data
+      parameters:
+      - name: customerId
+        in: query
+        required: false
+        schema: {type: string, format: uuid}
+      - name: ownerId
+        in: query
+        required: false
+        schema: {type: string, format: uuid}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Dashboard'}
+        default: {$ref: '#/components/responses/Problem'}
+  /activity:
+    get:
+      operationId: listActivity
+      tags: [monitoring]
+      summary: Activity feed grouped by request
+      parameters:
+      - name: packageId
+        in: query
+        required: false
+        schema: {type: string, format: uuid}
+      - name: userId
+        in: query
+        required: false
+        schema: {type: string, format: uuid}
+      - {$ref: '#/components/parameters/limit'}
+      - {$ref: '#/components/parameters/cursor'}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ActivityList'}
+        default: {$ref: '#/components/responses/Problem'}
+  /search:
+    get:
+      operationId: search
+      tags: [monitoring]
+      summary: Global search
+      parameters:
+      - name: q
+        in: query
+        required: true
+        schema: {type: string, minLength: 2}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/SearchResult'}
+        default: {$ref: '#/components/responses/Problem'}
+components:
+  securitySchemes:
+    cookieAuth: {type: apiKey, in: cookie, name: pfmea_session}
+  parameters:
+    packageId:
+      name: packageId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    rowId:
+      name: rowId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    customerId:
+      name: customerId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    scSymbolId:
+      name: scSymbolId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    partId:
+      name: partId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    itemId:
+      name: itemId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    bannedTermId:
+      name: bannedTermId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    ruleCode:
+      name: ruleCode
+      in: path
+      required: true
+      schema: {type: string, pattern: '^[KSRFCWT][0-9]{2}$'}
+    findingId:
+      name: findingId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    exportId:
+      name: exportId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    syncRunId:
+      name: syncRunId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    conflictId:
+      name: conflictId
+      in: path
+      required: true
+      schema: {type: integer, format: int64}
+    methodology:
+      name: methodology
+      in: path
+      required: true
+      schema: {$ref: '#/components/schemas/Methodology'}
+    dimension:
+      name: dimension
+      in: path
+      required: true
+      schema: {$ref: '#/components/schemas/RatingDimension'}
+    version:
+      name: version
+      in: query
+      required: true
+      schema: {type: integer}
+      description: Version of the row being deleted
+    dryRun:
+      name: dryRun
+      in: query
+      required: false
+      schema: {type: boolean, default: false}
+      description: Report what would happen without changing data
+    limit:
+      name: limit
+      in: query
+      required: false
+      schema: {type: integer, minimum: 1, maximum: 200, default: 50}
+    cursor:
+      name: cursor
+      in: query
+      required: false
+      schema: {type: string}
+      description: Opaque cursor from nextCursor
+  responses:
+    Problem:
+      description: Error (RFC 9457). See docs/05-api.md section 2 for codes.
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/Problem'}
+    NoContent: {description: Done}
+  schemas:
+    UserRole:
+      type: string
+      enum: [admin, approver, reviewer, author, viewer]
+    AuthSource:
+      type: string
+      enum: [local, ldap]
+    PackageKind:
+      type: string
+      enum: [general, model]
+    PackageStatus:
+      type: string
+      enum: [draft, in_review, approved, released, superseded]
+      description: Phase 1 packages stay draft; the workflow statuses are Phase 2.
+    DocType:
+      type: string
+      enum: [PFD, PFMEA, CP]
+    Methodology:
+      type: string
+      enum: [PFD, AIAG4, AIAGVDA1, APQP2, CP1]
+      description: 'PFMEA: AIAG4 (Phase 1) or AIAGVDA1 (Phase 2). CP: APQP2 = Template A (Phase 1) or CP1 = Template B (Phase
+        2).'
+    StepSymbol:
+      type: string
+      enum: [operation, inspection, operation_inspection, transport, storage, delay, decision]
+    StepKind:
+      type: string
+      enum: [normal, rework]
+    GeneralMode:
+      type: string
+      enum: [mandatory, optional]
+    RowOrigin:
+      type: string
+      enum: [local, general]
+    SyncStatus:
+      type: string
+      enum: [in_sync, override, review, detached]
+    FlowKind:
+      type: string
+      enum: [normal, ng, rework, scrap, return]
+    CharacteristicKind:
+      type: string
+      enum: [product, process]
+    EffectLevel:
+      type: string
+      enum: [your_plant, ship_to_plant, end_user, unspecified]
+    ControlKind:
+      type: string
+      enum: [prevention, detection]
+    ActionKind:
+      type: string
+      enum: [prevention, detection, design_change, other]
+    ActionStatus:
+      type: string
+      enum: [open, in_progress, done, cancelled]
+    CpPhase:
+      type: string
+      enum: [prototype, pre_launch, safe_launch, production]
+      description: Phase 1 uses prototype, pre_launch and production. safe_launch is Phase 2 (CP-1).
+    FreqBasis:
+      type: string
+      enum: [pct100, volume, time, event, other]
+    ControlMethodCategory:
+      type: string
+      enum: [visual_100, visual_sampling, gauge_attribute, gauge_variable, automated_inspection, functional_test, spc, error_proofing,
+        procedure, maintenance, other]
+    RatingDimension:
+      type: string
+      enum: [S, O, D]
+    FindingLevel:
+      type: string
+      enum: [error, warning, info]
+    FindingStatus:
+      type: string
+      enum: [open, fixed, waived]
+    CheckTrigger:
+      type: string
+      enum: [save, manual, nightly, sync, import]
+    LinkState:
+      type: string
+      enum: [in_sync, pending, syncing, failed, awaiting_customer]
+      description: awaiting_customer is Phase 2.
+    SyncRunStatus:
+      type: string
+      enum: [queued, running, done, failed]
+    ExportStatus:
+      type: string
+      enum: [queued, running, done, failed]
+    Entity:
+      type: string
+      enum: [processStep, stepFlow, characteristic, failureMode, failureEffect, failureCause, failureChain, control, action,
+        cpLine, reactionPlan, document, package]
+      description: API entity name; see docs/05-api.md section 4 for the table and editable fields.
+    BannedTermScope:
+      type: string
+      enum: [any, cause, control, failure_mode, effect, action]
+    RuleAppliesTo:
+      type: string
+      enum: [all, AIAG4, AIAGVDA1, CP1]
+    ProblemCode:
+      type: string
+      enum: [bad_request, unauthenticated, forbidden, not_found, version_conflict, locked_by_template, delete_blocked, release_blocked,
+        validation_failed, override_reason_required, waive_not_allowed, rate_limited, internal]
+    FieldErrorCode:
+      type: string
+      enum: [required, invalid_format, out_of_range, too_long, duplicate, invalid_reference, not_allowed, not_unique_target]
+    MutationOp:
+      type: string
+      enum: [insert, update, delete]
+    PasteTarget:
+      type: string
+      enum: [pfdSteps, pfmeaRows, cpLines]
+    PasteColumn:
+      type: string
+      enum: [ignore, opNo, stepName, function, symbol, machines, department, wiRef, charNo, charKind, requirement, spec, class,
+        failureMode, effect, s, cause, prevention, o, detection, d, recommendedAction, responsible, targetDate, evalTechnique,
+        gauge, sampleSize, sampleFreq, controlMethod, reactionPlan]
+      description: Column keys for bulk paste. Allowed keys per target are listed in docs/05-api.md section 8.
+    ConflictResolution:
+      type: string
+      enum: [follow_template, keep_local]
+    Health:
+      type: string
+      enum: [ok, warning, error]
+    FieldError:
+      type: object
+      required: [path, code, message]
+      properties:
+        path: {type: string, description: 'JSON path of the offending input, e.g. changes[2].value'}
+        code: {$ref: '#/components/schemas/FieldErrorCode'}
+        message: {type: string, description: Message for the user (English)}
+    Conflict:
+      type: object
+      required: [entity, id, deleted]
+      properties:
+        entity: {$ref: '#/components/schemas/Entity'}
+        id: {type: string, format: uuid}
+        currentVersion: {type: integer, nullable: true, description: 'Current version, null when the row was deleted'}
+        deleted: {type: boolean}
+        current: {type: object, additionalProperties: true, description: Current values of the row (API field names); empty
+            when deleted}
+    LockedField:
+      type: object
+      required: [entity, id, field]
+      properties:
+        entity: {$ref: '#/components/schemas/Entity'}
+        id: {type: string, format: uuid}
+        field: {type: string}
+    Blocker:
+      type: object
+      required: [entity, id, label]
+      properties:
+        entity: {$ref: '#/components/schemas/Entity'}
+        id: {type: string, format: uuid}
+        label: {type: string}
+    Problem:
+      type: object
+      description: RFC 9457 Problem Details (application/problem+json).
+      required: [type, title, status, code]
+      properties:
+        type: {type: string, description: 'urn:pfmea:problem:<code>'}
+        title: {type: string}
+        status: {type: integer}
+        code: {$ref: '#/components/schemas/ProblemCode'}
+        detail: {type: string}
+        instance: {type: string}
+        requestId: {type: string}
+        errors:
+          type: array
+          items: {$ref: '#/components/schemas/FieldError'}
+        conflicts:
+          type: array
+          items: {$ref: '#/components/schemas/Conflict'}
+        locked:
+          type: array
+          items: {$ref: '#/components/schemas/LockedField'}
+        blockers:
+          type: array
+          items: {$ref: '#/components/schemas/Blocker'}
+        blockersTotal: {type: integer}
+        reasons:
+          type: array
+          items: {type: string}
+          description: 'release_blocked: human-readable reasons'
+    UserRef:
+      type: object
+      required: [id, displayName]
+      properties:
+        id: {type: string, format: uuid}
+        displayName: {type: string}
+    User:
+      type: object
+      required: [id, username, displayName, role, authSource, isActive, version]
+      properties:
+        id: {type: string, format: uuid}
+        username: {type: string, pattern: '^[a-z0-9._-]{3,64}$'}
+        displayName: {type: string}
+        email: {type: string, nullable: true}
+        department: {type: string, nullable: true}
+        role: {$ref: '#/components/schemas/UserRole'}
+        authSource: {$ref: '#/components/schemas/AuthSource'}
+        isActive: {type: boolean}
+        lastLoginAt: {type: string, format: date-time, nullable: true}
+        version: {type: integer}
+    UserCreate:
+      type: object
+      required: [username, displayName, role, authSource]
+      properties:
+        username: {type: string, pattern: '^[a-z0-9._-]{3,64}$'}
+        displayName: {type: string, minLength: 1, maxLength: 120}
+        email: {type: string, nullable: true}
+        department: {type: string, nullable: true}
+        role: {$ref: '#/components/schemas/UserRole'}
+        authSource: {$ref: '#/components/schemas/AuthSource'}
+        password: {type: string, minLength: 10, maxLength: 200, description: Required for local users; min 10 characters}
+    UserUpdate:
+      type: object
+      required: [version]
+      properties:
+        version: {type: integer}
+        displayName: {type: string, minLength: 1, maxLength: 120}
+        email: {type: string, nullable: true}
+        department: {type: string, nullable: true}
+        role: {$ref: '#/components/schemas/UserRole'}
+        isActive: {type: boolean}
+        password: {type: string, minLength: 10, maxLength: 200, description: Admin password reset (local users only)}
+    UserList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/User'}
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username: {type: string}
+        password: {type: string}
+    ChangePasswordRequest:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword: {type: string}
+        newPassword: {type: string, minLength: 10, maxLength: 200}
+    DocNumberPattern:
+      type: object
+      required: [PFD, PFMEA, CP, generalSuffix]
+      properties:
+        PFD: {type: string, example: 'SH-{customer}-{seq:03}'}
+        PFMEA: {type: string, example: 'SF-{customer}-{seq:03}'}
+        CP: {type: string, example: 'SC-{customer}-{seq:03}'}
+        generalSuffix: {type: string, example: GEN}
+    Settings:
+      type: object
+      required: [docNumberPattern, reviewIntervalMonths, plantTimezone, nightlyCheckTime]
+      properties:
+        docNumberPattern: {$ref: '#/components/schemas/DocNumberPattern'}
+        reviewIntervalMonths: {type: integer, minimum: 1, maximum: 60}
+        plantTimezone: {type: string, example: Asia/Jakarta, description: IANA time zone}
+        nightlyCheckTime: {type: string, pattern: '^[0-2][0-9]:[0-5][0-9]$', description: 'HH:MM in plant time'}
+    SettingsUpdate:
+      type: object
+      properties:
+        docNumberPattern: {$ref: '#/components/schemas/DocNumberPattern'}
+        reviewIntervalMonths: {type: integer, minimum: 1, maximum: 60}
+        plantTimezone: {type: string}
+        nightlyCheckTime: {type: string, pattern: '^[0-2][0-9]:[0-5][0-9]$'}
+    GlobalPermissions:
+      type: object
+      required: [isAdmin, canCreatePackage, canRelease, canWaive]
+      properties:
+        isAdmin: {type: boolean}
+        canCreatePackage: {type: boolean}
+        canRelease: {type: boolean}
+        canWaive: {type: boolean}
+    Me:
+      type: object
+      required: [user, permissions, settings]
+      properties:
+        user: {$ref: '#/components/schemas/User'}
+        permissions: {$ref: '#/components/schemas/GlobalPermissions'}
+        settings: {$ref: '#/components/schemas/Settings'}
+    CustomerScSymbol:
+      type: object
+      required: [scSymbolId, customerSymbol]
+      properties:
+        scSymbolId: {type: string, format: uuid}
+        customerSymbol: {type: string, minLength: 1, maxLength: 20}
+        customerLabel: {type: string, nullable: true}
+    Customer:
+      type: object
+      required: [id, code, name, rpnActionThreshold, ccMinSeverity, requiresChangeApproval, isActive, scSymbols, version]
+      properties:
+        id: {type: string, format: uuid}
+        code: {type: string, pattern: '^[A-Z0-9]{2,8}$'}
+        name: {type: string}
+        rpnActionThreshold: {type: integer, minimum: 1, maximum: 1000, nullable: true, description: F08 threshold; null =
+            off (default)}
+        ccMinSeverity: {type: integer, minimum: 1, maximum: 10, nullable: true, description: S04 minimum S for critical classes;
+            null = off}
+        requiresChangeApproval: {type: boolean, description: Used from Phase 2}
+        notes: {type: string, nullable: true}
+        isActive: {type: boolean}
+        scSymbols:
+          type: array
+          items: {$ref: '#/components/schemas/CustomerScSymbol'}
+          description: Symbol conversion table (S02)
+        version: {type: integer}
+    CustomerCreate:
+      type: object
+      required: [code, name]
+      properties:
+        code: {type: string, pattern: '^[A-Z0-9]{2,8}$'}
+        name: {type: string, minLength: 1}
+        rpnActionThreshold: {type: integer, minimum: 1, maximum: 1000, nullable: true}
+        ccMinSeverity: {type: integer, minimum: 1, maximum: 10, nullable: true}
+        requiresChangeApproval: {type: boolean}
+        notes: {type: string, nullable: true}
+    CustomerUpdate:
+      type: object
+      required: [version]
+      properties:
+        version: {type: integer}
+        name: {type: string, minLength: 1}
+        rpnActionThreshold: {type: integer, minimum: 1, maximum: 1000, nullable: true}
+        ccMinSeverity: {type: integer, minimum: 1, maximum: 10, nullable: true}
+        requiresChangeApproval: {type: boolean}
+        notes: {type: string, nullable: true}
+        isActive: {type: boolean}
+    CustomerList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/Customer'}
+    CustomerScSymbolsReplace:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/CustomerScSymbol'}
+    ScSymbol:
+      type: object
+      required: [id, code, name, isCritical, sortOrder, version]
+      properties:
+        id: {type: string, format: uuid}
+        code: {type: string, pattern: '^[A-Z0-9]{1,6}$'}
+        name: {type: string}
+        isCritical: {type: boolean, description: Safety/regulatory class (S04)}
+        description: {type: string, nullable: true}
+        sortOrder: {type: integer}
+        version: {type: integer}
+    ScSymbolCreate:
+      type: object
+      required: [code, name]
+      properties:
+        code: {type: string, pattern: '^[A-Z0-9]{1,6}$'}
+        name: {type: string, minLength: 1}
+        isCritical: {type: boolean}
+        description: {type: string, nullable: true}
+        sortOrder: {type: integer}
+    ScSymbolUpdate:
+      type: object
+      required: [version]
+      properties:
+        version: {type: integer}
+        code: {type: string, pattern: '^[A-Z0-9]{1,6}$'}
+        name: {type: string, minLength: 1}
+        isCritical: {type: boolean}
+        description: {type: string, nullable: true}
+        sortOrder: {type: integer}
+    ScSymbolList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/ScSymbol'}
+    Part:
+      type: object
+      required: [id, customerId, partNo, partName, changeLevel, isActive, version]
+      properties:
+        id: {type: string, format: uuid}
+        customerId: {type: string, format: uuid}
+        partNo: {type: string}
+        partName: {type: string}
+        changeLevel: {type: string, nullable: true}
+        productFamily: {type: string, nullable: true}
+        isActive: {type: boolean}
+        version: {type: integer}
+    PartCreate:
+      type: object
+      required: [customerId, partNo, partName]
+      properties:
+        customerId: {type: string, format: uuid}
+        partNo: {type: string, minLength: 1}
+        partName: {type: string, minLength: 1}
+        changeLevel: {type: string, nullable: true}
+        productFamily: {type: string, nullable: true}
+    PartUpdate:
+      type: object
+      required: [version]
+      properties:
+        version: {type: integer}
+        partNo: {type: string, minLength: 1}
+        partName: {type: string, minLength: 1}
+        changeLevel: {type: string, nullable: true}
+        productFamily: {type: string, nullable: true}
+        isActive: {type: boolean}
+    PartList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/Part'}
+    ControlLibraryItem:
+      type: object
+      required: [id, name, kind, methodCategory, dMin, dMax, isErrorProofing, isStrong, isActive, version]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        kind: {$ref: '#/components/schemas/ControlKind'}
+        methodCategory: {$ref: '#/components/schemas/ControlMethodCategory'}
+        dMin: {type: integer, minimum: 1, maximum: 10, nullable: true, description: Best (lowest) D this detection method
+            can justify (R04)}
+        dMax: {type: integer, minimum: 1, maximum: 10, nullable: true}
+        isErrorProofing: {type: boolean}
+        isStrong: {type: boolean, description: 'SPC, 100% automated or error-proofing (S03)'}
+        description: {type: string, nullable: true}
+        isActive: {type: boolean}
+        version: {type: integer}
+    ControlLibraryCreate:
+      type: object
+      required: [name, kind, methodCategory]
+      properties:
+        name: {type: string, minLength: 1}
+        kind: {$ref: '#/components/schemas/ControlKind'}
+        methodCategory: {$ref: '#/components/schemas/ControlMethodCategory'}
+        dMin: {type: integer, minimum: 1, maximum: 10, nullable: true}
+        dMax: {type: integer, minimum: 1, maximum: 10, nullable: true}
+        isErrorProofing: {type: boolean}
+        isStrong: {type: boolean}
+        description: {type: string, nullable: true}
+    ControlLibraryUpdate:
+      type: object
+      required: [version]
+      properties:
+        version: {type: integer}
+        name: {type: string, minLength: 1}
+        methodCategory: {$ref: '#/components/schemas/ControlMethodCategory'}
+        dMin: {type: integer, minimum: 1, maximum: 10, nullable: true}
+        dMax: {type: integer, minimum: 1, maximum: 10, nullable: true}
+        isErrorProofing: {type: boolean}
+        isStrong: {type: boolean}
+        description: {type: string, nullable: true}
+        isActive: {type: boolean}
+    ControlLibraryList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/ControlLibraryItem'}
+    RatingCriterion:
+      type: object
+      required: [methodology, dimension, rating, criteria, updatedAt]
+      properties:
+        methodology: {$ref: '#/components/schemas/Methodology'}
+        dimension: {$ref: '#/components/schemas/RatingDimension'}
+        rating: {type: integer, minimum: 1, maximum: 10}
+        criteria: {type: string, description: Text from the company's licensed manual}
+        updatedAt: {type: string, format: date-time}
+    RatingCriteriaList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/RatingCriterion'}
+    RatingCriteriaReplace:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            required: [rating, criteria]
+            properties:
+              rating: {type: integer, minimum: 1, maximum: 10}
+              criteria: {type: string, minLength: 1}
+          maxItems: 10
+    BannedTerm:
+      type: object
+      required: [id, term, appliesTo, reason, isActive, version]
+      properties:
+        id: {type: string, format: uuid}
+        term: {type: string}
+        appliesTo: {$ref: '#/components/schemas/BannedTermScope'}
+        reason: {type: string}
+        suggestion: {type: string, nullable: true}
+        isActive: {type: boolean}
+        version: {type: integer}
+    BannedTermCreate:
+      type: object
+      required: [term, reason]
+      properties:
+        term: {type: string, minLength: 2}
+        appliesTo: {$ref: '#/components/schemas/BannedTermScope'}
+        reason: {type: string, minLength: 3}
+        suggestion: {type: string, nullable: true}
+    BannedTermUpdate:
+      type: object
+      required: [version]
+      properties:
+        version: {type: integer}
+        term: {type: string, minLength: 2}
+        appliesTo: {$ref: '#/components/schemas/BannedTermScope'}
+        reason: {type: string, minLength: 3}
+        suggestion: {type: string, nullable: true}
+        isActive: {type: boolean}
+    BannedTermList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/BannedTerm'}
+    RuleCustomerOverride:
+      type: object
+      required: [customerId]
+      properties:
+        customerId: {type: string, format: uuid}
+        level:
+          type: string
+          allOf:
+          - {$ref: '#/components/schemas/FindingLevel'}
+          nullable: true
+          description: null = rule default
+        isEnabled: {type: boolean, nullable: true, description: null = rule default}
+    Rule:
+      type: object
+      required: [code, title, description, defaultLevel, appliesTo, phase, isEnabled, implemented, customerOverrides]
+      properties:
+        code: {type: string, pattern: '^[KSRFCWT][0-9]{2}$'}
+        title: {type: string}
+        description: {type: string}
+        defaultLevel: {$ref: '#/components/schemas/FindingLevel'}
+        appliesTo: {$ref: '#/components/schemas/RuleAppliesTo'}
+        phase: {type: integer, minimum: 1, maximum: 2}
+        isEnabled: {type: boolean}
+        implemented: {type: boolean, description: true when the running build has the rule's SQL (Phase 1 rules)}
+        customerOverrides:
+          type: array
+          items: {$ref: '#/components/schemas/RuleCustomerOverride'}
+    RuleUpdate:
+      type: object
+      properties:
+        isEnabled: {type: boolean}
+        defaultLevel: {$ref: '#/components/schemas/FindingLevel'}
+    RuleList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/Rule'}
+    RuleCustomerOverridesReplace:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/RuleCustomerOverride'}
+    CustomerRef:
+      type: object
+      required: [id, code, name]
+      properties:
+        id: {type: string, format: uuid}
+        code: {type: string}
+        name: {type: string}
+    PartRef:
+      type: object
+      required: [id, partNo, partName, changeLevel]
+      properties:
+        id: {type: string, format: uuid}
+        partNo: {type: string}
+        partName: {type: string}
+        changeLevel: {type: string, nullable: true}
+    PackageLinkSummary:
+      type: object
+      required: [generalPackageId, syncedRev, latestRev, state]
+      properties:
+        generalPackageId: {type: string, format: uuid}
+        syncedRev: {type: integer}
+        latestRev: {type: integer}
+        state: {$ref: '#/components/schemas/LinkState'}
+    PackageStats:
+      type: object
+      required: [errorsOpen, warningsOpen, infosOpen, waived, stepsTotal, stepsInPfmea, stepsInCp, chainsTotal, chainsSeverity9to10,
+        maxRpn, actionsOpen, actionsOverdue, lastCheckAt]
+      properties:
+        errorsOpen: {type: integer}
+        warningsOpen: {type: integer}
+        infosOpen: {type: integer}
+        waived: {type: integer}
+        stepsTotal: {type: integer}
+        stepsInPfmea: {type: integer}
+        stepsInCp: {type: integer}
+        chainsTotal: {type: integer}
+        chainsSeverity9to10: {type: integer}
+        maxRpn: {type: integer, nullable: true}
+        actionsOpen: {type: integer}
+        actionsOverdue: {type: integer}
+        lastCheckAt: {type: string, format: date-time, nullable: true}
+    PackageSummary:
+      type: object
+      required: [id, kind, code, name, customer, part, pfmeaMethod, cpFormat, status, revision, owner, contentVersion, lastReviewedAt,
+        updatedAt, version, link, stats]
+      properties:
+        id: {type: string, format: uuid}
+        kind: {$ref: '#/components/schemas/PackageKind'}
+        code: {type: string}
+        name: {type: string}
+        customer:
+          type: object
+          allOf:
+          - {$ref: '#/components/schemas/CustomerRef'}
+          nullable: true
+        part:
+          type: object
+          allOf:
+          - {$ref: '#/components/schemas/PartRef'}
+          nullable: true
+        pfmeaMethod: {$ref: '#/components/schemas/Methodology'}
+        cpFormat: {$ref: '#/components/schemas/Methodology'}
+        status: {$ref: '#/components/schemas/PackageStatus'}
+        revision: {type: integer}
+        owner: {$ref: '#/components/schemas/UserRef'}
+        plant: {type: string, nullable: true}
+        coreTeam: {type: string, nullable: true}
+        contentVersion: {type: integer, format: int64}
+        lastReviewedAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+        version: {type: integer}
+        link:
+          type: object
+          allOf:
+          - {$ref: '#/components/schemas/PackageLinkSummary'}
+          nullable: true
+          description: Template link (model packages only)
+        stats: {$ref: '#/components/schemas/PackageStats'}
+    PackageList:
+      type: object
+      required: [items, nextCursor]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/PackageSummary'}
+        nextCursor: {type: string, nullable: true}
+    Document:
+      type: object
+      required: [id, docType, methodology, docNo, revision, header, version]
+      properties:
+        id: {type: string, format: uuid}
+        docType: {$ref: '#/components/schemas/DocType'}
+        methodology: {$ref: '#/components/schemas/Methodology'}
+        docNo: {type: string}
+        revision: {type: integer}
+        header: {type: object, additionalProperties: true, description: Form header values; keys in docs/04-data-model.md
+            section 5}
+        version: {type: integer}
+    PackageMember:
+      type: object
+      required: [user, canEdit]
+      properties:
+        user: {$ref: '#/components/schemas/UserRef'}
+        canEdit: {type: boolean}
+    PackagePermissions:
+      type: object
+      required: [canEdit, canRelease, canWaive, canManageMembers]
+      properties:
+        canEdit: {type: boolean}
+        canRelease: {type: boolean}
+        canWaive: {type: boolean}
+        canManageMembers: {type: boolean}
+    PackageDetail:
+      allOf:
+      - {$ref: '#/components/schemas/PackageSummary'}
+      - type: object
+        required: [documents, members, permissions]
+        properties:
+          documents:
+            type: array
+            items: {$ref: '#/components/schemas/Document'}
+          members:
+            type: array
+            items: {$ref: '#/components/schemas/PackageMember'}
+          permissions: {$ref: '#/components/schemas/PackagePermissions'}
+    PackageCreate:
+      type: object
+      description: Phase 1 accepts only pfmeaMethod AIAG4 and cpFormat APQP2 (422 not_allowed otherwise).
+      required: [code, name, customerId, partId, pfmeaMethod, cpFormat]
+      properties:
+        code: {type: string, pattern: '^[A-Z0-9][A-Z0-9-]{1,23}$'}
+        name: {type: string, minLength: 1, maxLength: 200}
+        customerId: {type: string, format: uuid}
+        partId: {type: string, format: uuid}
+        pfmeaMethod: {$ref: '#/components/schemas/Methodology'}
+        cpFormat: {$ref: '#/components/schemas/Methodology'}
+        optionalStepIds:
+          type: array
+          items: {type: string, format: uuid}
+          description: Template step ids (from the latest released revision) of the optional general processes to include
+        ownerId: {type: string, format: uuid, description: Defaults to the caller}
+        plant: {type: string, nullable: true}
+        coreTeam: {type: string, nullable: true}
+        memberIds:
+          type: array
+          items: {type: string, format: uuid}
+    PackageUpdate:
+      type: object
+      required: [version]
+      properties:
+        version: {type: integer}
+        name: {type: string, minLength: 1, maxLength: 200}
+        plant: {type: string, nullable: true}
+        coreTeam: {type: string, nullable: true}
+        ownerId: {type: string, format: uuid, description: Approver or admin only}
+    MembersReplace:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            required: [userId, canEdit]
+            properties:
+              userId: {type: string, format: uuid}
+              canEdit: {type: boolean}
+    Override:
+      type: object
+      required: [reason, by, at, templateValue]
+      properties:
+        reason: {type: string}
+        by: {type: string, format: uuid}
+        at: {type: string, format: date-time}
+        templateValue: {description: Template value the override was made against}
+    RowLink:
+      type: object
+      description: Template link fields of a content row (docs/07-template-general.md).
+      required: [origin, syncStatus, sourceRev, overrides, detachReason]
+      properties:
+        origin: {$ref: '#/components/schemas/RowOrigin'}
+        syncStatus:
+          type: string
+          allOf:
+          - {$ref: '#/components/schemas/SyncStatus'}
+          nullable: true
+        sourceRev: {type: integer, nullable: true}
+        overrides:
+          type: object
+          additionalProperties: {$ref: '#/components/schemas/Override'}
+          description: Overridden fields keyed by API field name
+        detachReason: {type: string, nullable: true}
+    Step:
+      allOf:
+      - {$ref: '#/components/schemas/RowLink'}
+      - type: object
+        required: [id, opNo, seq, name, function, symbol, kind, isOptional, machines, notAnalyzed, generalMode, version]
+        properties:
+          id: {type: string, format: uuid}
+          opNo: {type: string, pattern: '^[0-9]{1,4}[A-Z]?$'}
+          seq: {type: integer}
+          name: {type: string}
+          function: {type: string, nullable: true}
+          symbol: {$ref: '#/components/schemas/StepSymbol'}
+          kind: {$ref: '#/components/schemas/StepKind'}
+          isOptional: {type: boolean}
+          machines:
+            type: array
+            items: {type: string}
+          inputs: {type: string, nullable: true}
+          outputs: {type: string, nullable: true}
+          department: {type: string, nullable: true}
+          wiRef: {type: string, nullable: true}
+          notAnalyzed: {type: boolean}
+          notAnalyzedReason: {type: string, nullable: true}
+          generalMode:
+            type: string
+            allOf:
+            - {$ref: '#/components/schemas/GeneralMode'}
+            nullable: true
+            description: General package only
+          version: {type: integer}
+    StepFlow:
+      allOf:
+      - {$ref: '#/components/schemas/RowLink'}
+      - type: object
+        required: [id, fromStepId, toStepId, kind, disposition, label, version]
+        properties:
+          id: {type: string, format: uuid}
+          fromStepId: {type: string, format: uuid}
+          toStepId: {type: string, format: uuid, nullable: true, description: 'null = leaves the flow (scrap, hold, return
+              to supplier)'}
+          kind: {$ref: '#/components/schemas/FlowKind'}
+          disposition: {type: string, nullable: true}
+          label: {type: string, nullable: true}
+          version: {type: integer}
+    Characteristic:
+      allOf:
+      - {$ref: '#/components/schemas/RowLink'}
+      - type: object
+        required: [id, stepId, charNo, kind, name, spec, scSymbolId, seq, version]
+        properties:
+          id: {type: string, format: uuid}
+          stepId: {type: string, format: uuid}
+          charNo: {type: string, pattern: '^[0-9]{1,4}[A-Z]?-[0-9]{2,3}$'}
+          kind: {$ref: '#/components/schemas/CharacteristicKind'}
+          name: {type: string}
+          spec: {type: string, nullable: true}
+          lsl: {type: number, nullable: true}
+          usl: {type: number, nullable: true}
+          unit: {type: string, nullable: true}
+          scSymbolId: {type: string, format: uuid, nullable: true}
+          seq: {type: integer}
+          version: {type: integer}
+    FailureMode:
+      allOf:
+      - {$ref: '#/components/schemas/RowLink'}
+      - type: object
+        required: [id, stepId, characteristicId, text, seq, version]
+        properties:
+          id: {type: string, format: uuid}
+          stepId: {type: string, format: uuid}
+          characteristicId: {type: string, format: uuid}
+          text: {type: string}
+          seq: {type: integer}
+          version: {type: integer}
+    FailureEffect:
+      allOf:
+      - {$ref: '#/components/schemas/RowLink'}
+      - type: object
+        required: [id, failureModeId, level, text, s, seq, version]
+        properties:
+          id: {type: string, format: uuid}
+          failureModeId: {type: string, format: uuid}
+          level: {$ref: '#/components/schemas/EffectLevel'}
+          text: {type: string}
+          s: {type: integer, minimum: 1, maximum: 10, nullable: true}
+          seq: {type: integer}
+          version: {type: integer}
+    FailureCause:
+      allOf:
+      - {$ref: '#/components/schemas/RowLink'}
+      - type: object
+        required: [id, failureModeId, text, seq, version]
+        properties:
+          id: {type: string, format: uuid}
+          failureModeId: {type: string, format: uuid}
+          text: {type: string}
+          seq: {type: integer}
+          version: {type: integer}
+    FailureChain:
+      allOf:
+      - {$ref: '#/components/schemas/RowLink'}
+      - type: object
+        description: One row of the AIAG 4th worksheet (one per failure cause).
+        required: [id, failureModeId, failureCauseId, s, o, d, rpn, justification, oEvidence, seq, version]
+        properties:
+          id: {type: string, format: uuid}
+          failureModeId: {type: string, format: uuid}
+          failureCauseId: {type: string, format: uuid}
+          s: {type: integer, minimum: 1, maximum: 10, nullable: true, description: 'Read-only: highest effect S of the failure
+              mode'}
+          o: {type: integer, minimum: 1, maximum: 10, nullable: true}
+          d: {type: integer, minimum: 1, maximum: 10, nullable: true}
+          rpn: {type: integer, nullable: true, description: 'Read-only: S x O x D, null while a factor is missing'}
+          justification: {type: string, nullable: true}
+          oEvidence: {type: string, nullable: true}
+          seq: {type: integer}
+          version: {type: integer}
+    Control:
+      allOf:
+      - {$ref: '#/components/schemas/RowLink'}
+      - type: object
+        required: [id, failureChainId, kind, text, controlLibraryId, isSystemControl, seq, version]
+        properties:
+          id: {type: string, format: uuid}
+          failureChainId: {type: string, format: uuid}
+          kind: {$ref: '#/components/schemas/ControlKind'}
+          text: {type: string}
+          controlLibraryId: {type: string, format: uuid, nullable: true}
+          isSystemControl: {type: boolean}
+          systemControlReason: {type: string, nullable: true}
+          seq: {type: integer}
+          version: {type: integer}
+    Action:
+      type: object
+      description: Recommended action. Never linked to Template General.
+      required: [id, failureChainId, kind, text, responsibleUserId, responsibleText, targetDate, status, completedOn, newS,
+        newO, newD, newRpn, seq, version]
+      properties:
+        id: {type: string, format: uuid}
+        failureChainId: {type: string, format: uuid}
+        kind: {$ref: '#/components/schemas/ActionKind'}
+        text: {type: string}
+        responsibleUserId: {type: string, format: uuid, nullable: true}
+        responsibleText: {type: string, nullable: true}
+        targetDate: {type: string, format: date, nullable: true}
+        status: {$ref: '#/components/schemas/ActionStatus'}
+        actionTaken: {type: string, nullable: true}
+        completedOn: {type: string, format: date, nullable: true}
+        newS: {type: integer, minimum: 1, maximum: 10, nullable: true}
+        newO: {type: integer, minimum: 1, maximum: 10, nullable: true}
+        newD: {type: integer, minimum: 1, maximum: 10, nullable: true}
+        newRpn: {type: integer, nullable: true, description: Read-only}
+        designChangeNote: {type: string, nullable: true}
+        seq: {type: integer}
+        version: {type: integer}
+    CpLine:
+      allOf:
+      - {$ref: '#/components/schemas/RowLink'}
+      - type: object
+        required: [id, phase, stepId, characteristicId, controlId, failureModeId, machines, evalTechnique, sampleSize, sampleFreq,
+          controlMethod, isErrorProofing, epVerifyFreq, seq, version]
+        properties:
+          id: {type: string, format: uuid}
+          phase: {$ref: '#/components/schemas/CpPhase'}
+          stepId: {type: string, format: uuid}
+          characteristicId: {type: string, format: uuid}
+          controlId: {type: string, format: uuid, nullable: true}
+          failureModeId: {type: string, format: uuid, nullable: true}
+          machines:
+            type: array
+            items: {type: string}
+          evalTechnique: {type: string, nullable: true}
+          gauge: {type: string, nullable: true}
+          sampleSize: {type: string, nullable: true}
+          sampleFreq: {type: string, nullable: true}
+          freqBasis:
+            type: string
+            allOf:
+            - {$ref: '#/components/schemas/FreqBasis'}
+            nullable: true
+          controlMethod: {type: string, nullable: true}
+          isErrorProofing: {type: boolean}
+          epVerifyFreq: {type: string, nullable: true}
+          seq: {type: integer}
+          version: {type: integer}
+    ReactionPlan:
+      allOf:
+      - {$ref: '#/components/schemas/RowLink'}
+      - type: object
+        description: Template A reaction plan (free text). Structured CP-1 fields are Phase 2.
+        required: [id, cpLineId, text, version]
+        properties:
+          id: {type: string, format: uuid}
+          cpLineId: {type: string, format: uuid}
+          text: {type: string}
+          version: {type: integer}
+    TemplatePolicy:
+      type: object
+      additionalProperties:
+        type: array
+        items: {type: string}
+      description: 'Overridable fields per entity, e.g. {"failureEffect": ["s"], "cpLine": ["sampleSize", "sampleFreq"]}'
+    PackageRef:
+      type: object
+      required: [id, kind, code, name, customerId, customerCode, pfmeaMethod, cpFormat]
+      properties:
+        id: {type: string, format: uuid}
+        kind: {$ref: '#/components/schemas/PackageKind'}
+        code: {type: string}
+        name: {type: string}
+        customerId: {type: string, format: uuid, nullable: true}
+        customerCode: {type: string, nullable: true}
+        pfmeaMethod: {$ref: '#/components/schemas/Methodology'}
+        cpFormat: {$ref: '#/components/schemas/Methodology'}
+    ScSymbolRef:
+      type: object
+      required: [id, code, name, isCritical, customerSymbol]
+      properties:
+        id: {type: string, format: uuid}
+        code: {type: string}
+        name: {type: string}
+        isCritical: {type: boolean}
+        customerSymbol: {type: string, nullable: true, description: Symbol printed for this package's customer (S02); null
+            when unmapped}
+    PfdView:
+      type: object
+      description: PFD screen data, one request.
+      required: [package, document, contentVersion, templatePolicy, scSymbols, steps, flows, characteristics]
+      properties:
+        package: {$ref: '#/components/schemas/PackageRef'}
+        document: {$ref: '#/components/schemas/Document'}
+        contentVersion: {type: integer, format: int64}
+        templatePolicy: {$ref: '#/components/schemas/TemplatePolicy'}
+        scSymbols:
+          type: array
+          items: {$ref: '#/components/schemas/ScSymbolRef'}
+        steps:
+          type: array
+          items: {$ref: '#/components/schemas/Step'}
+        flows:
+          type: array
+          items: {$ref: '#/components/schemas/StepFlow'}
+        characteristics:
+          type: array
+          items: {$ref: '#/components/schemas/Characteristic'}
+    PfmeaView:
+      type: object
+      description: PFMEA worksheet data, normalized; the client builds one grid row per failure chain.
+      required: [package, document, contentVersion, templatePolicy, scSymbols, rpnActionThreshold, steps, characteristics,
+        failureModes, failureEffects, failureCauses, failureChains, controls, actions]
+      properties:
+        package: {$ref: '#/components/schemas/PackageRef'}
+        document: {$ref: '#/components/schemas/Document'}
+        contentVersion: {type: integer, format: int64}
+        templatePolicy: {$ref: '#/components/schemas/TemplatePolicy'}
+        scSymbols:
+          type: array
+          items: {$ref: '#/components/schemas/ScSymbolRef'}
+        rpnActionThreshold: {type: integer, nullable: true, description: 'Customer CSR threshold (F08), null = none'}
+        steps:
+          type: array
+          items: {$ref: '#/components/schemas/Step'}
+        characteristics:
+          type: array
+          items: {$ref: '#/components/schemas/Characteristic'}
+        failureModes:
+          type: array
+          items: {$ref: '#/components/schemas/FailureMode'}
+        failureEffects:
+          type: array
+          items: {$ref: '#/components/schemas/FailureEffect'}
+        failureCauses:
+          type: array
+          items: {$ref: '#/components/schemas/FailureCause'}
+        failureChains:
+          type: array
+          items: {$ref: '#/components/schemas/FailureChain'}
+        controls:
+          type: array
+          items: {$ref: '#/components/schemas/Control'}
+        actions:
+          type: array
+          items: {$ref: '#/components/schemas/Action'}
+    ControlRef:
+      type: object
+      required: [id, failureChainId, failureModeId, kind, text, controlLibraryId]
+      properties:
+        id: {type: string, format: uuid}
+        failureChainId: {type: string, format: uuid}
+        failureModeId: {type: string, format: uuid}
+        kind: {$ref: '#/components/schemas/ControlKind'}
+        text: {type: string}
+        controlLibraryId: {type: string, format: uuid, nullable: true}
+    FailureModeRef:
+      type: object
+      required: [id, stepId, characteristicId, text]
+      properties:
+        id: {type: string, format: uuid}
+        stepId: {type: string, format: uuid}
+        characteristicId: {type: string, format: uuid}
+        text: {type: string}
+    PhaseCount:
+      type: object
+      required: [phase, lines]
+      properties:
+        phase: {$ref: '#/components/schemas/CpPhase'}
+        lines: {type: integer}
+    ControlPlanView:
+      type: object
+      description: Control Plan data for one phase.
+      required: [package, document, contentVersion, templatePolicy, scSymbols, phase, phaseCounts, steps, characteristics,
+        cpLines, reactionPlans, controls, failureModes]
+      properties:
+        package: {$ref: '#/components/schemas/PackageRef'}
+        document: {$ref: '#/components/schemas/Document'}
+        contentVersion: {type: integer, format: int64}
+        templatePolicy: {$ref: '#/components/schemas/TemplatePolicy'}
+        scSymbols:
+          type: array
+          items: {$ref: '#/components/schemas/ScSymbolRef'}
+        phase: {$ref: '#/components/schemas/CpPhase'}
+        phaseCounts:
+          type: array
+          items: {$ref: '#/components/schemas/PhaseCount'}
+        steps:
+          type: array
+          items: {$ref: '#/components/schemas/Step'}
+        characteristics:
+          type: array
+          items: {$ref: '#/components/schemas/Characteristic'}
+        cpLines:
+          type: array
+          items: {$ref: '#/components/schemas/CpLine'}
+        reactionPlans:
+          type: array
+          items: {$ref: '#/components/schemas/ReactionPlan'}
+        controls:
+          type: array
+          items: {$ref: '#/components/schemas/ControlRef'}
+          description: All PFMEA controls of the package (link pickers)
+        failureModes:
+          type: array
+          items: {$ref: '#/components/schemas/FailureModeRef'}
+          description: All failure modes of the package (link pickers)
+    Change:
+      type: object
+      required: [entity, id, field, value, version]
+      properties:
+        entity: {$ref: '#/components/schemas/Entity'}
+        id: {type: string, format: uuid}
+        field: {type: string, description: API field name or virtual field (docs/05-api.md section 4)}
+        value: {description: 'New value: string, number, boolean, string[] (machines), object (header.approvals) or null'}
+        version: {type: integer, description: Version of the row the edit is based on (owning row for virtual fields)}
+        targetVersion: {type: integer, description: 'Virtual fields only: version of the target effect or control when one
+            exists (omit when there is none); a mismatch gives 409 version_conflict'}
+        overrideReason: {type: string, minLength: 3, description: Required when overriding a template-controlled field}
+    ChangeRequest:
+      type: object
+      required: [changes]
+      properties:
+        changes:
+          type: array
+          items: {$ref: '#/components/schemas/Change'}
+          minItems: 1
+          maxItems: 500
+    ChangedRow:
+      type: object
+      required: [entity, id, op, version, derived, values]
+      properties:
+        entity: {$ref: '#/components/schemas/Entity'}
+        id: {type: string, format: uuid}
+        op: {$ref: '#/components/schemas/MutationOp'}
+        version: {type: integer, nullable: true, description: null for deleted rows}
+        derived: {type: boolean, description: 'true when the row was changed by a trigger, not by the request'}
+        values: {type: object, additionalProperties: true, description: 'Changed fields (update) or the full row (insert),
+            API field names'}
+    EntityCount:
+      type: object
+      required: [entity, count]
+      properties:
+        entity: {$ref: '#/components/schemas/Entity'}
+        count: {type: integer}
+    SkippedItem:
+      type: object
+      required: [id, reason]
+      properties:
+        id: {type: string, format: uuid}
+        reason: {type: string}
+    MutationResult:
+      type: object
+      description: Result of every write to package content. Same row format as the realtime events.
+      required: [performed, contentVersion, rows, deleted, unlinked, skipped]
+      properties:
+        performed: {type: boolean, description: false for dryRun}
+        contentVersion: {type: integer, format: int64}
+        rows:
+          type: array
+          items: {$ref: '#/components/schemas/ChangedRow'}
+        deleted:
+          type: array
+          items: {$ref: '#/components/schemas/EntityCount'}
+        unlinked:
+          type: array
+          items: {$ref: '#/components/schemas/EntityCount'}
+        skipped:
+          type: array
+          items: {$ref: '#/components/schemas/SkippedItem'}
+    MoveRequest:
+      type: object
+      required: [entity, id, version, afterId]
+      properties:
+        entity: {$ref: '#/components/schemas/Entity'}
+        id: {type: string, format: uuid}
+        version: {type: integer}
+        afterId: {type: string, format: uuid, nullable: true, description: Sibling to place the row after; null = first}
+    StepCreate:
+      type: object
+      required: [opNo, name]
+      properties:
+        opNo: {type: string, pattern: '^[0-9]{1,4}[A-Z]?$'}
+        name: {type: string, minLength: 1, maxLength: 200}
+        symbol: {$ref: '#/components/schemas/StepSymbol'}
+        kind: {$ref: '#/components/schemas/StepKind'}
+        afterStepId: {type: string, format: uuid, nullable: true, description: null or omitted = append}
+        function: {type: string, nullable: true}
+        machines:
+          type: array
+          items: {type: string}
+          maxItems: 20
+        department: {type: string, nullable: true}
+        wiRef: {type: string, nullable: true}
+        generalMode: {$ref: '#/components/schemas/GeneralMode'}
+    StepFlowCreate:
+      type: object
+      required: [fromStepId, kind]
+      properties:
+        fromStepId: {type: string, format: uuid}
+        toStepId: {type: string, format: uuid, nullable: true}
+        kind: {$ref: '#/components/schemas/FlowKind'}
+        disposition: {type: string, nullable: true}
+        label: {type: string, nullable: true}
+    CharacteristicCreate:
+      type: object
+      required: [stepId, kind, name]
+      properties:
+        stepId: {type: string, format: uuid}
+        charNo: {type: string, pattern: '^[0-9]{1,4}[A-Z]?-[0-9]{2,3}$', description: Generated when omitted}
+        kind: {$ref: '#/components/schemas/CharacteristicKind'}
+        name: {type: string, minLength: 1, maxLength: 200}
+        spec: {type: string, nullable: true}
+        lsl: {type: number, nullable: true}
+        usl: {type: number, nullable: true}
+        unit: {type: string, nullable: true}
+        scSymbolId: {type: string, format: uuid, nullable: true}
+    PfmeaRowCreate:
+      type: object
+      required: [stepId, characteristicId]
+      properties:
+        stepId: {type: string, format: uuid}
+        characteristicId: {type: string, format: uuid}
+        failureModeId: {type: string, format: uuid, description: Add a cause to this existing failure mode instead of creating
+            one}
+        failureModeText: {type: string, description: Required when failureModeId is omitted}
+        effectText: {type: string}
+        effectS: {type: integer, minimum: 1, maximum: 10}
+        effectLevel: {$ref: '#/components/schemas/EffectLevel'}
+        causeText: {type: string}
+        o: {type: integer, minimum: 1, maximum: 10}
+        d: {type: integer, minimum: 1, maximum: 10}
+        preventionText: {type: string}
+        preventionLibraryId: {type: string, format: uuid}
+        detectionText: {type: string}
+        detectionLibraryId: {type: string, format: uuid}
+        afterChainId: {type: string, format: uuid}
+    FailureEffectCreate:
+      type: object
+      required: [failureModeId, text]
+      properties:
+        failureModeId: {type: string, format: uuid}
+        level: {$ref: '#/components/schemas/EffectLevel'}
+        text: {type: string}
+        s: {type: integer, minimum: 1, maximum: 10}
+    ControlCreate:
+      type: object
+      required: [failureChainId, kind, text]
+      properties:
+        failureChainId: {type: string, format: uuid}
+        kind: {$ref: '#/components/schemas/ControlKind'}
+        text: {type: string}
+        controlLibraryId: {type: string, format: uuid, nullable: true}
+    ActionCreate:
+      type: object
+      required: [failureChainId, text]
+      properties:
+        failureChainId: {type: string, format: uuid}
+        kind: {$ref: '#/components/schemas/ActionKind'}
+        text: {type: string, minLength: 1}
+        responsibleUserId: {type: string, format: uuid, nullable: true}
+        responsibleText: {type: string, nullable: true}
+        targetDate: {type: string, format: date, nullable: true}
+    CpLineCreate:
+      type: object
+      required: [phase, stepId, characteristicId]
+      properties:
+        phase: {$ref: '#/components/schemas/CpPhase'}
+        stepId: {type: string, format: uuid}
+        characteristicId: {type: string, format: uuid}
+        controlId: {type: string, format: uuid, nullable: true}
+        failureModeId: {type: string, format: uuid, nullable: true}
+        machines:
+          type: array
+          items: {type: string}
+          maxItems: 20
+        evalTechnique: {type: string, nullable: true}
+        gauge: {type: string, nullable: true}
+        sampleSize: {type: string, nullable: true}
+        sampleFreq: {type: string, nullable: true}
+        freqBasis:
+          type: string
+          allOf:
+          - {$ref: '#/components/schemas/FreqBasis'}
+          nullable: true
+        controlMethod: {type: string, nullable: true}
+        isErrorProofing: {type: boolean}
+        epVerifyFreq: {type: string, nullable: true}
+        reactionPlanText: {type: string}
+    CpLinesFromPfmea:
+      type: object
+      required: [phase, controlIds]
+      properties:
+        phase: {$ref: '#/components/schemas/CpPhase'}
+        controlIds:
+          type: array
+          items: {type: string, format: uuid}
+          minItems: 1
+          maxItems: 200
+    PasteRequest:
+      type: object
+      required: [target, columns, rows]
+      properties:
+        target: {$ref: '#/components/schemas/PasteTarget'}
+        phase: {$ref: '#/components/schemas/CpPhase'}
+        columns:
+          type: array
+          items: {$ref: '#/components/schemas/PasteColumn'}
+          minItems: 1
+          maxItems: 40
+        rows:
+          type: array
+          items:
+            type: array
+            items: {type: string}
+          minItems: 1
+          maxItems: 2000
+        fillDown: {type: boolean, default: true}
+        dryRun: {type: boolean, default: true}
+    PasteIssue:
+      type: object
+      required: [row, column, code, message]
+      properties:
+        row: {type: integer, description: 1-based row in the pasted block}
+        column:
+          type: string
+          allOf:
+          - {$ref: '#/components/schemas/PasteColumn'}
+          nullable: true
+        code: {type: string}
+        message: {type: string}
+    PasteResult:
+      type: object
+      required: [valid, performed, rowsTotal, errors, warnings, creates, matches, contentVersion]
+      properties:
+        valid: {type: boolean}
+        performed: {type: boolean}
+        rowsTotal: {type: integer}
+        errors:
+          type: array
+          items: {$ref: '#/components/schemas/PasteIssue'}
+        warnings:
+          type: array
+          items: {$ref: '#/components/schemas/PasteIssue'}
+        creates:
+          type: object
+          additionalProperties: {type: integer}
+          description: Rows that will be / were created, by entity
+        matches:
+          type: object
+          additionalProperties: {type: integer}
+          description: Existing rows reused, by entity
+        contentVersion: {type: integer, format: int64, nullable: true}
+    SyncConflict:
+      type: object
+      required: [id, syncRunId, rev, entity, rowId, field, label, createdAt]
+      properties:
+        id: {type: integer, format: int64, description: sync_changes.id}
+        syncRunId: {type: string, format: uuid}
+        rev: {type: integer}
+        entity: {$ref: '#/components/schemas/Entity'}
+        rowId: {type: string, format: uuid}
+        field: {type: string, nullable: true, description: null for a row conflict (template deleted a row that local rows
+            still use)}
+        label: {type: string}
+        localValue: {description: Local value}
+        templateValue: {description: New template value}
+        createdAt: {type: string, format: date-time}
+    LinkedRowRef:
+      type: object
+      required: [entity, id, label, syncStatus, detachReason]
+      properties:
+        entity: {$ref: '#/components/schemas/Entity'}
+        id: {type: string, format: uuid}
+        label: {type: string}
+        syncStatus: {$ref: '#/components/schemas/SyncStatus'}
+        detachReason: {type: string, nullable: true}
+    GeneralStepRef:
+      type: object
+      required: [sourceStepId, opNo, name, generalMode]
+      properties:
+        sourceStepId: {type: string, format: uuid}
+        opNo: {type: string}
+        name: {type: string}
+        generalMode: {$ref: '#/components/schemas/GeneralMode'}
+    TemplateLinkInfo:
+      type: object
+      required: [generalPackageId, syncedRev, latestRev, state, lastSyncRunId, conflicts, overriddenRows, reviewRows, detachedRows,
+        availableGeneralSteps]
+      properties:
+        generalPackageId: {type: string, format: uuid}
+        syncedRev: {type: integer}
+        latestRev: {type: integer}
+        state: {$ref: '#/components/schemas/LinkState'}
+        lastSyncRunId: {type: string, format: uuid, nullable: true}
+        conflicts:
+          type: array
+          items: {$ref: '#/components/schemas/SyncConflict'}
+        overriddenRows:
+          type: array
+          items: {$ref: '#/components/schemas/LinkedRowRef'}
+        reviewRows:
+          type: array
+          items: {$ref: '#/components/schemas/LinkedRowRef'}
+        detachedRows:
+          type: array
+          items: {$ref: '#/components/schemas/LinkedRowRef'}
+        availableGeneralSteps:
+          type: array
+          items: {$ref: '#/components/schemas/GeneralStepRef'}
+          description: General steps of the synced revision that the package does not contain
+    AddGeneralStepsRequest:
+      type: object
+      required: [sourceStepIds]
+      properties:
+        sourceStepIds:
+          type: array
+          items: {type: string, format: uuid}
+          minItems: 1
+    DetachRequest:
+      type: object
+      required: [entity, id, version, reason]
+      properties:
+        entity: {$ref: '#/components/schemas/Entity'}
+        id: {type: string, format: uuid}
+        version: {type: integer}
+        reason: {type: string, minLength: 3}
+    RevertRequest:
+      type: object
+      required: [entity, id, version]
+      properties:
+        entity: {$ref: '#/components/schemas/Entity'}
+        id: {type: string, format: uuid}
+        version: {type: integer}
+        fields:
+          type: array
+          items: {type: string}
+          description: Overridden fields to restore; omitted = all, or re-attach a detached row
+    ResolveConflictRequest:
+      type: object
+      required: [resolution, version]
+      properties:
+        resolution: {$ref: '#/components/schemas/ConflictResolution'}
+        version: {type: integer, description: Current version of the conflicted row}
+        reason: {type: string, description: Detach reason for keep_local on a row conflict (default text is generated)}
+        dryRun: {type: boolean, default: false, description: 'follow_template on a row conflict: list what would be deleted'}
+    CheckRun:
+      type: object
+      required: [id, packageId, trigger, ruleCodes, startedAt, finishedAt, durationMs, opened, fixed, stillOpen, error, triggeredBy]
+      properties:
+        id: {type: string, format: uuid}
+        packageId: {type: string, format: uuid}
+        trigger: {$ref: '#/components/schemas/CheckTrigger'}
+        ruleCodes:
+          type: array
+          items: {type: string}
+        startedAt: {type: string, format: date-time}
+        finishedAt: {type: string, format: date-time, nullable: true}
+        durationMs: {type: integer, nullable: true}
+        opened: {type: integer, nullable: true}
+        fixed: {type: integer, nullable: true}
+        stillOpen: {type: integer, nullable: true}
+        error: {type: string, nullable: true}
+        triggeredBy:
+          type: object
+          allOf:
+          - {$ref: '#/components/schemas/UserRef'}
+          nullable: true
+          description: null for save, nightly and sync triggers
+    FindingLocation:
+      type: object
+      description: Where the finding points, for grouping and the 'Buka sel' deep link.
+      required: [docType, stepId, opNo, phase]
+      properties:
+        docType:
+          type: string
+          allOf:
+          - {$ref: '#/components/schemas/DocType'}
+          nullable: true
+        stepId: {type: string, format: uuid, nullable: true}
+        opNo: {type: string, nullable: true}
+        phase:
+          type: string
+          allOf:
+          - {$ref: '#/components/schemas/CpPhase'}
+          nullable: true
+    Finding:
+      type: object
+      required: [id, packageId, packageCode, ruleCode, ruleTitle, level, status, objectType, objectId, field, message, params,
+        location, firstSeenAt, lastSeenAt, fixedAt, waivedBy, waivedAt, waiverReason]
+      properties:
+        id: {type: string, format: uuid}
+        packageId: {type: string, format: uuid}
+        packageCode: {type: string}
+        ruleCode: {type: string}
+        ruleTitle: {type: string}
+        level: {$ref: '#/components/schemas/FindingLevel'}
+        status: {$ref: '#/components/schemas/FindingStatus'}
+        objectType: {$ref: '#/components/schemas/Entity'}
+        objectId: {type: string, format: uuid, nullable: true}
+        field: {type: string, nullable: true, description: API field to focus; empty = the whole row}
+        message: {type: string}
+        params: {type: object, additionalProperties: true, description: Values used in the message (rule specific)}
+        location: {$ref: '#/components/schemas/FindingLocation'}
+        firstSeenAt: {type: string, format: date-time}
+        lastSeenAt: {type: string, format: date-time}
+        fixedAt: {type: string, format: date-time, nullable: true}
+        waivedBy:
+          type: object
+          allOf:
+          - {$ref: '#/components/schemas/UserRef'}
+          nullable: true
+        waivedAt: {type: string, format: date-time, nullable: true}
+        waiverReason: {type: string, nullable: true}
+    FindingCounts:
+      type: object
+      required: [errorsOpen, warningsOpen, infosOpen, waived]
+      properties:
+        errorsOpen: {type: integer}
+        warningsOpen: {type: integer}
+        infosOpen: {type: integer}
+        waived: {type: integer}
+    FindingList:
+      type: object
+      required: [items, nextCursor, counts, lastCheckRun]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/Finding'}
+        nextCursor: {type: string, nullable: true}
+        counts: {$ref: '#/components/schemas/FindingCounts'}
+        lastCheckRun:
+          type: object
+          allOf:
+          - {$ref: '#/components/schemas/CheckRun'}
+          nullable: true
+          description: Latest check run of the package (package list only; null for the cross-package list)
+    WaiveRequest:
+      type: object
+      required: [reason]
+      properties:
+        reason: {type: string, minLength: 5, maxLength: 1000}
+    LinkedPackage:
+      type: object
+      required: [packageId, code, name, customerCode, syncedRev, state, openConflicts]
+      properties:
+        packageId: {type: string, format: uuid}
+        code: {type: string}
+        name: {type: string}
+        customerCode: {type: string}
+        syncedRev: {type: integer}
+        state: {$ref: '#/components/schemas/LinkState'}
+        openConflicts: {type: integer}
+    SyncRunPackage:
+      type: object
+      required: [packageId, code, state, updates, inserts, deletes, skipped, conflicts, error]
+      properties:
+        packageId: {type: string, format: uuid}
+        code: {type: string}
+        state: {$ref: '#/components/schemas/LinkState'}
+        updates: {type: integer}
+        inserts: {type: integer}
+        deletes: {type: integer}
+        skipped: {type: integer}
+        conflicts: {type: integer}
+        error: {type: string, nullable: true}
+    SyncRun:
+      type: object
+      required: [id, fromRev, toRev, status, packagesTotal, packagesDone, packagesFailed, createdBy, createdAt, startedAt,
+        finishedAt, packages]
+      properties:
+        id: {type: string, format: uuid}
+        fromRev: {type: integer}
+        toRev: {type: integer}
+        status: {$ref: '#/components/schemas/SyncRunStatus'}
+        packagesTotal: {type: integer}
+        packagesDone: {type: integer}
+        packagesFailed: {type: integer}
+        createdBy: {$ref: '#/components/schemas/UserRef'}
+        createdAt: {type: string, format: date-time}
+        startedAt: {type: string, format: date-time, nullable: true}
+        finishedAt: {type: string, format: date-time, nullable: true}
+        packages:
+          type: array
+          items: {$ref: '#/components/schemas/SyncRunPackage'}
+    SyncRunList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/SyncRun'}
+    TemplateGeneral:
+      type: object
+      required: [package, latestRev, hasUnreleasedChanges, overridePolicy, latestSteps, linkedPackages, lastSyncRun]
+      properties:
+        package: {$ref: '#/components/schemas/PackageDetail'}
+        latestRev: {type: integer, description: 0 before the first release}
+        hasUnreleasedChanges: {type: boolean, description: 'Approximation: true when content_version of the general package
+            is greater than that of the latest revision, or when no revision exists yet. A release can still be refused with
+            release_blocked when the content equals the latest revision (docs/07-template-general.md section 3.1).'}
+        overridePolicy: {$ref: '#/components/schemas/TemplatePolicy'}
+        latestSteps:
+          type: array
+          items: {$ref: '#/components/schemas/GeneralStepRef'}
+          description: General steps of the latest released revision (create-package dialog)
+        linkedPackages:
+          type: array
+          items: {$ref: '#/components/schemas/LinkedPackage'}
+        lastSyncRun:
+          type: object
+          allOf:
+          - {$ref: '#/components/schemas/SyncRun'}
+          nullable: true
+    TemplateRevision:
+      type: object
+      required: [revNo, changeNote, createdBy, createdAt, syncRunId]
+      properties:
+        revNo: {type: integer}
+        changeNote: {type: string}
+        createdBy: {$ref: '#/components/schemas/UserRef'}
+        createdAt: {type: string, format: date-time}
+        syncRunId: {type: string, format: uuid, nullable: true}
+    TemplateRevisionList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/TemplateRevision'}
+    FieldChange:
+      type: object
+      required: [field]
+      properties:
+        field: {type: string}
+        old: {description: Old value}
+        new: {description: New value}
+    DiffRow:
+      type: object
+      required: [id, stepId, label, changes]
+      properties:
+        id: {type: string, format: uuid}
+        stepId: {type: string, format: uuid, nullable: true, description: Process step the row belongs to (null for none)}
+        label: {type: string}
+        changes:
+          type: array
+          items: {$ref: '#/components/schemas/FieldChange'}
+    DiffTable:
+      type: object
+      required: [entity, inserted, updated, deleted]
+      properties:
+        entity: {$ref: '#/components/schemas/Entity'}
+        inserted:
+          type: array
+          items: {$ref: '#/components/schemas/DiffRow'}
+        updated:
+          type: array
+          items: {$ref: '#/components/schemas/DiffRow'}
+        deleted:
+          type: array
+          items: {$ref: '#/components/schemas/DiffRow'}
+    TemplateDiff:
+      type: object
+      required: [from, to, tables]
+      properties:
+        from: {type: string, description: Revision number or 'working'}
+        to: {type: string}
+        tables:
+          type: array
+          items: {$ref: '#/components/schemas/DiffTable'}
+    ImpactConflict:
+      type: object
+      required: [entity, id, label, field]
+      properties:
+        entity: {$ref: '#/components/schemas/Entity'}
+        id: {type: string, format: uuid}
+        label: {type: string}
+        field: {type: string, nullable: true}
+        localValue: {description: Local value}
+        templateValue: {description: Template value}
+    PackageImpact:
+      type: object
+      required: [packageId, code, syncedRev, updates, inserts, deletes, skipped, conflicts, reviews]
+      properties:
+        packageId: {type: string, format: uuid}
+        code: {type: string}
+        syncedRev: {type: integer}
+        updates: {type: integer}
+        inserts: {type: integer}
+        deletes: {type: integer}
+        skipped: {type: integer}
+        conflicts:
+          type: array
+          items: {$ref: '#/components/schemas/ImpactConflict'}
+        reviews:
+          type: array
+          items: {$ref: '#/components/schemas/LinkedRowRef'}
+    ImpactPreview:
+      type: object
+      description: What a release of the current working copy would do to every linked package.
+      required: [fromRev, packages]
+      properties:
+        fromRev: {type: integer}
+        packages:
+          type: array
+          items: {$ref: '#/components/schemas/PackageImpact'}
+    ReleaseRequest:
+      type: object
+      required: [changeNote, contentVersion]
+      properties:
+        changeNote: {type: string, minLength: 3, maxLength: 2000}
+        contentVersion: {type: integer, format: int64, description: contentVersion of the general package the approver reviewed}
+    ReleaseResult:
+      type: object
+      required: [revNo, syncRunId]
+      properties:
+        revNo: {type: integer}
+        syncRunId: {type: string, format: uuid}
+    RestoreRequest:
+      type: object
+      required: [revNo, contentVersion]
+      properties:
+        revNo: {type: integer, minimum: 1}
+        contentVersion: {type: integer, format: int64}
+    OverridePolicyUpdate:
+      type: object
+      required: [policy, version]
+      properties:
+        policy: {$ref: '#/components/schemas/TemplatePolicy'}
+        version: {type: integer, description: Version of the general package}
+    ExportCreate:
+      type: object
+      required: [docType]
+      properties:
+        docType: {$ref: '#/components/schemas/DocType'}
+        phase: {$ref: '#/components/schemas/CpPhase'}
+        format:
+          type: string
+          enum: [xlsx]
+          description: PDF is Phase 2
+    ExportFile:
+      type: object
+      required: [id, packageId, docType, phase, format, contentVersion, status, fileName, fileSize, error, createdAt, finishedAt]
+      properties:
+        id: {type: string, format: uuid}
+        packageId: {type: string, format: uuid}
+        docType: {$ref: '#/components/schemas/DocType'}
+        phase:
+          type: string
+          allOf:
+          - {$ref: '#/components/schemas/CpPhase'}
+          nullable: true
+        format: {type: string}
+        contentVersion: {type: integer, format: int64}
+        status: {$ref: '#/components/schemas/ExportStatus'}
+        fileName: {type: string, nullable: true}
+        fileSize: {type: integer, nullable: true}
+        error: {type: string, nullable: true}
+        createdAt: {type: string, format: date-time}
+        finishedAt: {type: string, format: date-time, nullable: true}
+    DashboardKpis:
+      type: object
+      required: [packagesTotal, packagesWithErrors, packagesWithWarnings, errorsOpen, warningsOpen, actionsOpen, actionsOverdue,
+        packagesOutOfSync]
+      properties:
+        packagesTotal: {type: integer}
+        packagesWithErrors: {type: integer}
+        packagesWithWarnings: {type: integer}
+        errorsOpen: {type: integer}
+        warningsOpen: {type: integer}
+        actionsOpen: {type: integer}
+        actionsOverdue: {type: integer}
+        packagesOutOfSync: {type: integer, description: Model packages whose template link is not in_sync}
+    PackageHealth:
+      type: object
+      required: [packageId, code, name, customerCode, owner, health, errorsOpen, warningsOpen, actionsOverdue, stepsTotal,
+        stepsInCp, lastCheckAt]
+      properties:
+        packageId: {type: string, format: uuid}
+        code: {type: string}
+        name: {type: string}
+        customerCode: {type: string, nullable: true}
+        owner: {$ref: '#/components/schemas/UserRef'}
+        health: {$ref: '#/components/schemas/Health'}
+        errorsOpen: {type: integer}
+        warningsOpen: {type: integer}
+        actionsOverdue: {type: integer}
+        stepsTotal: {type: integer}
+        stepsInCp: {type: integer, description: Steps with at least one CP line}
+        lastCheckAt: {type: string, format: date-time, nullable: true}
+    RiskItem:
+      type: object
+      required: [packageId, code, chainId, opNo, failureMode, s, o, d, rpn]
+      properties:
+        packageId: {type: string, format: uuid}
+        code: {type: string}
+        chainId: {type: string, format: uuid}
+        opNo: {type: string}
+        failureMode: {type: string}
+        s: {type: integer, minimum: 1, maximum: 10, nullable: true}
+        o: {type: integer, minimum: 1, maximum: 10, nullable: true}
+        d: {type: integer, minimum: 1, maximum: 10, nullable: true}
+        rpn: {type: integer, nullable: true}
+    RiskProfile:
+      type: object
+      required: [chainsTotal, chainsSeverity9to10, topRpn]
+      properties:
+        chainsTotal: {type: integer}
+        chainsSeverity9to10: {type: integer}
+        topRpn:
+          type: array
+          items: {$ref: '#/components/schemas/RiskItem'}
+    RuleCount:
+      type: object
+      required: [ruleCode, title, level, count]
+      properties:
+        ruleCode: {type: string}
+        title: {type: string}
+        level: {$ref: '#/components/schemas/FindingLevel'}
+        count: {type: integer}
+    OverdueAction:
+      type: object
+      required: [packageId, code, actionId, chainId, opNo, stepName, text, responsible, targetDate, daysLate]
+      properties:
+        packageId: {type: string, format: uuid}
+        code: {type: string}
+        actionId: {type: string, format: uuid}
+        chainId: {type: string, format: uuid}
+        opNo: {type: string}
+        stepName: {type: string}
+        text: {type: string}
+        responsible: {type: string, nullable: true}
+        targetDate: {type: string, format: date}
+        daysLate: {type: integer}
+    TemplateSyncSummary:
+      type: object
+      required: [latestRev, inSync, pending, failed, openConflicts]
+      properties:
+        latestRev: {type: integer}
+        inSync: {type: integer}
+        pending: {type: integer}
+        failed: {type: integer}
+        openConflicts: {type: integer}
+    ActivityChange:
+      type: object
+      required: [table, action, count]
+      properties:
+        table: {type: string, description: 'Table name, e.g. failure_chains'}
+        action:
+          type: string
+          enum: [insert, update, delete]
+        count: {type: integer}
+    ActivityItem:
+      type: object
+      required: [requestId, at, user, packageId, packageCode, source, summary, changes]
+      properties:
+        requestId: {type: string, nullable: true}
+        at: {type: string, format: date-time}
+        user:
+          type: object
+          allOf:
+          - {$ref: '#/components/schemas/UserRef'}
+          nullable: true
+        packageId: {type: string, format: uuid, nullable: true}
+        packageCode: {type: string, nullable: true}
+        source: {type: string, description: 'api, sync, system or seed'}
+        summary: {type: string, description: One-line summary (English)}
+        changes:
+          type: array
+          items: {$ref: '#/components/schemas/ActivityChange'}
+    ActivityList:
+      type: object
+      required: [items, nextCursor]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/ActivityItem'}
+        nextCursor: {type: string, nullable: true}
+    Dashboard:
+      type: object
+      required: [kpis, health, riskProfile, rulePareto, overdueActions, templateSync, activity]
+      properties:
+        kpis: {$ref: '#/components/schemas/DashboardKpis'}
+        health:
+          type: array
+          items: {$ref: '#/components/schemas/PackageHealth'}
+          description: Worst first, max 10
+        riskProfile: {$ref: '#/components/schemas/RiskProfile'}
+        rulePareto:
+          type: array
+          items: {$ref: '#/components/schemas/RuleCount'}
+        overdueActions:
+          type: array
+          items: {$ref: '#/components/schemas/OverdueAction'}
+        templateSync: {$ref: '#/components/schemas/TemplateSyncSummary'}
+        activity:
+          type: array
+          items: {$ref: '#/components/schemas/ActivityItem'}
+          description: Latest 15
+    StepHit:
+      type: object
+      required: [packageId, packageCode, stepId, opNo, name]
+      properties:
+        packageId: {type: string, format: uuid}
+        packageCode: {type: string}
+        stepId: {type: string, format: uuid}
+        opNo: {type: string}
+        name: {type: string}
+    CharacteristicHit:
+      type: object
+      required: [packageId, packageCode, characteristicId, charNo, name, stepId, opNo]
+      properties:
+        packageId: {type: string, format: uuid}
+        packageCode: {type: string}
+        characteristicId: {type: string, format: uuid}
+        charNo: {type: string}
+        name: {type: string}
+        stepId: {type: string, format: uuid}
+        opNo: {type: string}
+    SearchResult:
+      type: object
+      required: [packages, steps, characteristics]
+      properties:
+        packages:
+          type: array
+          items: {$ref: '#/components/schemas/PackageRef'}
+        steps:
+          type: array
+          items: {$ref: '#/components/schemas/StepHit'}
+        characteristics:
+          type: array
+          items: {$ref: '#/components/schemas/CharacteristicHit'}

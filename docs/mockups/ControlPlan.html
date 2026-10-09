@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Control Plan</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+a{color:#0A57A8}a:hover{color:#073F7C}
+</style>
+</head>
+<body>
+<div style="min-height: 100vh; background: #EEF0F3; color: #16191D; font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif; font-size: 14px; line-height: 1.45">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 10px 24px; background: #14181D; color: #FFFFFF">
+<a href="Main.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; color: #FFFFFF; text-decoration: none">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8FBCEB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"></circle><rect x="15" y="3" width="6" height="6" rx="1"></rect><path d="M9 6h6"></path><path d="M18 9v5"></path><path d="M4 18h16"></path><path d="M4 21h10"></path></svg>
+<span style="font-size: 15px; font-weight: 600">Sistem PFD · PFMEA · CP</span>
+</a>
+<div style="flex: 1 1 260px; max-width: 520px; display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; background: #222A33; border: 1px solid #3A4450; border-radius: 6px; color: #B7C0CC">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<label for="cari-cp" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap">Cari</label>
+<input id="cari-cp" type="search" placeholder="Cari paket, step, karakteristik" style="flex: 1 1 auto; min-width: 0; height: 36px; border: 0; background: transparent; color: #FFFFFF; font: inherit; font-size: 14px; outline: none">
+</div>
+<div style="margin-left: auto; display: flex; align-items: center; gap: 8px">
+<span style="font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #14181D; background: #F2B33D; padding: 4px 8px; border-radius: 4px">Data contoh</span>
+<button type="button" aria-label="Notifikasi" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: 0; border-radius: 6px; color: #D5DCE5; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg></button>
+<button type="button" aria-label="Akun Rina Saputri" style="width: 36px; height: 36px; border-radius: 50%; border: 0; background: #2F3A47; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">RS</button>
+</div>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; align-items: stretch">
+
+<nav aria-label="Menu utama" style="flex: 1 1 220px; background: #FFFFFF; border-right: 1px solid #D5DAE1; padding: 20px 12px; display: flex; flex-direction: column; gap: 2px">
+<span style="padding: 8px 12px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5F6875">Monitoring</span>
+<a href="Main.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg><span>Dashboard</span></a>
+<a href="Findings.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Cek konsistensi</span></a>
+<span style="padding: 16px 12px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5F6875">Template</span>
+<a href="TemplateGeneral.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"></path><path d="M3 13l9 5 9-5"></path></svg><span>Template General</span></a>
+<span style="padding: 16px 12px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5F6875">Paket MB-01 · AIAG-VDA</span>
+<a href="Pfd.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"></circle><rect x="15" y="15" width="6" height="6" rx="1"></rect><path d="M6 9v3a3 3 0 0 0 3 3h6"></path></svg><span>PFD</span></a>
+<a href="PfmeaVda.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3z"></path><path d="M12 10v4"></path><path d="M12 17h.01"></path></svg><span>PFMEA</span></a>
+<a href="ControlPlan.html" aria-current="page" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; background: #E6EEF8; color: #0A3F7A; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V3h6v1"></path><path d="M9 11h6"></path><path d="M9 15h4"></path></svg><span>Control Plan</span></a>
+<span style="padding: 16px 12px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5F6875">Paket PS-07 · AIAG 4th</span>
+<a href="Pfmea4th.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3z"></path><path d="M12 10v4"></path><path d="M12 17h.01"></path></svg><span>PFMEA</span></a>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 20px">
+
+<section style="background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px; padding: 16px 20px 18px; display: flex; flex-direction: column; gap: 14px">
+<nav aria-label="Breadcrumb" style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 13px; color: #4A5361"><a href="Main.html">Dashboard</a><span aria-hidden="true">/</span><span>Paket MB-01 Main Board</span><span aria-hidden="true">/</span><span>Control Plan</span></nav>
+<div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<h1 style="margin: 0; font-size: 22px; line-height: 1.25; font-weight: 600">Control Plan · MB-01 Main Board</h1>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 4px; background: #E6EEF8; color: #0A3F7A">AIAG CP 1st ed</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; padding: 3px 8px; border-radius: 4px; border: 1px solid #C3CAD3; color: #2A313B">Rev 03</span>
+<span style="font-size: 12.5px; padding: 3px 10px; border-radius: 10px; background: #ECEEF1; color: #2A313B">In Review</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" style="height: 44px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; background: #FFFFFF; color: #16191D; border: 1px solid #C3CAD3; border-radius: 6px; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg>Cek sekarang</button>
+<button type="button" style="height: 44px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; background: #FFFFFF; color: #16191D; border: 1px solid #C3CAD3; border-radius: 6px; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>Ekspor Excel A3</button>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px">
+<div role="group" aria-label="Template" style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: 13px; font-weight: 600; color: #4A5361">Template</span>
+<div style="display: flex; border: 1px solid #C3CAD3; border-radius: 6px; overflow: hidden">
+<button type="button" aria-pressed="false" style="min-height: 40px; padding: 0 14px; background: #FFFFFF; color: #2A313B; border: 0; border-right: 1px solid #C3CAD3; font: inherit; font-size: 13.5px; cursor: pointer">A · APQP 2nd ed</button>
+<button type="button" aria-pressed="true" style="min-height: 40px; padding: 0 14px; background: #0A57A8; color: #FFFFFF; border: 0; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer">B · AIAG CP-1</button>
+</div>
+</div>
+<div role="group" aria-label="Fase" style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: 13px; font-weight: 600; color: #4A5361">Fase</span>
+<div style="display: flex; flex-wrap: wrap; border: 1px solid #C3CAD3; border-radius: 6px; overflow: hidden">
+<button type="button" aria-pressed="false" style="min-height: 40px; padding: 0 12px; background: #FFFFFF; color: #2A313B; border: 0; border-right: 1px solid #C3CAD3; font: inherit; font-size: 13.5px; cursor: pointer">Prototype</button>
+<button type="button" aria-pressed="false" style="min-height: 40px; padding: 0 12px; background: #FFFFFF; color: #2A313B; border: 0; border-right: 1px solid #C3CAD3; font: inherit; font-size: 13.5px; cursor: pointer">Pre-launch</button>
+<button type="button" aria-pressed="true" style="min-height: 40px; padding: 0 12px; background: #0A57A8; color: #FFFFFF; border: 0; border-right: 1px solid #C3CAD3; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer">Safe Launch</button>
+<button type="button" aria-pressed="false" style="min-height: 40px; padding: 0 12px; background: #FFFFFF; color: #2A313B; border: 0; font: inherit; font-size: 13.5px; cursor: pointer">Production</button>
+</div>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 12px 14px; border-radius: 6px; background: #F2F6FB; color: #0A3F7A; font-size: 13.5px">
+<span style="flex: 1 1 420px">Safe Launch aktif sejak 01 Sep 2026. Kriteria keluar: 90 hari tanpa keluhan customer dan tanpa temuan dari kontrol tambahan. Kontrol tambahan ditandai <strong>SL</strong>.</span>
+<div style="display: flex; align-items: center; gap: 10px; flex: 0 1 260px">
+<div style="flex: 1 1 auto; height: 8px; background: #D6E2F1; border-radius: 4px; overflow: hidden"><div style="width: 42%; height: 8px; background: #0A57A8"></div></div>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; white-space: nowrap">hari 38 / 90</span>
+</div>
+</div>
+<dl style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px 24px; margin: 0; padding: 14px 16px; background: #F7F8FA; border: 1px solid #E3E7EC; border-radius: 6px">
+<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 12px; font-weight: 600; color: #4A5361">Control Plan No.</dt><dd style="margin: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace">CP-MB01</dd></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 12px; font-weight: 600; color: #4A5361">Part No. / change level</dt><dd style="margin: 0">MB-01 / C</dd></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 12px; font-weight: 600; color: #4A5361">Part name</dt><dd style="margin: 0">PCBA Main Board</dd></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 12px; font-weight: 600; color: #4A5361">Organization / plant</dt><dd style="margin: 0">Plant 1 SMT</dd></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 12px; font-weight: 600; color: #4A5361">Key contact</dt><dd style="margin: 0">R. Saputri</dd></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 12px; font-weight: 600; color: #4A5361">Core team</dt><dd style="margin: 0">Produksi, QE, Engineering, Maintenance</dd></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 12px; font-weight: 600; color: #4A5361">Date (orig. / rev.)</dt><dd style="margin: 0">12 Mar 2025 / 07 Okt 2026</dd></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 12px; font-weight: 600; color: #4A5361">Customer approval</dt><dd style="margin: 0">[Jika diwajibkan customer]</dd></div>
+</dl>
+</section>
+
+<section aria-labelledby="h-cp" style="background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 16px">
+<h2 id="h-cp" style="margin: 0; font-size: 16px; font-weight: 600">Baris Control Plan</h2>
+<span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: #4A5361"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"></path><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"></path></svg>Kolom abu-abu diambil dari PFD atau PFMEA; ubah di sumbernya</span>
+<span style="margin-left: auto; display: inline-flex; flex-wrap: wrap; gap: 8px">
+<span style="font-size: 12.5px; font-weight: 600; padding: 3px 10px; border-radius: 10px; background: #FCE8E6; color: #8F1D14">1 Error</span>
+<span style="font-size: 12.5px; font-weight: 600; padding: 3px 10px; border-radius: 10px; background: #FDF0D9; color: #7A4100">1 Warning</span>
+</span>
+<button type="button" style="height: 36px; padding: 0 12px; background: #0A57A8; color: #FFFFFF; border: 0; border-radius: 6px; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer">+ Baris dari kontrol PFMEA</button>
+</div>
+<div style="overflow-x: auto; border-top: 1px solid #D5DAE1">
+<table style="width: 100%; min-width: 1880px; border-collapse: collapse; font-size: 13px">
+<thead>
+<tr>
+<th scope="col" rowspan="2" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361">Part / Process No.</th>
+<th scope="col" rowspan="2" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361; min-width: 130px">Process Name / Operation</th>
+<th scope="col" rowspan="2" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361; min-width: 130px">Machine, Device, Jig, Tools</th>
+<th scope="colgroup" colspan="3" style="text-align: left; padding: 8px 10px; background: #EEF2F7; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #2A313B">Characteristics</th>
+<th scope="col" rowspan="2" style="padding: 8px 6px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361">Special Char. Class</th>
+<th scope="colgroup" colspan="5" style="text-align: left; padding: 8px 10px; background: #EEF2F7; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #2A313B">Methods</th>
+<th scope="col" rowspan="2" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361; min-width: 250px">Reaction Plan</th>
+<th scope="col" rowspan="2" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361; min-width: 110px">Owner</th>
+<th scope="col" rowspan="2" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; font-size: 12px; font-weight: 600; color: #4A5361; min-width: 110px">Tautan PFMEA</th>
+</tr>
+<tr>
+<th scope="col" style="padding: 8px 6px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361">No.</th>
+<th scope="col" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361; min-width: 120px">Product</th>
+<th scope="col" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361; min-width: 120px">Process</th>
+<th scope="col" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361; min-width: 150px">Product / Process Specification / Tolerance</th>
+<th scope="col" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361; min-width: 140px">Evaluation / Measurement Technique</th>
+<th scope="col" style="padding: 8px 6px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361">Sample Size</th>
+<th scope="col" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361; min-width: 130px">Sample Freq.</th>
+<th scope="col" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; border-right: 1px solid #E3E7EC; font-size: 12px; font-weight: 600; color: #4A5361; min-width: 200px">Control Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; font-family: 'IBM Plex Mono', ui-monospace, monospace">30</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Solder paste printing</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Stencil printer, stencil</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px">30-01</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Solder paste volume</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; color: #5F6875">—</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; text-align: center; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; font-weight: 600">SC</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">80–120% of nominal aperture volume</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">SPI 3D</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; text-align: center">100%</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Every board</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">SPI auto-judge; NG board blocked by conveyor interlock</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top"><div style="display: flex; flex-direction: column; gap: 3px"><span><strong>Contain:</strong> hold boards printed since last OK SPI result</span><span><strong>Stop:</strong> stop printer, call leader</span><span><strong>Restore:</strong> clean stencil, verify next 5 boards on SPI</span></div></td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Leader SMT</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top"><a href="PfmeaVda.html" style="display: inline-flex; flex-direction: column; gap: 2px; text-decoration: none; font-size: 12.5px"><span>FC #1, #2</span><span style="display: inline-flex; align-items: center; gap: 6px"><span style="display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 4px; background: #B42318; color: #FFFFFF; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600">H</span>tertinggi</span></a></td>
+</tr>
+<tr>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; font-family: 'IBM Plex Mono', ui-monospace, monospace">30</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Solder paste printing</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Stencil printer</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px">30-02</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; color: #5F6875">—</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Squeegee pressure</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; text-align: center; color: #5F6875">—</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Recipe value ±10%</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Printer parameter log</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; text-align: center">1</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top"><div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start"><span>Every shift</span><a href="Findings.html" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 10px; background: #FDF0D9; color: #7A4100; text-decoration: none"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3z"></path><path d="M12 10v3"></path><path d="M12 16h.01"></path></svg>C04 · berbasis waktu</a></div></td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Recipe locked per model</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top"><div style="display: flex; flex-direction: column; gap: 3px"><span><strong>Contain:</strong> check SPI result of boards since last log</span><span><strong>Stop:</strong> stop printer</span><span><strong>Restore:</strong> reload recipe, verify first board</span></div></td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Teknisi SMT</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top"><a href="PfmeaVda.html" style="text-decoration: none; font-size: 12.5px">PC · FC #1</a></td>
+</tr>
+<tr>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; font-family: 'IBM Plex Mono', ui-monospace, monospace">30</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Solder paste printing</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; color: #5F6875">—</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px">30-03</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; color: #5F6875">—</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Paste open time</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; text-align: center; color: #5F6875">—</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">≤ 8 h after jar opening</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Open-time label check</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; text-align: center">1 jar</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Each jar opening; SL: every 500 boards</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top"><div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start"><span>Label and check sheet</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: #E6EEF8; color: #0A3F7A">SL · QC patrol verifies label</span></div></td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top"><div style="display: flex; flex-direction: column; gap: 3px"><span><strong>Contain:</strong> quarantine jar and boards printed since last check</span><span><strong>Stop:</strong> stop printer</span><span><strong>Restore:</strong> open new jar, verify first 5 boards on SPI</span></div></td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Leader SMT</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top"><a href="PfmeaVda.html" style="display: inline-flex; flex-direction: column; gap: 2px; text-decoration: none; font-size: 12.5px"><span>FC #2</span><span style="display: inline-flex; align-items: center; gap: 6px"><span style="display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 4px; background: #B42318; color: #FFFFFF; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600">H</span>aksi terlambat</span></a></td>
+</tr>
+<tr>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; font-family: 'IBM Plex Mono', ui-monospace, monospace">40</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">SPI</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">SPI 3D machine</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px">40-01</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Paste height and area</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; color: #5F6875">—</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; text-align: center; color: #5F6875">—</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Per SPI program of model</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">SPI 3D</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; text-align: center">100%</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Every board</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Auto-judge; NG board to wash and reprint at step 30</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top"><div style="display: flex; flex-direction: column; gap: 3px"><span><strong>Contain:</strong> segregate NG boards in red tray</span><span><strong>Stop:</strong> stop line after 3 NG in a row</span><span><strong>Restore:</strong> check printer and stencil, verify 5 boards</span></div></td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Operator SPI</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top"><a href="PfmeaVda.html" style="text-decoration: none; font-size: 12.5px">DC · step 40</a></td>
+</tr>
+<tr style="background: #FFF8F7">
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; font-family: 'IBM Plex Mono', ui-monospace, monospace">50</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Pick and place</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Mounter, feeders, nozzles</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px">50-01</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">Correct part and polarity</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; color: #5F6875">—</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA; text-align: center; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; font-weight: 600">SC</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; background: #F7F8FA">As BOM and polarity mark</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Reel barcode verification; AOI at step 70</td>
+<td style="padding: 10px 6px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top; text-align: center">100%</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Every reel change</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top">Error-proofing: feeder-reel barcode interlock; interlock verified with a wrong reel every 1,000 boards</td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top"><div style="display: flex; flex-direction: column; gap: 3px"><span><strong>Contain:</strong> hold boards since last good verification</span><span><strong>Stop:</strong> stop mounter, call leader</span><span><strong>Restore:</strong> reload correct reel, verify first board at AOI</span></div></td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; border-right: 1px solid #EEF0F3; vertical-align: top"><div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start"><span style="color: #5F6875">[kosong]</span><a href="Findings.html" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 10px; background: #FCE8E6; color: #8F1D14; text-decoration: none"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M15 9l-6 6"></path><path d="M9 9l6 6"></path></svg>C02 · owner kosong</a></div></td>
+<td style="padding: 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top"><a href="PfmeaVda.html" style="text-decoration: none; font-size: 12.5px">PC, DC · step 50</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="margin: 0; padding: 12px 16px 16px; font-size: 12.5px; color: #4A5361">Template A memakai kolom yang sama tanpa Owner dan tanpa fase Safe Launch. Frekuensi selain 100% dicek oleh aturan C04 agar berbasis volume.</p>
+</section>
+
+</main>
+</div>
+</div>
+</body>
+</html>

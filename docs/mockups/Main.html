@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Dashboard monitoring</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+a{color:#0A57A8}a:hover{color:#073F7C}
+</style>
+</head>
+<body>
+<div style="min-height: 100vh; background: #EEF0F3; color: #16191D; font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif; font-size: 14px; line-height: 1.45">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 10px 24px; background: #14181D; color: #FFFFFF">
+<a href="Main.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; color: #FFFFFF; text-decoration: none">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8FBCEB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"></circle><rect x="15" y="3" width="6" height="6" rx="1"></rect><path d="M9 6h6"></path><path d="M18 9v5"></path><path d="M4 18h16"></path><path d="M4 21h10"></path></svg>
+<span style="font-size: 15px; font-weight: 600">Sistem PFD · PFMEA · CP</span>
+</a>
+<div style="flex: 1 1 260px; max-width: 520px; display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; background: #222A33; border: 1px solid #3A4450; border-radius: 6px; color: #B7C0CC">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<label for="cari-main" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap">Cari</label>
+<input id="cari-main" type="search" placeholder="Cari paket, step, karakteristik" style="flex: 1 1 auto; min-width: 0; height: 36px; border: 0; background: transparent; color: #FFFFFF; font: inherit; font-size: 14px; outline: none">
+</div>
+<div style="margin-left: auto; display: flex; align-items: center; gap: 8px">
+<span style="font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #14181D; background: #F2B33D; padding: 4px 8px; border-radius: 4px">Data contoh</span>
+<button type="button" aria-label="Notifikasi" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: 0; border-radius: 6px; color: #D5DCE5; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg></button>
+<button type="button" aria-label="Akun Rina Saputri" style="width: 36px; height: 36px; border-radius: 50%; border: 0; background: #2F3A47; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">RS</button>
+</div>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; align-items: stretch">
+
+<nav aria-label="Menu utama" style="flex: 1 1 220px; background: #FFFFFF; border-right: 1px solid #D5DAE1; padding: 20px 12px; display: flex; flex-direction: column; gap: 2px">
+<span style="padding: 8px 12px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5F6875">Monitoring</span>
+<a href="Main.html" aria-current="page" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; background: #E6EEF8; color: #0A3F7A; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg><span>Dashboard</span></a>
+<a href="Findings.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Cek konsistensi</span></a>
+<span style="padding: 16px 12px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5F6875">Template</span>
+<a href="TemplateGeneral.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"></path><path d="M3 13l9 5 9-5"></path></svg><span>Template General</span></a>
+<span style="padding: 16px 12px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5F6875">Paket MB-01 · AIAG-VDA</span>
+<a href="Pfd.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"></circle><rect x="15" y="15" width="6" height="6" rx="1"></rect><path d="M6 9v3a3 3 0 0 0 3 3h6"></path></svg><span>PFD</span></a>
+<a href="PfmeaVda.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3z"></path><path d="M12 10v4"></path><path d="M12 17h.01"></path></svg><span>PFMEA</span></a>
+<a href="ControlPlan.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V3h6v1"></path><path d="M9 11h6"></path><path d="M9 15h4"></path></svg><span>Control Plan</span></a>
+<span style="padding: 16px 12px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5F6875">Paket PS-07 · AIAG 4th</span>
+<a href="Pfmea4th.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3z"></path><path d="M12 10v4"></path><path d="M12 17h.01"></path></svg><span>PFMEA</span></a>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 20px">
+
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 24px; line-height: 1.25; font-weight: 600">Dashboard monitoring</h1>
+<p style="margin: 0; color: #4A5361">24 paket aktif · cek terjadwal terakhir 08 Okt 2026, 02:00</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" style="height: 44px; padding: 0 16px; display: inline-flex; align-items: center; gap: 8px; background: #FFFFFF; color: #16191D; border: 1px solid #C3CAD3; border-radius: 6px; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>Ekspor ringkasan</button>
+<button type="button" style="height: 44px; padding: 0 16px; display: inline-flex; align-items: center; gap: 8px; background: #0A57A8; color: #FFFFFF; border: 0; border-radius: 6px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 5l12 7-12 7z"></path></svg>Jalankan cek sekarang</button>
+</div>
+</div>
+
+<form aria-label="Filter dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: 12px; padding: 16px; background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px">
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="f-cust" style="font-size: 12.5px; font-weight: 600; color: #4A5361">Customer</label><select id="f-cust" style="height: 44px; padding: 0 10px; background: #FFFFFF; color: #16191D; border: 1px solid #C3CAD3; border-radius: 6px; font: inherit; font-size: 14px"><option>Semua customer</option><option>Customer A</option><option>Customer B</option><option>Customer C</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="f-model" style="font-size: 12.5px; font-weight: 600; color: #4A5361">Model / part</label><select id="f-model" style="height: 44px; padding: 0 10px; background: #FFFFFF; color: #16191D; border: 1px solid #C3CAD3; border-radius: 6px; font: inherit; font-size: 14px"><option>Semua model</option><option>MB-01 Main Board</option><option>PS-07 Power Supply Board</option><option>LD-12 LED Driver</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="f-method" style="font-size: 12.5px; font-weight: 600; color: #4A5361">Metodologi</label><select id="f-method" style="height: 44px; padding: 0 10px; background: #FFFFFF; color: #16191D; border: 1px solid #C3CAD3; border-radius: 6px; font: inherit; font-size: 14px"><option>Semua metodologi</option><option>AIAG FMEA 4th</option><option>AIAG-VDA 1st</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="f-pic" style="font-size: 12.5px; font-weight: 600; color: #4A5361">PIC</label><select id="f-pic" style="height: 44px; padding: 0 10px; background: #FFFFFF; color: #16191D; border: 1px solid #C3CAD3; border-radius: 6px; font: inherit; font-size: 14px"><option>Semua PIC</option><option>A. Pratama</option><option>D. Hidayat</option><option>R. Saputri</option><option>S. Wulandari</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="f-period" style="font-size: 12.5px; font-weight: 600; color: #4A5361">Periode</label><select id="f-period" style="height: 44px; padding: 0 10px; background: #FFFFFF; color: #16191D; border: 1px solid #C3CAD3; border-radius: 6px; font: inherit; font-size: 14px"><option>30 hari terakhir</option><option>90 hari terakhir</option><option>Tahun ini</option></select></div>
+</form>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 16px; background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px"><span style="font-size: 13px; font-weight: 500; color: #4A5361">Paket aktif</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 30px; line-height: 1.1; font-weight: 600">24</span><span style="font-size: 12.5px; color: #4A5361">Draft 5 · Review 3 · Released 16</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 16px; background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px"><span style="font-size: 13px; font-weight: 500; color: #4A5361">Paket bebas Error</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 30px; line-height: 1.1; font-weight: 600">83%</span><span style="font-size: 12.5px; color: #4A5361">20 dari 24 paket</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 16px; background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px"><span style="font-size: 13px; font-weight: 500; color: #4A5361">Error terbuka</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 30px; line-height: 1.1; font-weight: 600; color: #8F1D14">7</span><span style="font-size: 12.5px; color: #4A5361">di 4 paket · approval terkunci</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 16px; background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px"><span style="font-size: 13px; font-weight: 500; color: #4A5361">Warning tanpa justifikasi</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 30px; line-height: 1.1; font-weight: 600; color: #7A4100">19</span><span style="font-size: 12.5px; color: #4A5361">di 9 paket</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 16px; background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px"><span style="font-size: 13px; font-weight: 500; color: #4A5361">Aksi lewat tenggat</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 30px; line-height: 1.1; font-weight: 600; color: #7A4100">6</span><span style="font-size: 12.5px; color: #4A5361">dari 41 aksi terbuka</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 16px; background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px"><span style="font-size: 13px; font-weight: 500; color: #4A5361">Out of sync</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 30px; line-height: 1.1; font-weight: 600">3</span><span style="font-size: 12.5px; color: #4A5361">PFD atau WI berubah setelah rilis</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 16px; background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px"><span style="font-size: 13px; font-weight: 500; color: #4A5361">Sinkron template</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 30px; line-height: 1.1; font-weight: 600">22/24</span><span style="font-size: 12.5px; color: #4A5361">Rev 04 · 2 menunggu customer</span></div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<section aria-labelledby="h-health" style="flex: 3 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px">
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; padding: 16px 16px 12px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h2 id="h-health" style="margin: 0; font-size: 16px; font-weight: 600">Kesehatan paket</h2>
+<span style="font-size: 13px; color: #4A5361">6 dari 24 paket · urut dari Error terbanyak</span>
+</div>
+<a href="Findings.html" style="font-size: 13.5px; font-weight: 500">Lihat semua temuan</a>
+</div>
+<div style="overflow-x: auto">
+<table style="width: 100%; min-width: 640px; border-collapse: collapse">
+<thead>
+<tr>
+<th scope="col" style="text-align: left; padding: 10px 16px; font-size: 12px; font-weight: 600; color: #4A5361; background: #F7F8FA; border-top: 1px solid #E3E7EC; border-bottom: 1px solid #D5DAE1; white-space: nowrap">Paket</th>
+<th scope="col" style="text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 600; color: #4A5361; background: #F7F8FA; border-top: 1px solid #E3E7EC; border-bottom: 1px solid #D5DAE1; white-space: nowrap">Metodologi</th>
+<th scope="col" style="text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 600; color: #4A5361; background: #F7F8FA; border-top: 1px solid #E3E7EC; border-bottom: 1px solid #D5DAE1; white-space: nowrap">Status</th>
+<th scope="col" style="text-align: center; padding: 10px 12px; font-size: 12px; font-weight: 600; color: #4A5361; background: #F7F8FA; border-top: 1px solid #E3E7EC; border-bottom: 1px solid #D5DAE1; white-space: nowrap">Error</th>
+<th scope="col" style="text-align: center; padding: 10px 12px; font-size: 12px; font-weight: 600; color: #4A5361; background: #F7F8FA; border-top: 1px solid #E3E7EC; border-bottom: 1px solid #D5DAE1; white-space: nowrap">Warning</th>
+<th scope="col" style="text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 600; color: #4A5361; background: #F7F8FA; border-top: 1px solid #E3E7EC; border-bottom: 1px solid #D5DAE1; white-space: nowrap">Step PFD tercakup CP</th></tr>
+</thead>
+<tbody>
+<tr>
+<td style="padding: 12px 16px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; flex-direction: column; gap: 2px"><a href="PfmeaVda.html" style="font-weight: 600; text-decoration: none">MB-01 Main Board</a><span style="font-size: 12.5px; color: #4A5361">Customer A</span></div></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; padding: 2px 6px; border: 1px solid #C3CAD3; border-radius: 4px; color: #2A313B; white-space: nowrap">AIAG-VDA</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; flex-wrap: wrap; gap: 6px"><span style="font-size: 12.5px; padding: 2px 8px; border-radius: 10px; background: #ECEEF1; color: #2A313B; white-space: nowrap">In Review</span></div></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle; text-align: center"><span style="display: inline-block; min-width: 30px; padding: 2px 8px; border-radius: 10px; background: #FCE8E6; color: #8F1D14; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600">3</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle; text-align: center"><span style="display: inline-block; min-width: 30px; padding: 2px 8px; border-radius: 10px; background: #FDF0D9; color: #7A4100; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600">5</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; align-items: center; gap: 8px"><div style="width: 80px; height: 6px; background: #E3E7EC; border-radius: 3px; overflow: hidden"><div style="width: 92%; height: 6px; background: #0A57A8"></div></div><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px">92%</span></div></td></tr>
+<tr>
+<td style="padding: 12px 16px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; flex-direction: column; gap: 2px"><a href="Pfmea4th.html" style="font-weight: 600; text-decoration: none">PS-07 Power Supply Board</a><span style="font-size: 12.5px; color: #4A5361">Customer B</span></div></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; padding: 2px 6px; border: 1px solid #C3CAD3; border-radius: 4px; color: #2A313B; white-space: nowrap">AIAG 4th</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; flex-wrap: wrap; gap: 6px"><span style="font-size: 12.5px; padding: 2px 8px; border-radius: 10px; background: #ECEEF1; color: #2A313B; white-space: nowrap">Draft</span></div></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle; text-align: center"><span style="display: inline-block; min-width: 30px; padding: 2px 8px; border-radius: 10px; background: #FCE8E6; color: #8F1D14; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600">2</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle; text-align: center"><span style="display: inline-block; min-width: 30px; padding: 2px 8px; border-radius: 10px; background: #FDF0D9; color: #7A4100; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600">6</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; align-items: center; gap: 8px"><div style="width: 80px; height: 6px; background: #E3E7EC; border-radius: 3px; overflow: hidden"><div style="width: 81%; height: 6px; background: #0A57A8"></div></div><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px">81%</span></div></td></tr>
+<tr>
+<td style="padding: 12px 16px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">LD-12 LED Driver</span><span style="font-size: 12.5px; color: #4A5361">Customer A</span></div></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; padding: 2px 6px; border: 1px solid #C3CAD3; border-radius: 4px; color: #2A313B; white-space: nowrap">AIAG-VDA</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; flex-wrap: wrap; gap: 6px"><span style="font-size: 12.5px; padding: 2px 8px; border-radius: 10px; background: #ECEEF1; color: #2A313B; white-space: nowrap">Released</span><span style="font-size: 12.5px; font-weight: 500; padding: 2px 8px; border-radius: 10px; background: #FDF0D9; color: #7A4100; white-space: nowrap">Out of sync</span></div></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle; text-align: center"><span style="display: inline-block; min-width: 30px; padding: 2px 8px; border-radius: 10px; background: #FCE8E6; color: #8F1D14; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600">1</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle; text-align: center"><span style="display: inline-block; min-width: 30px; padding: 2px 8px; border-radius: 10px; background: #FDF0D9; color: #7A4100; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600">2</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; align-items: center; gap: 8px"><div style="width: 80px; height: 6px; background: #E3E7EC; border-radius: 3px; overflow: hidden"><div style="width: 100%; height: 6px; background: #0A57A8"></div></div><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px">100%</span></div></td></tr>
+<tr>
+<td style="padding: 12px 16px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">CT-03 Controller</span><span style="font-size: 12.5px; color: #4A5361">Customer C</span></div></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; padding: 2px 6px; border: 1px solid #C3CAD3; border-radius: 4px; color: #2A313B; white-space: nowrap">AIAG 4th</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; flex-wrap: wrap; gap: 6px"><span style="font-size: 12.5px; padding: 2px 8px; border-radius: 10px; background: #ECEEF1; color: #2A313B; white-space: nowrap">Draft</span></div></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle; text-align: center"><span style="display: inline-block; min-width: 30px; padding: 2px 8px; border-radius: 10px; background: #FCE8E6; color: #8F1D14; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600">1</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle; text-align: center"><span style="display: inline-block; min-width: 30px; padding: 2px 8px; border-radius: 10px; background: #FDF0D9; color: #7A4100; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600">3</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; align-items: center; gap: 8px"><div style="width: 80px; height: 6px; background: #E3E7EC; border-radius: 3px; overflow: hidden"><div style="width: 88%; height: 6px; background: #0A57A8"></div></div><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px">88%</span></div></td></tr>
+<tr>
+<td style="padding: 12px 16px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">SN-21 Sensor Board</span><span style="font-size: 12.5px; color: #4A5361">Customer B</span></div></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; padding: 2px 6px; border: 1px solid #C3CAD3; border-radius: 4px; color: #2A313B; white-space: nowrap">AIAG-VDA</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; flex-wrap: wrap; gap: 6px"><span style="font-size: 12.5px; padding: 2px 8px; border-radius: 10px; background: #ECEEF1; color: #2A313B; white-space: nowrap">Released</span></div></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle; text-align: center"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #5F6875">0</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle; text-align: center"><span style="display: inline-block; min-width: 30px; padding: 2px 8px; border-radius: 10px; background: #FDF0D9; color: #7A4100; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600">1</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; align-items: center; gap: 8px"><div style="width: 80px; height: 6px; background: #E3E7EC; border-radius: 3px; overflow: hidden"><div style="width: 100%; height: 6px; background: #0A57A8"></div></div><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px">100%</span></div></td></tr>
+<tr>
+<td style="padding: 12px 16px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">MB-02 Main Board varian</span><span style="font-size: 12.5px; color: #4A5361">Customer A</span></div></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; padding: 2px 6px; border: 1px solid #C3CAD3; border-radius: 4px; color: #2A313B; white-space: nowrap">AIAG-VDA</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; flex-wrap: wrap; gap: 6px"><span style="font-size: 12.5px; padding: 2px 8px; border-radius: 10px; background: #ECEEF1; color: #2A313B; white-space: nowrap">Released</span></div></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle; text-align: center"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #5F6875">0</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle; text-align: center"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #5F6875">0</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #E6E9EE; vertical-align: middle"><div style="display: flex; align-items: center; gap: 8px"><div style="width: 80px; height: 6px; background: #E3E7EC; border-radius: 3px; overflow: hidden"><div style="width: 100%; height: 6px; background: #0A57A8"></div></div><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px">100%</span></div></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<div style="flex: 2 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+
+<section aria-labelledby="h-ap" style="background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h2 id="h-ap" style="margin: 0; font-size: 16px; font-weight: 600">Profil Action Priority</h2>
+<span style="font-size: 13px; color: #4A5361">Paket AIAG-VDA aktif · 264 failure chain</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12.5px; font-weight: 600; color: #4A5361">Awal</span>
+<div style="display: flex; height: 18px; border-radius: 4px; overflow: hidden">
+<div style="width: 5.3%; background: #B42318"></div>
+<div style="width: 14.4%; background: #F2B33D"></div>
+<div style="width: 80.3%; background: #6E9C79"></div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12.5px; font-weight: 600; color: #4A5361">Setelah aksi</span>
+<div style="display: flex; height: 18px; border-radius: 4px; overflow: hidden">
+<div style="width: 1.9%; background: #B42318"></div>
+<div style="width: 11%; background: #F2B33D"></div>
+<div style="width: 87.1%; background: #6E9C79"></div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<div style="display: flex; align-items: center; gap: 8px"><span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; background: #B42318; color: #FFFFFF; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; font-weight: 600">H</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px">14 → 5</span></div>
+<div style="display: flex; align-items: center; gap: 8px"><span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; background: #F2B33D; color: #3B2A00; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; font-weight: 600">M</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px">38 → 29</span></div>
+<div style="display: flex; align-items: center; gap: 8px"><span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; background: #6E9C79; color: #FFFFFF; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; font-weight: 600">L</span><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px">212 → 230</span></div>
+</div>
+</section>
+
+<section aria-labelledby="h-pareto" style="background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h2 id="h-pareto" style="margin: 0; font-size: 16px; font-weight: 600">Aturan paling sering dilanggar</h2>
+<span style="font-size: 13px; color: #4A5361">Temuan terbuka di semua paket</span>
+</div>
+<div style="display: grid; grid-template-columns: 44px minmax(0, 1fr) 28px; align-items: center; gap: 4px 10px">
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; font-weight: 600; color: #2A313B">C04</span>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0"><span style="font-size: 13px">Frekuensi CP tidak berbasis volume</span><div style="height: 6px; background: #E3E7EC; border-radius: 3px; overflow: hidden"><div style="width: 100%; height: 6px; background: #C26A00"></div></div></div>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; text-align: right">5</span>
+</div>
+<div style="display: grid; grid-template-columns: 44px minmax(0, 1fr) 28px; align-items: center; gap: 4px 10px">
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; font-weight: 600; color: #2A313B">F06</span>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0"><span style="font-size: 13px">AP M tanpa aksi atau justifikasi</span><div style="height: 6px; background: #E3E7EC; border-radius: 3px; overflow: hidden"><div style="width: 80%; height: 6px; background: #C26A00"></div></div></div>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; text-align: right">4</span>
+</div>
+<div style="display: grid; grid-template-columns: 44px minmax(0, 1fr) 28px; align-items: center; gap: 4px 10px">
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; font-weight: 600; color: #2A313B">R01</span>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0"><span style="font-size: 13px">Detection control belum ada di CP</span><div style="height: 6px; background: #E3E7EC; border-radius: 3px; overflow: hidden"><div style="width: 60%; height: 6px; background: #B42318"></div></div></div>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; text-align: right">3</span>
+</div>
+<div style="display: grid; grid-template-columns: 44px minmax(0, 1fr) 28px; align-items: center; gap: 4px 10px">
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; font-weight: 600; color: #2A313B">R04</span>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0"><span style="font-size: 13px">D tidak sesuai jenis metode deteksi</span><div style="height: 6px; background: #E3E7EC; border-radius: 3px; overflow: hidden"><div style="width: 60%; height: 6px; background: #C26A00"></div></div></div>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; text-align: right">3</span>
+</div>
+<div style="display: grid; grid-template-columns: 44px minmax(0, 1fr) 28px; align-items: center; gap: 4px 10px">
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px; font-weight: 600; color: #2A313B">K02</span>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0"><span style="font-size: 13px">Step berkarakteristik tidak ada di CP</span><div style="height: 6px; background: #E3E7EC; border-radius: 3px; overflow: hidden"><div style="width: 40%; height: 6px; background: #B42318"></div></div></div>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; text-align: right">2</span>
+</div>
+<span style="font-size: 12.5px; color: #4A5361">Bar merah = Error, oranye = Warning</span>
+</section>
+
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<section aria-labelledby="h-late" style="flex: 3 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px">
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 16px 16px 12px">
+<h2 id="h-late" style="margin: 0; font-size: 16px; font-weight: 600">Aksi lewat tenggat</h2>
+<span style="font-size: 13px; color: #4A5361">6 aksi · per 08 Okt 2026</span>
+</div>
+<div style="overflow-x: auto">
+<table style="width: 100%; min-width: 720px; border-collapse: collapse">
+<thead>
+<tr>
+<th scope="col" style="text-align: left; padding: 10px 16px; font-size: 12px; font-weight: 600; color: #4A5361; background: #F7F8FA; border-top: 1px solid #E3E7EC; border-bottom: 1px solid #D5DAE1">Aksi</th>
+<th scope="col" style="text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 600; color: #4A5361; background: #F7F8FA; border-top: 1px solid #E3E7EC; border-bottom: 1px solid #D5DAE1; white-space: nowrap">Paket · step</th>
+<th scope="col" style="text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 600; color: #4A5361; background: #F7F8FA; border-top: 1px solid #E3E7EC; border-bottom: 1px solid #D5DAE1">PIC</th>
+<th scope="col" style="text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 600; color: #4A5361; background: #F7F8FA; border-top: 1px solid #E3E7EC; border-bottom: 1px solid #D5DAE1">Target</th>
+<th scope="col" style="text-align: right; padding: 10px 16px 10px 12px; font-size: 12px; font-weight: 600; color: #4A5361; background: #F7F8FA; border-top: 1px solid #E3E7EC; border-bottom: 1px solid #D5DAE1">Terlambat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="padding: 11px 16px; border-bottom: 1px solid #E6E9EE; font-size: 13.5px">Add paste open-time tracking with auto-lock after 8 h</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; color: #2A313B; white-space: nowrap"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">MB-01</span> · 30 Solder paste printing</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; white-space: nowrap">A. Pratama</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; white-space: nowrap">30 Sep 2026</td>
+<td style="padding: 11px 16px 11px 12px; border-bottom: 1px solid #E6E9EE; text-align: right; white-space: nowrap"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600; color: #7A4100">8 hari</span></td>
+</tr>
+<tr>
+<td style="padding: 11px 16px; border-bottom: 1px solid #E6E9EE; font-size: 13.5px">Change to new nozzle type for 0201 parts</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; color: #2A313B; white-space: nowrap"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">PS-07</span> · 50 Pick and place</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; white-space: nowrap">D. Hidayat</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; white-space: nowrap">25 Sep 2026</td>
+<td style="padding: 11px 16px 11px 12px; border-bottom: 1px solid #E6E9EE; text-align: right; white-space: nowrap"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600; color: #7A4100">13 hari</span></td>
+</tr>
+<tr>
+<td style="padding: 11px 16px; border-bottom: 1px solid #E6E9EE; font-size: 13.5px">Add poka-yoke fixture for connector orientation</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; color: #2A313B; white-space: nowrap"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">CT-03</span> · 85 Manual insertion</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; white-space: nowrap">S. Wulandari</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; white-space: nowrap">01 Okt 2026</td>
+<td style="padding: 11px 16px 11px 12px; border-bottom: 1px solid #E6E9EE; text-align: right; white-space: nowrap"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600; color: #7A4100">7 hari</span></td>
+</tr>
+<tr>
+<td style="padding: 11px 16px; border-bottom: 1px solid #E6E9EE; font-size: 13.5px">Validate reflow profile for new model</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; color: #2A313B; white-space: nowrap"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">LD-12</span> · 60 Reflow soldering</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; white-space: nowrap">A. Pratama</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; white-space: nowrap">03 Okt 2026</td>
+<td style="padding: 11px 16px 11px 12px; border-bottom: 1px solid #E6E9EE; text-align: right; white-space: nowrap"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600; color: #7A4100">5 hari</span></td>
+</tr>
+<tr>
+<td style="padding: 11px 16px; border-bottom: 1px solid #E6E9EE; font-size: 13.5px">Run MSA for coating thickness gauge</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; color: #2A313B; white-space: nowrap"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">SN-21</span> · 95 Conformal coating</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; white-space: nowrap">R. Saputri</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; white-space: nowrap">04 Okt 2026</td>
+<td style="padding: 11px 16px 11px 12px; border-bottom: 1px solid #E6E9EE; text-align: right; white-space: nowrap"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600; color: #7A4100">4 hari</span></td>
+</tr>
+<tr>
+<td style="padding: 11px 16px; border-bottom: 1px solid #E6E9EE; font-size: 13.5px">Update router cutting WI to separate NG boards</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; color: #2A313B; white-space: nowrap"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">MB-01</span> · 80 Router cutting</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; white-space: nowrap">D. Hidayat</td>
+<td style="padding: 11px 12px; border-bottom: 1px solid #E6E9EE; font-size: 13px; white-space: nowrap">06 Okt 2026</td>
+<td style="padding: 11px 16px 11px 12px; border-bottom: 1px solid #E6E9EE; text-align: right; white-space: nowrap"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600; color: #7A4100">2 hari</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section aria-labelledby="h-feed" style="flex: 2 1 340px; min-width: 0; background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+<h2 id="h-feed" style="margin: 0; font-size: 16px; font-weight: 600">Aktivitas terbaru</h2>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+<li style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 12px; border-bottom: 1px solid #E6E9EE"><span style="font-size: 12px; color: #4A5361; font-family: 'IBM Plex Mono', ui-monospace, monospace">08 Okt 07:42</span><span style="font-size: 13.5px">R. Saputri mengajukan review PFMEA MB-01 rev 03</span></li>
+<li style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 12px; border-bottom: 1px solid #E6E9EE"><span style="font-size: 12px; color: #4A5361; font-family: 'IBM Plex Mono', ui-monospace, monospace">08 Okt 02:00</span><span style="font-size: 13.5px">Cek terjadwal: 24 paket, 7 Error, 19 Warning</span></li>
+<li style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 12px; border-bottom: 1px solid #E6E9EE"><span style="font-size: 12px; color: #4A5361; font-family: 'IBM Plex Mono', ui-monospace, monospace">07 Okt 16:40</span><span style="font-size: 13.5px">D. Hidayat mengubah 3 baris Control Plan CT-03</span></li>
+<li style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 12px; border-bottom: 1px solid #E6E9EE"><span style="font-size: 12px; color: #4A5361; font-family: 'IBM Plex Mono', ui-monospace, monospace">07 Okt 10:15</span><span style="font-size: 13.5px">QA Manager me-waive S03 di SN-21 dengan justifikasi</span></li>
+<li style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #4A5361; font-family: 'IBM Plex Mono', ui-monospace, monospace">06 Okt 14:05</span><span style="font-size: 13.5px">WI SMT rev C terbit; LD-12 ditandai out of sync</span></li>
+</ol>
+</section>
+
+</div>
+
+</main>
+</div>
+</div>
+</body>
+</html>

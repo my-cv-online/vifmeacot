@@ -1,0 +1,12 @@
+# Konfigurasi oapi-codegen v2, dipakai oleh `make gen`:
+#   go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.8.0 -config api/oapi-codegen.yaml api/openapi.yaml
+# File hasil generate tidak pernah diubah manual.
+package: gen
+output: backend/internal/httpapi/gen/api.gen.go
+generate:
+  models: true
+  std-http-server: true
+  strict-server: true
+compatibility:
+  # Banyak enum memakai nilai yang sama (in_sync, open, …); selalu awali konstanta dengan nama tipenya.
+  always-prefix-enum-values: true

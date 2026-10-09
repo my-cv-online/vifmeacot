@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>PFD editor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+a{color:#0A57A8}a:hover{color:#073F7C}
+</style>
+</head>
+<body>
+<div style="min-height: 100vh; background: #EEF0F3; color: #16191D; font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif; font-size: 14px; line-height: 1.45">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 10px 24px; background: #14181D; color: #FFFFFF">
+<a href="Main.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; color: #FFFFFF; text-decoration: none">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8FBCEB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"></circle><rect x="15" y="3" width="6" height="6" rx="1"></rect><path d="M9 6h6"></path><path d="M18 9v5"></path><path d="M4 18h16"></path><path d="M4 21h10"></path></svg>
+<span style="font-size: 15px; font-weight: 600">Sistem PFD · PFMEA · CP</span>
+</a>
+<div style="flex: 1 1 260px; max-width: 520px; display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; background: #222A33; border: 1px solid #3A4450; border-radius: 6px; color: #B7C0CC">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<label for="cari-pfd" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap">Cari</label>
+<input id="cari-pfd" type="search" placeholder="Cari paket, step, karakteristik" style="flex: 1 1 auto; min-width: 0; height: 36px; border: 0; background: transparent; color: #FFFFFF; font: inherit; font-size: 14px; outline: none">
+</div>
+<div style="margin-left: auto; display: flex; align-items: center; gap: 8px">
+<span style="font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #14181D; background: #F2B33D; padding: 4px 8px; border-radius: 4px">Data contoh</span>
+<button type="button" aria-label="Notifikasi" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: 0; border-radius: 6px; color: #D5DCE5; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg></button>
+<button type="button" aria-label="Akun Rina Saputri" style="width: 36px; height: 36px; border-radius: 50%; border: 0; background: #2F3A47; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">RS</button>
+</div>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; align-items: stretch">
+
+<nav aria-label="Menu utama" style="flex: 1 1 220px; background: #FFFFFF; border-right: 1px solid #D5DAE1; padding: 20px 12px; display: flex; flex-direction: column; gap: 2px">
+<span style="padding: 8px 12px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5F6875">Monitoring</span>
+<a href="Main.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg><span>Dashboard</span></a>
+<a href="Findings.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Cek konsistensi</span></a>
+<span style="padding: 16px 12px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5F6875">Template</span>
+<a href="TemplateGeneral.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"></path><path d="M3 13l9 5 9-5"></path></svg><span>Template General</span></a>
+<span style="padding: 16px 12px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5F6875">Paket MB-01 · AIAG-VDA</span>
+<a href="Pfd.html" aria-current="page" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; background: #E6EEF8; color: #0A3F7A; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"></circle><rect x="15" y="15" width="6" height="6" rx="1"></rect><path d="M6 9v3a3 3 0 0 0 3 3h6"></path></svg><span>PFD</span></a>
+<a href="PfmeaVda.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3z"></path><path d="M12 10v4"></path><path d="M12 17h.01"></path></svg><span>PFMEA</span></a>
+<a href="ControlPlan.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V3h6v1"></path><path d="M9 11h6"></path><path d="M9 15h4"></path></svg><span>Control Plan</span></a>
+<span style="padding: 16px 12px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5F6875">Paket PS-07 · AIAG 4th</span>
+<a href="Pfmea4th.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 6px; text-decoration: none; color: #2A313B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3z"></path><path d="M12 10v4"></path><path d="M12 17h.01"></path></svg><span>PFMEA</span></a>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 20px">
+
+<section style="background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px; padding: 16px 20px 18px; display: flex; flex-direction: column; gap: 10px">
+<nav aria-label="Breadcrumb" style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 13px; color: #4A5361"><a href="Main.html">Dashboard</a><span aria-hidden="true">/</span><span>Paket MB-01 Main Board</span><span aria-hidden="true">/</span><span>PFD</span></nav>
+<div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<h1 style="margin: 0; font-size: 22px; line-height: 1.25; font-weight: 600">PFD · MB-01 Main Board</h1>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; padding: 3px 8px; border-radius: 4px; border: 1px solid #C3CAD3; color: #2A313B">Rev 03</span>
+<span style="font-size: 12.5px; padding: 3px 10px; border-radius: 10px; background: #ECEEF1; color: #2A313B">In Review</span>
+<a href="TemplateGeneral.html" style="font-size: 12.5px; font-weight: 500; padding: 3px 10px; border-radius: 10px; background: #DDF1EE; color: #0B5A50; text-decoration: none">Template General Rev 04 · sinkron</a>
+</div>
+<p style="margin: 0; font-size: 13.5px; color: #4A5361">Tabel ini sumber step untuk PFMEA dan Control Plan. Baris GENERAL diambil dari Template General dan ikut berubah saat template dirilis; diagram di kanan digambar otomatis dari tabel.</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" style="height: 44px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; background: #FFFFFF; color: #16191D; border: 1px solid #C3CAD3; border-radius: 6px; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer">Impor dari Excel</button>
+<button type="button" style="height: 44px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; background: #0A57A8; color: #FFFFFF; border: 0; border-radius: 6px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">+ Tambah step</button>
+</div>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<section aria-labelledby="h-steps" style="flex: 3 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 16px">
+<h2 id="h-steps" style="margin: 0; font-size: 16px; font-weight: 600">Langkah proses</h2>
+<label style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; font-size: 13.5px"><input type="checkbox" checked style="width: 18px; height: 18px">Tampilkan proses opsional</label>
+<span style="margin-left: auto; font-size: 13px; color: #4A5361">13 step · 5 general · 1 opsional</span>
+</div>
+<div style="overflow-x: auto; border-top: 1px solid #D5DAE1">
+<table style="width: 100%; min-width: 900px; border-collapse: collapse; font-size: 13px">
+<thead>
+<tr>
+<th scope="col" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; font-size: 12px; font-weight: 600; color: #4A5361">No.</th>
+<th scope="col" style="padding: 8px 6px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; font-size: 12px; font-weight: 600; color: #4A5361">Simbol</th>
+<th scope="col" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; font-size: 12px; font-weight: 600; color: #4A5361">Proses</th>
+<th scope="col" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; font-size: 12px; font-weight: 600; color: #4A5361">Mesin / alat</th>
+<th scope="col" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; font-size: 12px; font-weight: 600; color: #4A5361; min-width: 220px">Karakteristik (produk · proses)</th>
+<th scope="col" style="padding: 8px 6px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; font-size: 12px; font-weight: 600; color: #4A5361">SC</th>
+<th scope="col" style="text-align: left; padding: 8px 10px; background: #F7F8FA; border-bottom: 1px solid #D5DAE1; font-size: 12px; font-weight: 600; color: #4A5361">Alur NG / disposisi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-family: 'IBM Plex Mono', ui-monospace, monospace">10</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center"><svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Transport"><path d="M3 10h12" fill="none" stroke="#16191D" stroke-width="1.6" stroke-linecap="round"></path><path d="M11 5l5 5-5 5" fill="none" stroke="#16191D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top"><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px"><span style="font-weight: 500">Part receiving</span><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; padding: 1px 6px; border-radius: 4px; background: #DDF1EE; color: #0B5A50">GENERAL</span></div></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Forklift, barcode scanner</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Qty and label vs PO</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center; color: #5F6875">—</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; color: #5F6875">—</td>
+</tr>
+<tr>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-family: 'IBM Plex Mono', ui-monospace, monospace">20</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center"><svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Inspeksi"><rect x="3" y="3" width="14" height="14" fill="none" stroke="#16191D" stroke-width="1.6"></rect></svg></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top"><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px"><span style="font-weight: 500">IQC</span><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; padding: 1px 6px; border-radius: 4px; background: #DDF1EE; color: #0B5A50">GENERAL</span></div></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Microscope, caliper</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Visual, dimension, solderability (sampling)</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center; color: #5F6875">—</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">NG → hold, return to supplier</td>
+</tr>
+<tr style="background: #FFF8F7">
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-family: 'IBM Plex Mono', ui-monospace, monospace">25</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center"><svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Simpan"><path d="M3 4h14L10 17z" fill="none" stroke="#16191D" stroke-width="1.6" stroke-linejoin="round"></path></svg></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top"><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px"><span style="font-weight: 500">Material storage</span><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; padding: 1px 6px; border-radius: 4px; background: #DDF1EE; color: #0B5A50">GENERAL</span></div></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Rack, dry cabinet</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top"><div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start"><span>MSD floor life · dry cabinet RH ≤ 10%</span><a href="Findings.html" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 10px; background: #FCE8E6; color: #8F1D14; text-decoration: none"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M15 9l-6 6"></path><path d="M9 9l6 6"></path></svg>K02 · belum ada di CP</a></div></td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center; color: #5F6875">—</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; color: #5F6875">—</td>
+</tr>
+<tr style="background: #F2F6FB">
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600">30</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center"><svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Operasi"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6"></circle></svg></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-weight: 600">Solder paste printing</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Stencil printer, stencil</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Paste volume · squeegee pressure, paste open time</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; font-weight: 600">SC</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; color: #5F6875">—</td>
+</tr>
+<tr>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-family: 'IBM Plex Mono', ui-monospace, monospace">40</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center"><svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Inspeksi"><rect x="3" y="3" width="14" height="14" fill="none" stroke="#16191D" stroke-width="1.6"></rect></svg></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-weight: 500">SPI</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">SPI 3D machine</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Paste height, area, offset</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center; color: #5F6875">—</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">NG → wash and reprint at 30</td>
+</tr>
+<tr>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-family: 'IBM Plex Mono', ui-monospace, monospace">50</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center"><svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Operasi"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6"></circle></svg></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-weight: 500">Pick and place</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Mounter, feeders, nozzles</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Correct part and polarity · nozzle vacuum</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; font-weight: 600">SC</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; color: #5F6875">—</td>
+</tr>
+<tr>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-family: 'IBM Plex Mono', ui-monospace, monospace">60</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center"><svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Operasi"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6"></circle></svg></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-weight: 500">Reflow soldering</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Reflow oven</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Joint quality · zone temperature, conveyor speed</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center; color: #5F6875">—</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; color: #5F6875">—</td>
+</tr>
+<tr>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-family: 'IBM Plex Mono', ui-monospace, monospace">70</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center"><svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Inspeksi"><rect x="3" y="3" width="14" height="14" fill="none" stroke="#16191D" stroke-width="1.6"></rect></svg></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-weight: 500">AOI</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">AOI machine</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Missing, polarity, bridging, solder fillet</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center; color: #5F6875">—</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">NG → 75 Rework</td>
+</tr>
+<tr>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-family: 'IBM Plex Mono', ui-monospace, monospace">75</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center"><svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Operasi rework"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6" stroke-dasharray="3 2"></circle></svg></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top"><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px"><span style="font-weight: 500">Rework (touch-up)</span><span style="font-size: 11.5px; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: #ECEEF1; color: #2A313B">opsional</span></div></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Soldering iron</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Joint per IPC-A-610 · iron temperature</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center; color: #5F6875">—</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Kembali ke 70 AOI</td>
+</tr>
+<tr>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-family: 'IBM Plex Mono', ui-monospace, monospace">80</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center"><svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Operasi"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6"></circle></svg></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-weight: 500">Router cutting</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Router</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Board outline, burr · spindle speed</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center; color: #5F6875">—</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Board NG bertanda silang dipisahkan</td>
+</tr>
+<tr>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-family: 'IBM Plex Mono', ui-monospace, monospace">90</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center"><svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Inspeksi"><rect x="3" y="3" width="14" height="14" fill="none" stroke="#16191D" stroke-width="1.6"></rect></svg></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-weight: 500">Final visual inspection</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Magnifier lamp</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Cosmetic, label</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center; color: #5F6875">—</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">NG → 75 Rework</td>
+</tr>
+<tr>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-family: 'IBM Plex Mono', ui-monospace, monospace">100</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center"><svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Operasi"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6"></circle></svg></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top"><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px"><span style="font-weight: 500">Packing</span><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; padding: 1px 6px; border-radius: 4px; background: #DDF1EE; color: #0B5A50">GENERAL</span></div></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">ESD bag, carton</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Qty, label, ESD packing</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center; color: #5F6875">—</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; color: #5F6875">—</td>
+</tr>
+<tr>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; font-family: 'IBM Plex Mono', ui-monospace, monospace">110</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center"><svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Transport"><path d="M3 10h12" fill="none" stroke="#16191D" stroke-width="1.6" stroke-linecap="round"></path><path d="M11 5l5 5-5 5" fill="none" stroke="#16191D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top"><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px"><span style="font-weight: 500">Shipping</span><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; padding: 1px 6px; border-radius: 4px; background: #DDF1EE; color: #0B5A50">GENERAL</span></div></td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Hand pallet, truck</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top">Qty and label vs delivery order</td>
+<td style="padding: 9px 6px; border-bottom: 1px solid #E6E9EE; vertical-align: top; text-align: center; color: #5F6875">—</td>
+<td style="padding: 9px 10px; border-bottom: 1px solid #E6E9EE; vertical-align: top; color: #5F6875">—</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="margin: 0; padding: 12px 16px 16px; font-size: 12.5px; color: #4A5361">Menghapus step yang masih dipakai PFMEA atau CP ditolak; sistem menampilkan baris yang terdampak.</p>
+</section>
+
+<section aria-labelledby="h-flow" style="flex: 2 1 340px; min-width: 0; background: #FFFFFF; border: 1px solid #D5DAE1; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h2 id="h-flow" style="margin: 0; font-size: 16px; font-weight: 600">Diagram alur</h2>
+<span style="font-size: 13px; color: #4A5361">Digambar otomatis dari tabel; cabang NG di kanan</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 12.5px; color: #2A313B">
+<span style="display: inline-flex; align-items: center; gap: 6px"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6"></circle></svg>Operasi</span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="14" height="14" fill="none" stroke="#16191D" stroke-width="1.6"></rect></svg>Inspeksi</span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4h14L10 17z" fill="none" stroke="#16191D" stroke-width="1.6" stroke-linejoin="round"></path></svg>Simpan</span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h12" fill="none" stroke="#16191D" stroke-width="1.6" stroke-linecap="round"></path><path d="M11 5l5 5-5 5" fill="none" stroke="#16191D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>Transport</span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6" stroke-dasharray="3 2"></circle></svg>Rework (opsional)</span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><span aria-hidden="true" style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; line-height: 16px; padding: 0 5px; border-radius: 4px; background: #DDF1EE; color: #0B5A50">G</span>Proses general</span>
+</div>
+<ol aria-label="Urutan proses" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
+<li style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h12" fill="none" stroke="#16191D" stroke-width="1.6" stroke-linecap="round"></path><path d="M11 5l5 5-5 5" fill="none" stroke="#16191D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="flex: 0 0 220px; display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid #C3CAD3; border-radius: 6px"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">10</span>Part receiving<span role="img" aria-label="Proses general" style="margin-left: auto; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; line-height: 16px; padding: 0 5px; border-radius: 4px; background: #DDF1EE; color: #0B5A50">G</span></span></li>
+<li aria-hidden="true" style="display: flex; height: 18px"><svg width="20" height="18" viewBox="0 0 20 18"><path d="M10 0v13" stroke="#7D8794" stroke-width="1.6"></path><path d="M6 10l4 5 4-5" fill="none" stroke="#7D8794" stroke-width="1.6" stroke-linejoin="round"></path></svg></li>
+<li style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="14" height="14" fill="none" stroke="#16191D" stroke-width="1.6"></rect></svg><span style="flex: 0 0 220px; display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid #C3CAD3; border-radius: 6px"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">20</span>IQC<span role="img" aria-label="Proses general" style="margin-left: auto; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; line-height: 16px; padding: 0 5px; border-radius: 4px; background: #DDF1EE; color: #0B5A50">G</span></span><span style="font-size: 12px; padding: 2px 8px; border: 1px dashed #C26A00; border-radius: 10px; color: #7A4100">NG → hold / RTV</span></li>
+<li aria-hidden="true" style="display: flex; height: 18px"><svg width="20" height="18" viewBox="0 0 20 18"><path d="M10 0v13" stroke="#7D8794" stroke-width="1.6"></path><path d="M6 10l4 5 4-5" fill="none" stroke="#7D8794" stroke-width="1.6" stroke-linejoin="round"></path></svg></li>
+<li style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4h14L10 17z" fill="none" stroke="#16191D" stroke-width="1.6" stroke-linejoin="round"></path></svg><span style="flex: 0 0 220px; display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid #B42318; border-radius: 6px"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">25</span>Material storage<span role="img" aria-label="Proses general" style="margin-left: auto; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; line-height: 16px; padding: 0 5px; border-radius: 4px; background: #DDF1EE; color: #0B5A50">G</span><span role="img" aria-label="Ada temuan Error" style="width: 8px; height: 8px; border-radius: 50%; background: #B42318"></span></span></li>
+<li aria-hidden="true" style="display: flex; height: 18px"><svg width="20" height="18" viewBox="0 0 20 18"><path d="M10 0v13" stroke="#7D8794" stroke-width="1.6"></path><path d="M6 10l4 5 4-5" fill="none" stroke="#7D8794" stroke-width="1.6" stroke-linejoin="round"></path></svg></li>
+<li style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6"></circle></svg><span style="flex: 0 0 220px; display: flex; gap: 8px; padding: 6px 10px; border: 2px solid #0A57A8; background: #E6EEF8; border-radius: 6px; font-weight: 600"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">30</span>Solder paste printing</span></li>
+<li aria-hidden="true" style="display: flex; height: 18px"><svg width="20" height="18" viewBox="0 0 20 18"><path d="M10 0v13" stroke="#7D8794" stroke-width="1.6"></path><path d="M6 10l4 5 4-5" fill="none" stroke="#7D8794" stroke-width="1.6" stroke-linejoin="round"></path></svg></li>
+<li style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="14" height="14" fill="none" stroke="#16191D" stroke-width="1.6"></rect></svg><span style="flex: 0 0 220px; display: flex; gap: 8px; padding: 6px 10px; border: 1px solid #C3CAD3; border-radius: 6px"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">40</span>SPI</span><span style="font-size: 12px; padding: 2px 8px; border: 1px dashed #C26A00; border-radius: 10px; color: #7A4100">NG → cetak ulang di 30</span></li>
+<li aria-hidden="true" style="display: flex; height: 18px"><svg width="20" height="18" viewBox="0 0 20 18"><path d="M10 0v13" stroke="#7D8794" stroke-width="1.6"></path><path d="M6 10l4 5 4-5" fill="none" stroke="#7D8794" stroke-width="1.6" stroke-linejoin="round"></path></svg></li>
+<li style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6"></circle></svg><span style="flex: 0 0 220px; display: flex; gap: 8px; padding: 6px 10px; border: 1px solid #C3CAD3; border-radius: 6px"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">50</span>Pick and place</span></li>
+<li aria-hidden="true" style="display: flex; height: 18px"><svg width="20" height="18" viewBox="0 0 20 18"><path d="M10 0v13" stroke="#7D8794" stroke-width="1.6"></path><path d="M6 10l4 5 4-5" fill="none" stroke="#7D8794" stroke-width="1.6" stroke-linejoin="round"></path></svg></li>
+<li style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6"></circle></svg><span style="flex: 0 0 220px; display: flex; gap: 8px; padding: 6px 10px; border: 1px solid #C3CAD3; border-radius: 6px"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">60</span>Reflow soldering</span></li>
+<li aria-hidden="true" style="display: flex; height: 18px"><svg width="20" height="18" viewBox="0 0 20 18"><path d="M10 0v13" stroke="#7D8794" stroke-width="1.6"></path><path d="M6 10l4 5 4-5" fill="none" stroke="#7D8794" stroke-width="1.6" stroke-linejoin="round"></path></svg></li>
+<li style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="14" height="14" fill="none" stroke="#16191D" stroke-width="1.6"></rect></svg><span style="flex: 0 0 220px; display: flex; gap: 8px; padding: 6px 10px; border: 1px solid #C3CAD3; border-radius: 6px"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">70</span>AOI</span><span style="font-size: 12px; padding: 2px 8px; border: 1px dashed #C26A00; border-radius: 10px; color: #7A4100">NG → 75</span></li>
+<li style="display: flex; align-items: stretch; gap: 10px">
+<span aria-hidden="true" style="width: 20px; display: flex; justify-content: center"><span style="width: 1.6px; background: #7D8794"></span></span>
+<span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0 8px 24px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6" stroke-dasharray="3 2"></circle></svg><span style="display: flex; gap: 8px; padding: 6px 10px; border: 1px dashed #7D8794; border-radius: 6px"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">75</span>Rework (touch-up)</span><span style="font-size: 12px; color: #4A5361">dari 70 dan 90, kembali ke 70</span></span>
+</li>
+<li aria-hidden="true" style="display: flex; height: 18px"><svg width="20" height="18" viewBox="0 0 20 18"><path d="M10 0v13" stroke="#7D8794" stroke-width="1.6"></path><path d="M6 10l4 5 4-5" fill="none" stroke="#7D8794" stroke-width="1.6" stroke-linejoin="round"></path></svg></li>
+<li style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6"></circle></svg><span style="flex: 0 0 220px; display: flex; gap: 8px; padding: 6px 10px; border: 1px solid #C3CAD3; border-radius: 6px"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">80</span>Router cutting</span><span style="font-size: 12px; padding: 2px 8px; border: 1px dashed #C26A00; border-radius: 10px; color: #7A4100">NG silang → pisah</span></li>
+<li aria-hidden="true" style="display: flex; height: 18px"><svg width="20" height="18" viewBox="0 0 20 18"><path d="M10 0v13" stroke="#7D8794" stroke-width="1.6"></path><path d="M6 10l4 5 4-5" fill="none" stroke="#7D8794" stroke-width="1.6" stroke-linejoin="round"></path></svg></li>
+<li style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="14" height="14" fill="none" stroke="#16191D" stroke-width="1.6"></rect></svg><span style="flex: 0 0 220px; display: flex; gap: 8px; padding: 6px 10px; border: 1px solid #C3CAD3; border-radius: 6px"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">90</span>Final visual inspection</span><span style="font-size: 12px; padding: 2px 8px; border: 1px dashed #C26A00; border-radius: 10px; color: #7A4100">NG → 75</span></li>
+<li aria-hidden="true" style="display: flex; height: 18px"><svg width="20" height="18" viewBox="0 0 20 18"><path d="M10 0v13" stroke="#7D8794" stroke-width="1.6"></path><path d="M6 10l4 5 4-5" fill="none" stroke="#7D8794" stroke-width="1.6" stroke-linejoin="round"></path></svg></li>
+<li style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#16191D" stroke-width="1.6"></circle></svg><span style="flex: 0 0 220px; display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid #C3CAD3; border-radius: 6px"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">100</span>Packing<span role="img" aria-label="Proses general" style="margin-left: auto; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; line-height: 16px; padding: 0 5px; border-radius: 4px; background: #DDF1EE; color: #0B5A50">G</span></span></li>
+<li aria-hidden="true" style="display: flex; height: 18px"><svg width="20" height="18" viewBox="0 0 20 18"><path d="M10 0v13" stroke="#7D8794" stroke-width="1.6"></path><path d="M6 10l4 5 4-5" fill="none" stroke="#7D8794" stroke-width="1.6" stroke-linejoin="round"></path></svg></li>
+<li style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h12" fill="none" stroke="#16191D" stroke-width="1.6" stroke-linecap="round"></path><path d="M11 5l5 5-5 5" fill="none" stroke="#16191D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="flex: 0 0 220px; display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid #C3CAD3; border-radius: 6px"><span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">110</span>Shipping<span role="img" aria-label="Proses general" style="margin-left: auto; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; line-height: 16px; padding: 0 5px; border-radius: 4px; background: #DDF1EE; color: #0B5A50">G</span></span></li>
+</ol>
+</section>
+
+</div>
+
+</main>
+</div>
+</div>
+</body>
+</html>
