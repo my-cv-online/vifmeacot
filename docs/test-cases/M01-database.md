@@ -2,7 +2,7 @@
 
 Milestone: M1 · Kebutuhan: P1-13 (operasional), `docs/10-milestones.md` M1,
 `docs/04-data-model.md`, `docs/06-rules.md` §1, §5, §7, `docs/11-testing.md` §2–3 · User story: —
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 17 dari 30 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 30 lulus
 
 Test aturan (fixture 32 aturan dan baseline) ada di `rules.md` (`TC-RULE-*`) dan diotomatisasi di
 milestone ini. Test karakterisasi trigger (TC-M01-021 sampai 028) menguji skema yang sudah ada
@@ -32,7 +32,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 | TC-M01-017 | Pemetaan error PostgreSQL, termasuk saat COMMIT | integrasi | lulus |
 | TC-M01-018 | `LockPackage` mengunci baris paket | integrasi | lulus |
 | TC-M01-019 | `store.Open` membuat pool dengan pengaturan sesi | integrasi | lulus |
-| TC-M01-020 | Query sqlc pengguna dan paket | integrasi | belum dibuat |
+| TC-M01-020 | Query sqlc pengguna dan paket | integrasi | lulus |
 | TC-M01-021 | `failure_chains.s` mengikuti severity effect | integrasi | lulus |
 | TC-M01-022 | `rpn` dan `new_rpn` dihitung database | integrasi | lulus |
 | TC-M01-023 | `version` hanya naik untuk perubahan bermakna | integrasi | lulus |
@@ -331,7 +331,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   mengembalikan 6 pengguna urut username tanpa kolom hash kata sandi; `ListPackages` mengembalikan
   `GENERAL` (general) dan `PS-07` (model); id bertipe `uuid.UUID` dan waktu `time.Time`.
 - **Test otomatis:** `backend/internal/store/queries_test.go` › `TestQueries_TC_M01_020`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-021 — `failure_chains.s` mengikuti severity effect
 

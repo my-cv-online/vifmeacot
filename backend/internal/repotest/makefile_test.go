@@ -22,6 +22,7 @@ func TestTargets_TC_M00_015(t *testing.T) {
 		"lint":  {"golangci-lint", "npm run check", "npm run lint", "redocly", "lint api/openapi.yaml"},
 		"build": {"npm run build", "backend/internal/webui/dist", "go build", "./backend/cmd/pfmea"},
 		"check": {"gen", "lint", "test", "test-rules"},
+		"gen":   {"sqlc", "generate"},
 	}
 	for target, parts := range want {
 		t.Run(target, func(t *testing.T) {
@@ -62,7 +63,6 @@ func TestPlaceholders_TC_M00_016(t *testing.T) {
 		"migrate-down": "M1",
 		"seed":         "M1",
 		"test-rules":   "M1",
-		"gen":          "M1",
 		"e2e":          "M2",
 		"perf":         "M13",
 	}

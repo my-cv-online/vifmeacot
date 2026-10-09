@@ -121,9 +121,15 @@ check:
 
 # Target milestone berikutnya: hanya mencetak kapan tersedia, keluar dengan kode 0.
 
-# Target berikut tersedia mulai M1 (gen lengkap mulai M2).
-## migrate, migrate-down, seed, test-rules, gen: available from M1
-migrate migrate-down seed test-rules gen:
+# gen membuat ulang kode hasil generator; hasilnya di-commit dan tidak boleh diedit manual.
+# TODO(M2): oapi-codegen (api/oapi-codegen.yaml) dan openapi-typescript.
+## gen: regenerate code (sqlc)
+gen:
+	"$(BIN)/sqlc" generate
+
+# Target berikut tersedia mulai M1.
+## migrate, migrate-down, seed, test-rules: available from M1
+migrate migrate-down seed test-rules:
 	@echo "make $@: available from M1"
 
 # e2e tersedia mulai M2.
