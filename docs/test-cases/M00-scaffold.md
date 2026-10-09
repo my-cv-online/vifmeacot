@@ -3,23 +3,23 @@
 Milestone: M0 · Kebutuhan: P1-13 (konfigurasi lewat environment variable, endpoint health),
 `docs/10-milestones.md` M0, `docs/03-architecture.md` §2–3, §8 · User story: — (E2E Playwright
 baru dipakai mulai M2)
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 4 dari 26 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 9 dari 26 lulus
 
 ## Ringkasan
 
 | ID | Judul | Level | Status |
 | --- | --- | --- | --- |
-| TC-M00-001 | `/healthz` menjawab 200 selama proses berjalan | unit | belum dibuat |
-| TC-M00-002 | `/readyz` menjawab 200 bila tidak ada pemeriksaan terdaftar | unit | belum dibuat |
-| TC-M00-003 | `/readyz` menjawab 200 bila semua pemeriksaan lulus | unit | belum dibuat |
-| TC-M00-004 | `/readyz` menjawab 503 bila ada pemeriksaan gagal atau melewati batas waktu | unit | belum dibuat |
+| TC-M00-001 | `/healthz` menjawab 200 selama proses berjalan | unit | lulus |
+| TC-M00-002 | `/readyz` menjawab 200 bila tidak ada pemeriksaan terdaftar | unit | lulus |
+| TC-M00-003 | `/readyz` menjawab 200 bila semua pemeriksaan lulus | unit | lulus |
+| TC-M00-004 | `/readyz` menjawab 503 bila ada pemeriksaan gagal atau melewati batas waktu | unit | lulus |
 | TC-M00-005 | Konfigurasi memasang semua nilai bawaan | unit | lulus |
 | TC-M00-006 | `DATABASE_URL` dan `APP_BASE_URL` kosong dilaporkan sekaligus | unit | lulus |
 | TC-M00-007 | Semua nilai konfigurasi yang salah dilaporkan sekaligus | unit | lulus |
 | TC-M00-008 | `DEV_FAKE_TODAY` hanya dipakai bila `DEV_MODE=true` | unit | lulus |
 | TC-M00-009 | SPA belum di-build → "UI not built yet" | unit | belum dibuat |
 | TC-M00-010 | Path non-API yang tidak dikenal mendapat `index.html` | unit | belum dibuat |
-| TC-M00-011 | Path `/api/...` yang tidak dikenal mendapat 404 Problem, bukan `index.html` | unit | belum dibuat |
+| TC-M00-011 | Path `/api/...` yang tidak dikenal mendapat 404 Problem, bukan `index.html` | unit | lulus |
 | TC-M00-012 | Aset ber-hash mendapat header cache permanen; aset yang tidak ada 404 | unit | belum dibuat |
 | TC-M00-013 | Binary `pfmea`: usage, subcommand milestone berikutnya, konfigurasi salah | unit | belum dibuat |
 | TC-M00-014 | `pfmea serve` berjalan, menjawab `/healthz`, lalu berhenti dengan rapi | integrasi | belum dibuat |
@@ -49,7 +49,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 4 dari 26 lulus
     application/json`.
   - Header `Cache-Control: no-store` (status tidak boleh di-cache).
 - **Test otomatis:** `backend/internal/httpapi/health_test.go` › `TestHealthz_TC_M00_001`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-002 — `/readyz` menjawab 200 bila tidak ada pemeriksaan terdaftar
 
@@ -61,7 +61,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 4 dari 26 lulus
 - **Hasil yang diharapkan:**
   - Status 200, body `{"status":"ready","checks":[]}`, `Cache-Control: no-store`.
 - **Test otomatis:** `backend/internal/httpapi/health_test.go` › `TestReadyz_TC_M00_002`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-003 — `/readyz` menjawab 200 bila semua pemeriksaan lulus
 
@@ -74,7 +74,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 4 dari 26 lulus
   - Status 200, `status` = `ready`.
   - `checks` berisi `alpha` dan `beta` (urutan pendaftaran) dengan status `ok`.
 - **Test otomatis:** `backend/internal/httpapi/health_test.go` › `TestReadyz_TC_M00_003`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-004 — `/readyz` menjawab 503 bila ada pemeriksaan gagal atau melewati batas waktu
 
@@ -93,7 +93,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 4 dari 26 lulus
   - Respons datang tidak lama setelah batas waktu (pemeriksaan dijalankan paralel, tidak
     menggantung).
 - **Test otomatis:** `backend/internal/httpapi/health_test.go` › `TestReadyz_TC_M00_004`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-005 — Konfigurasi memasang semua nilai bawaan
 
@@ -206,7 +206,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 4 dari 26 lulus
     `"code":"not_found"`.
   - Body tidak memuat isi `index.html`; tidak ada redirect 301 untuk `/api`.
 - **Test otomatis:** `backend/internal/httpapi/server_test.go` › `TestRouter_TC_M00_011`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-012 — Aset ber-hash mendapat header cache permanen; aset yang tidak ada 404
 
