@@ -39,7 +39,7 @@ func TestHandler_TC_M00_009(t *testing.T) {
 	for _, target := range []string{"/", "/packages"} {
 		rec := get(h, http.MethodGet, target)
 		if rec.Code != http.StatusServiceUnavailable {
-			t.Errorf("%s: status = %d, ingin 503", target, rec.Code)
+			t.Errorf("%s: status = %d, want 503", target, rec.Code)
 		}
 		if ct := rec.Header().Get("Content-Type"); ct != "text/plain; charset=utf-8" {
 			t.Errorf("%s: Content-Type = %q", target, ct)
@@ -59,17 +59,17 @@ func TestHandler_TC_M00_010(t *testing.T) {
 	for _, target := range []string{"/", "/packages/PS-07/pfmea", "/findings?rule=R04", "/index.html"} {
 		rec := get(h, http.MethodGet, target)
 		if rec.Code != http.StatusOK {
-			t.Errorf("%s: status = %d, ingin 200 (Location: %q)", target, rec.Code, rec.Header().Get("Location"))
+			t.Errorf("%s: status = %d, want 200 (Location: %q)", target, rec.Code, rec.Header().Get("Location"))
 			continue
 		}
 		if rec.Body.String() != indexHTML {
-			t.Errorf("%s: body = %q, ingin index.html", target, rec.Body.String())
+			t.Errorf("%s: body = %q, want index.html", target, rec.Body.String())
 		}
 		if ct := rec.Header().Get("Content-Type"); ct != "text/html; charset=utf-8" {
 			t.Errorf("%s: Content-Type = %q", target, ct)
 		}
 		if cc := rec.Header().Get("Cache-Control"); cc != "no-cache" {
-			t.Errorf("%s: Cache-Control = %q, ingin no-cache", target, cc)
+			t.Errorf("%s: Cache-Control = %q, want no-cache", target, cc)
 		}
 	}
 
@@ -90,7 +90,7 @@ func TestHandler_TC_M00_010(t *testing.T) {
 	// SPA hanya dibaca; method lain ditolak dengan 405 dan header Allow.
 	rec = get(h, http.MethodPost, "/packages")
 	if rec.Code != http.StatusMethodNotAllowed {
-		t.Errorf("POST /packages: status = %d, ingin 405", rec.Code)
+		t.Errorf("POST /packages: status = %d, want 405", rec.Code)
 	}
 	if allow := rec.Header().Get("Allow"); allow != "GET, HEAD" {
 		t.Errorf("POST /packages: Allow = %q", allow)
@@ -118,20 +118,20 @@ func TestHandler_TC_M00_012(t *testing.T) {
 	for _, target := range []string{"/_app/immutable/entry/missing.js", "/_app/immutable/", "/_app/immutable/entry"} {
 		rec := get(h, http.MethodGet, target)
 		if rec.Code != http.StatusNotFound {
-			t.Errorf("%s: status = %d, ingin 404", target, rec.Code)
+			t.Errorf("%s: status = %d, want 404", target, rec.Code)
 		}
 		if strings.Contains(rec.Body.String(), "INDEX") {
-			t.Errorf("%s: dijawab dengan index.html", target)
+			t.Errorf("%s: answered with index.html", target)
 		}
 		// Teks 404 berasal dari i18n (bahasa Inggris), bukan teks bawaan net/http.
 		if got := strings.TrimSpace(rec.Body.String()); got != "Not found" {
-			t.Errorf("%s: body = %q, ingin \"Not found\"", target, got)
+			t.Errorf("%s: body = %q, want \"Not found\"", target, got)
 		}
 	}
 
 	// Dotfile diperlakukan seperti path yang tidak dikenal: SPA, bukan isi file.
 	rec = get(h, http.MethodGet, "/.keep")
 	if rec.Code != http.StatusOK || rec.Body.String() != indexHTML {
-		t.Errorf("/.keep: %d %q, ingin index.html", rec.Code, rec.Body.String())
+		t.Errorf("/.keep: %d %q, want index.html", rec.Code, rec.Body.String())
 	}
 }

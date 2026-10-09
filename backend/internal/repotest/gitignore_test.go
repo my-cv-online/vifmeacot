@@ -23,14 +23,14 @@ func TestGitignore_TC_M00_017(t *testing.T) {
 	}
 	for _, p := range ignored {
 		if out, code := run(t, "git", "check-ignore", "-q", "--no-index", p); code != 0 {
-			t.Errorf("%s seharusnya diabaikan git (kode %d) %s", p, code, out)
+			t.Errorf("%s should be ignored by git (code %d) %s", p, code, out)
 		}
 	}
 
 	kept := []string{"backend/internal/webui/dist/.keep", ".env.example"}
 	for _, p := range kept {
 		if _, code := run(t, "git", "check-ignore", "-q", "--no-index", p); code != 1 {
-			t.Errorf("%s tidak boleh diabaikan git (kode %d)", p, code)
+			t.Errorf("%s must not be ignored by git (code %d)", p, code)
 		}
 	}
 }

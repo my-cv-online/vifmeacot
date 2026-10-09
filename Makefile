@@ -49,11 +49,13 @@ endef
 # db dan web juga nama folder, jadi semua target ditandai .PHONY supaya selalu dijalankan.
 .PHONY: help tools db dev test lint build check gen migrate migrate-down seed test-rules e2e perf
 
-## help: tampilkan daftar target
+# help menampilkan daftar target dari baris "## " (teks bantuan berbahasa Inggris).
+## help: list the targets
 help:
 	@grep -E '^## ' $(MAKEFILE_LIST) | sed -e 's/^## /  /'
 
-## tools: pasang alat Go yang versinya dipatok ke bin/ dan dependensi web (npm ci)
+# tools memasang alat Go yang versinya dipatok ke bin/ dan dependensi web (npm ci).
+## tools: install the pinned Go tools into bin/ and the web dependencies (npm ci)
 # TODO(M2): pasang juga Playwright Chromium (npx playwright install --with-deps chromium).
 tools:
 	@mkdir -p "$(BIN)"
@@ -64,11 +66,13 @@ tools:
 	$(call go-install,air,github.com/air-verse/air,$(AIR_VERSION))
 	cd web && npm ci --no-audit --no-fund
 
-## db: jalankan PostgreSQL 18 di Docker dan tunggu sampai sehat
+# db menjalankan PostgreSQL 18 di Docker dan menunggu sampai sehat.
+## db: start PostgreSQL 18 in Docker and wait until it is healthy
 db:
 	docker compose up -d --wait db
 
-## dev: server Go dengan live reload (air, :8080) + Vite (:5173) dengan proxy /api
+# dev menjalankan server Go dengan live reload (air, :8080) dan Vite (:5173) dengan proxy /api.
+## dev: Go server with live reload (:8080) + Vite dev server (:5173) proxying /api
 # .env dimuat ke environment supaya server Go dan proxy Vite memakai HTTP_ADDR yang sama.
 # Bila salah satu proses berhenti, yang lain ikut dihentikan; Ctrl+C menghentikan keduanya.
 dev:
@@ -79,11 +83,13 @@ dev:
 	trap 'kill $$air_pid $$vite_pid 2>/dev/null || true' EXIT INT TERM; \
 	wait -n
 
-## test: test Go (dengan -race) + Vitest
+# test menjalankan test Go (dengan -race) dan Vitest.
+## test: Go tests (with -race) + Vitest
 test:
 	go test -race $(GO_PKGS)
 	cd web && npm run test
 
+# lint menjalankan golangci-lint, svelte-check, eslint dan redocly.
 ## lint: golangci-lint, svelte-check, eslint, redocly
 # Telemetri dan cek versi redocly dimatikan karena jaringan pabrik bisa offline.
 lint:
@@ -93,7 +99,8 @@ lint:
 	REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true \
 		"$(NODE_BIN)/redocly" lint api/openapi.yaml --config api/redocly.yaml
 
-## build: build web → salin ke backend/internal/webui/dist → go build bin/pfmea
+# build: build web → salin ke backend/internal/webui/dist → go build bin/pfmea.
+## build: build the web app, embed it and build bin/pfmea
 # Isi dist/ lama dihapus dulu (kecuali .keep) supaya aset build sebelumnya tidak ikut tertanam.
 # Binary dibangun statis (CGO_ENABLED=0) untuk image distroless di M13.
 build:
@@ -102,7 +109,8 @@ build:
 	cp -R web/build/. backend/internal/webui/dist/
 	CGO_ENABLED=0 go build -trimpath -o "$(BIN)/pfmea" ./backend/cmd/pfmea
 
-## check: gen + lint + test + test-rules (wajib hijau sebelum setiap commit dan push)
+# check = gen + lint + test + test-rules; wajib hijau sebelum setiap commit dan push.
+## check: gen + lint + test + test-rules (must be green before every commit and push)
 # Dijalankan berurutan lewat sub-make, bukan sebagai prasyarat, supaya `make -j` tidak
 # menjalankan test sebelum gen selesai.
 check:
@@ -113,14 +121,17 @@ check:
 
 # Target milestone berikutnya: hanya mencetak kapan tersedia, keluar dengan kode 0.
 
-## migrate, migrate-down, seed, test-rules, gen: tersedia mulai M1 (gen lengkap mulai M2)
+# Target berikut tersedia mulai M1 (gen lengkap mulai M2).
+## migrate, migrate-down, seed, test-rules, gen: available from M1
 migrate migrate-down seed test-rules gen:
 	@echo "make $@: available from M1"
 
-## e2e: tersedia mulai M2
+# e2e tersedia mulai M2.
+## e2e: available from M2
 e2e:
 	@echo "make $@: available from M2"
 
-## perf: tersedia mulai M13
+# perf tersedia mulai M13.
+## perf: available from M13
 perf:
 	@echo "make $@: available from M13"

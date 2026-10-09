@@ -24,7 +24,7 @@ func repoRoot(t *testing.T) string {
 		}
 		parent := filepath.Dir(dir)
 		if parent == dir {
-			t.Fatal("go.mod tidak ditemukan di folder induk mana pun")
+			t.Fatal("go.mod not found in any parent folder")
 		}
 		dir = parent
 	}
@@ -59,7 +59,7 @@ func run(t *testing.T, name string, args ...string) (string, int) {
 		if errors.As(err, &exitErr) {
 			return string(out), exitErr.ExitCode()
 		}
-		t.Fatalf("%s %v gagal dijalankan: %v", name, args, err)
+		t.Fatalf("%s %v could not be run: %v", name, args, err)
 	}
 	return string(out), 0
 }

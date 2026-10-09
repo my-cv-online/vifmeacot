@@ -49,7 +49,7 @@ func decodeReady(t *testing.T, rec *httptest.ResponseRecorder) readyBody {
 	t.Helper()
 	var body readyBody
 	if err := json.Unmarshal(rec.Body.Bytes(), &body); err != nil {
-		t.Fatalf("body /readyz bukan JSON: %v\n%s", err, rec.Body.String())
+		t.Fatalf("/readyz body is not JSON: %v\n%s", err, rec.Body.String())
 	}
 	return body
 }
@@ -61,7 +61,7 @@ func TestHealthz_TC_M00_001(t *testing.T) {
 
 	rec := serve(h, http.MethodGet, "/healthz")
 	if rec.Code != http.StatusOK {
-		t.Fatalf("status = %d, ingin 200", rec.Code)
+		t.Fatalf("status = %d, want 200", rec.Code)
 	}
 	if got := strings.TrimSpace(rec.Body.String()); got != `{"status":"ok"}` {
 		t.Errorf("body = %s", got)
@@ -74,7 +74,7 @@ func TestHealthz_TC_M00_001(t *testing.T) {
 	}
 
 	if rec := serve(h, http.MethodHead, "/healthz"); rec.Code != http.StatusOK {
-		t.Errorf("HEAD status = %d, ingin 200", rec.Code)
+		t.Errorf("HEAD status = %d, want 200", rec.Code)
 	}
 }
 
@@ -83,7 +83,7 @@ func TestHealthz_TC_M00_001(t *testing.T) {
 func TestReadyz_TC_M00_002(t *testing.T) {
 	rec := serve(newTestHandler(nil, 0), http.MethodGet, "/readyz")
 	if rec.Code != http.StatusOK {
-		t.Fatalf("status = %d, ingin 200", rec.Code)
+		t.Fatalf("status = %d, want 200", rec.Code)
 	}
 	if got := strings.TrimSpace(rec.Body.String()); got != `{"status":"ready","checks":[]}` {
 		t.Errorf("body = %s", got)
@@ -103,7 +103,7 @@ func TestReadyz_TC_M00_003(t *testing.T) {
 	}, time.Second), http.MethodGet, "/readyz")
 
 	if rec.Code != http.StatusOK {
-		t.Fatalf("status = %d, ingin 200", rec.Code)
+		t.Fatalf("status = %d, want 200", rec.Code)
 	}
 	body := decodeReady(t, rec)
 	if body.Status != "ready" || len(body.Checks) != 2 {
@@ -111,7 +111,7 @@ func TestReadyz_TC_M00_003(t *testing.T) {
 	}
 	for i, name := range []string{"alpha", "beta"} {
 		if body.Checks[i].Name != name || body.Checks[i].Status != "ok" {
-			t.Errorf("checks[%d] = %+v, ingin %s ok", i, body.Checks[i], name)
+			t.Errorf("checks[%d] = %+v, want %s ok", i, body.Checks[i], name)
 		}
 	}
 }
@@ -136,10 +136,10 @@ func TestReadyz_TC_M00_004(t *testing.T) {
 	elapsed := time.Since(start)
 
 	if rec.Code != http.StatusServiceUnavailable {
-		t.Fatalf("status = %d, ingin 503", rec.Code)
+		t.Fatalf("status = %d, want 503", rec.Code)
 	}
 	if strings.Contains(rec.Body.String(), "secret") {
-		t.Errorf("body membocorkan error internal: %s", rec.Body.String())
+		t.Errorf("body leaks the internal error: %s", rec.Body.String())
 	}
 	body := decodeReady(t, rec)
 	want := map[string]string{"alpha": "ok", "beta": "failed", "gamma": "failed"}
@@ -148,11 +148,11 @@ func TestReadyz_TC_M00_004(t *testing.T) {
 	}
 	for _, c := range body.Checks {
 		if want[c.Name] != c.Status {
-			t.Errorf("pemeriksaan %s = %s, ingin %s", c.Name, c.Status, want[c.Name])
+			t.Errorf("check %s = %s, want %s", c.Name, c.Status, want[c.Name])
 		}
 	}
 	// Batas longgar supaya test tidak rapuh di CI, tetapi tetap jauh di bawah "menggantung".
 	if elapsed > 2*time.Second {
-		t.Errorf("/readyz butuh %v; pemeriksaan macet seharusnya dihentikan setelah %v", elapsed, timeout)
+		t.Errorf("/readyz took %v; a stuck check should be stopped after %v", elapsed, timeout)
 	}
 }

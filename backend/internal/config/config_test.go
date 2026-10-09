@@ -34,7 +34,7 @@ func problemsOf(t *testing.T, err error) []string {
 	t.Helper()
 	var verr *ValidationError
 	if !errors.As(err, &verr) {
-		t.Fatalf("error bukan *ValidationError: %v", err)
+		t.Fatalf("error is not a *ValidationError: %v", err)
 	}
 	return verr.Problems
 }
@@ -44,7 +44,7 @@ func problemsOf(t *testing.T, err error) []string {
 func TestLoad_TC_M00_005(t *testing.T) {
 	cfg, err := Load(envOf(requiredOnly()))
 	if err != nil {
-		t.Fatalf("Load gagal: %v", err)
+		t.Fatalf("Load failed: %v", err)
 	}
 
 	checks := []struct {
@@ -70,17 +70,17 @@ func TestLoad_TC_M00_005(t *testing.T) {
 	}
 	for _, c := range checks {
 		if c.got != c.want {
-			t.Errorf("%s = %v, ingin %v", c.name, c.got, c.want)
+			t.Errorf("%s = %v, want %v", c.name, c.got, c.want)
 		}
 	}
 
 	// Konfigurasi dicatat ke log saat start; kata sandi di DATABASE_URL harus disamarkan.
 	logged := cfg.LogValue().String()
 	if strings.Contains(logged, "secret") {
-		t.Errorf("LogValue membocorkan kata sandi: %s", logged)
+		t.Errorf("LogValue leaks the password: %s", logged)
 	}
 	if !strings.Contains(logged, "localhost:5432") {
-		t.Errorf("LogValue tidak memuat host database: %s", logged)
+		t.Errorf("LogValue lacks the database host: %s", logged)
 	}
 
 	// Kata sandi juga bisa dikirim lewat parameter query yang dibaca pgx.
@@ -89,16 +89,16 @@ func TestLoad_TC_M00_005(t *testing.T) {
 		env["DATABASE_URL"] = "postgres://pfmea@localhost:5432/pfmea?password=topsecret&sslpassword=keypass&sslmode=require"
 		cfg, err := Load(envOf(env))
 		if err != nil {
-			t.Fatalf("Load gagal: %v", err)
+			t.Fatalf("Load failed: %v", err)
 		}
 		logged := cfg.LogValue().String()
 		for _, secret := range []string{"topsecret", "keypass"} {
 			if strings.Contains(logged, secret) {
-				t.Errorf("LogValue membocorkan %q: %s", secret, logged)
+				t.Errorf("LogValue leaks %q: %s", secret, logged)
 			}
 		}
 		if !strings.Contains(logged, "sslmode=require") {
-			t.Errorf("parameter lain seharusnya tetap tampil: %s", logged)
+			t.Errorf("other parameters should stay visible: %s", logged)
 		}
 	})
 
@@ -107,7 +107,7 @@ func TestLoad_TC_M00_005(t *testing.T) {
 		env := requiredOnly()
 		env["DATABASE_URL"] = "postgres:///pfmea?host=/var/run/postgresql"
 		if _, err := Load(envOf(env)); err != nil {
-			t.Errorf("URL socket Unix ditolak: %v", err)
+			t.Errorf("Unix-socket URL rejected: %v", err)
 		}
 	})
 }
@@ -122,17 +122,17 @@ func TestLoad_TC_M00_006(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			_, err := Load(envOf(env))
 			if err == nil {
-				t.Fatal("Load seharusnya gagal")
+				t.Fatal("Load should fail")
 			}
 			problems := problemsOf(t, err)
 			want := []string{"DATABASE_URL is required", "APP_BASE_URL is required"}
 			if strings.Join(problems, "|") != strings.Join(want, "|") {
-				t.Errorf("masalah = %q, ingin %q", problems, want)
+				t.Errorf("problems = %q, want %q", problems, want)
 			}
 			// Teks error dipakai apa adanya saat start gagal: satu baris per masalah.
 			for _, p := range want {
 				if !strings.Contains(err.Error(), "\n  - "+p) {
-					t.Errorf("teks error tidak memuat baris %q:\n%s", p, err.Error())
+					t.Errorf("error text lacks the line %q:\n%s", p, err.Error())
 				}
 			}
 		})
@@ -156,7 +156,7 @@ func TestLoad_TC_M00_007(t *testing.T) {
 		"DEV_MODE":         "maybe",
 	}))
 	if err == nil {
-		t.Fatal("Load seharusnya gagal")
+		t.Fatal("Load should fail")
 	}
 	problems := problemsOf(t, err)
 
@@ -166,7 +166,7 @@ func TestLoad_TC_M00_007(t *testing.T) {
 		"RIVER_WORKERS", "RULE_PARALLELISM", "LOG_LEVEL", "METRICS_ALLOW", "DEV_MODE",
 	}
 	if len(problems) != len(vars) {
-		t.Errorf("jumlah masalah = %d, ingin %d: %q", len(problems), len(vars), problems)
+		t.Errorf("number of problems = %d, want %d: %q", len(problems), len(vars), problems)
 	}
 	for _, v := range vars {
 		found := 0
@@ -176,13 +176,13 @@ func TestLoad_TC_M00_007(t *testing.T) {
 			}
 		}
 		if found != 1 {
-			t.Errorf("variabel %s disebut %d kali, ingin 1: %q", v, found, problems)
+			t.Errorf("variable %s is mentioned %d times, want 1: %q", v, found, problems)
 		}
 	}
 	// RULE_POOL_SIZE sendiri bernilai benar; masalahnya ada di RULE_PARALLELISM yang lebih besar.
 	for _, p := range problems {
 		if strings.HasPrefix(p, "RULE_PARALLELISM ") && !strings.Contains(p, "RULE_POOL_SIZE") {
-			t.Errorf("pesan RULE_PARALLELISM tidak menyebut RULE_POOL_SIZE: %q", p)
+			t.Errorf("RULE_PARALLELISM message does not mention RULE_POOL_SIZE: %q", p)
 		}
 	}
 
@@ -194,10 +194,10 @@ func TestLoad_TC_M00_007(t *testing.T) {
 			env["APP_BASE_URL"] = bad
 			_, err := Load(envOf(env))
 			if err == nil {
-				t.Fatalf("APP_BASE_URL=%q seharusnya ditolak", bad)
+				t.Fatalf("APP_BASE_URL=%q should be rejected", bad)
 			}
 			if p := problemsOf(t, err); len(p) != 1 || !strings.HasPrefix(p[0], "APP_BASE_URL ") {
-				t.Errorf("masalah = %q", p)
+				t.Errorf("problems = %q", p)
 			}
 		})
 	}
@@ -226,37 +226,37 @@ func TestLoad_TC_M00_008(t *testing.T) {
 	t.Run("dev mode on", func(t *testing.T) {
 		cfg, err := Load(envOf(with(map[string]string{"DEV_MODE": "true", "DEV_FAKE_TODAY": "2026-10-08"})))
 		if err != nil {
-			t.Fatalf("Load gagal: %v", err)
+			t.Fatalf("Load failed: %v", err)
 		}
 		if cfg.DevFakeToday != "2026-10-08" || !cfg.DevMode {
 			t.Errorf("DevFakeToday = %q, DevMode = %v", cfg.DevFakeToday, cfg.DevMode)
 		}
 		if len(cfg.Warnings) != 0 {
-			t.Errorf("tidak boleh ada peringatan: %q", cfg.Warnings)
+			t.Errorf("no warning expected: %q", cfg.Warnings)
 		}
 	})
 
 	t.Run("dev mode off", func(t *testing.T) {
 		cfg, err := Load(envOf(with(map[string]string{"DEV_MODE": "false", "DEV_FAKE_TODAY": "2026-10-08"})))
 		if err != nil {
-			t.Fatalf("Load gagal: %v", err)
+			t.Fatalf("Load failed: %v", err)
 		}
 		if cfg.DevFakeToday != "" {
-			t.Errorf("DevFakeToday = %q, seharusnya diabaikan", cfg.DevFakeToday)
+			t.Errorf("DevFakeToday = %q, should be ignored", cfg.DevFakeToday)
 		}
 		if len(cfg.Warnings) != 1 || !strings.Contains(cfg.Warnings[0], "DEV_FAKE_TODAY") {
-			t.Errorf("peringatan = %q, ingin satu peringatan tentang DEV_FAKE_TODAY", cfg.Warnings)
+			t.Errorf("warnings = %q, want one warning about DEV_FAKE_TODAY", cfg.Warnings)
 		}
 	})
 
 	t.Run("wrong format", func(t *testing.T) {
 		_, err := Load(envOf(with(map[string]string{"DEV_MODE": "true", "DEV_FAKE_TODAY": "08-10-2026"})))
 		if err == nil {
-			t.Fatal("Load seharusnya gagal")
+			t.Fatal("Load should fail")
 		}
 		problems := problemsOf(t, err)
 		if len(problems) != 1 || !strings.HasPrefix(problems[0], "DEV_FAKE_TODAY ") || !strings.Contains(problems[0], "YYYY-MM-DD") {
-			t.Errorf("masalah = %q", problems)
+			t.Errorf("problems = %q", problems)
 		}
 	})
 }

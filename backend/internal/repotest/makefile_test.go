@@ -27,16 +27,16 @@ func TestTargets_TC_M00_015(t *testing.T) {
 		t.Run(target, func(t *testing.T) {
 			out, code := run(t, "make", "--no-print-directory", "-n", target)
 			if code != 0 {
-				t.Fatalf("make -n %s: kode keluar %d\n%s", target, code, out)
+				t.Fatalf("make -n %s: exit code %d\n%s", target, code, out)
 			}
 			// check memanggil gen dan test-rules yang di M0 masih placeholder, jadi hanya target
 			// lain yang tidak boleh mencetak "available from".
 			if target != "check" && strings.Contains(out, "available from") {
-				t.Errorf("make %s seharusnya sudah berjalan di M0:\n%s", target, out)
+				t.Errorf("make %s should already work in M0:\n%s", target, out)
 			}
 			for _, p := range parts {
 				if !strings.Contains(out, p) {
-					t.Errorf("resep make %s tidak memuat %q:\n%s", target, p, out)
+					t.Errorf("recipe of make %s lacks %q:\n%s", target, p, out)
 				}
 			}
 		})
@@ -50,7 +50,7 @@ func TestTargets_TC_M00_015(t *testing.T) {
 		order = append(order, m[1])
 	}
 	if strings.Join(order, " ") != "gen lint test test-rules" {
-		t.Errorf("urutan make check = %q, ingin \"gen lint test test-rules\"\n%s", order, out)
+		t.Errorf("make check order = %q, want \"gen lint test test-rules\"\n%s", order, out)
 	}
 }
 
@@ -70,10 +70,10 @@ func TestPlaceholders_TC_M00_016(t *testing.T) {
 		t.Run(target, func(t *testing.T) {
 			out, code := run(t, "make", "--no-print-directory", target)
 			if code != 0 {
-				t.Errorf("make %s: kode keluar %d, ingin 0\n%s", target, code, out)
+				t.Errorf("make %s: exit code %d, want 0\n%s", target, code, out)
 			}
 			if !strings.Contains(out, "available from "+milestone+"\n") {
-				t.Errorf("make %s: output %q tidak memuat \"available from %s\"", target, out, milestone)
+				t.Errorf("make %s: output %q lacks \"available from %s\"", target, out, milestone)
 			}
 		})
 	}

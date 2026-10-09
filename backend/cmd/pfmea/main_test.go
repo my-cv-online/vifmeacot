@@ -66,16 +66,16 @@ func TestRun_TC_M00_013(t *testing.T) {
 			var stdout, stderr syncBuffer
 			code := run(context.Background(), c.args, envOf(nil), &stdout, &stderr)
 			if code != c.wantCode {
-				t.Errorf("kode keluar = %d, ingin %d\nstdout: %s\nstderr: %s", code, c.wantCode, stdout.String(), stderr.String())
+				t.Errorf("exit code = %d, want %d\nstdout: %s\nstderr: %s", code, c.wantCode, stdout.String(), stderr.String())
 			}
 			for _, s := range c.wantStdout {
 				if !strings.Contains(stdout.String(), s) {
-					t.Errorf("stdout tidak memuat %q: %s", s, stdout.String())
+					t.Errorf("stdout lacks %q: %s", s, stdout.String())
 				}
 			}
 			for _, s := range c.wantStderr {
 				if !strings.Contains(stderr.String(), s) {
-					t.Errorf("stderr tidak memuat %q: %s", s, stderr.String())
+					t.Errorf("stderr lacks %q: %s", s, stderr.String())
 				}
 			}
 		})
@@ -119,13 +119,13 @@ func TestServe_TC_M00_014(t *testing.T) {
 	for addr == "" && time.Now().Before(deadline) {
 		select {
 		case code := <-done:
-			t.Fatalf("serve berhenti lebih awal dengan kode %d\nstdout: %s\nstderr: %s", code, stdout.String(), stderr.String())
+			t.Fatalf("serve stopped early with exit code %d\nstdout: %s\nstderr: %s", code, stdout.String(), stderr.String())
 		case <-time.After(20 * time.Millisecond):
 		}
 		addr = listeningAddr(stdout.String())
 	}
 	if addr == "" {
-		t.Fatalf("log \"listening\" tidak muncul\nstdout: %s", stdout.String())
+		t.Fatalf("log line \"listening\" did not appear\nstdout: %s", stdout.String())
 	}
 
 	resp, err := http.Get("http://" + addr + "/healthz")
@@ -134,21 +134,21 @@ func TestServe_TC_M00_014(t *testing.T) {
 	}
 	_ = resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		t.Errorf("/healthz status = %d, ingin 200", resp.StatusCode)
+		t.Errorf("/healthz status = %d, want 200", resp.StatusCode)
 	}
 
 	cancel()
 	select {
 	case code := <-done:
 		if code != 0 {
-			t.Errorf("kode keluar = %d, ingin 0\nstderr: %s", code, stderr.String())
+			t.Errorf("exit code = %d, want 0\nstderr: %s", code, stderr.String())
 		}
 	case <-time.After(15 * time.Second):
-		t.Fatal("serve tidak berhenti setelah konteks dibatalkan")
+		t.Fatal("serve did not stop after the context was cancelled")
 	}
 
 	if strings.Contains(stdout.String()+stderr.String(), "secret") {
-		t.Errorf("log membocorkan kata sandi database:\n%s", stdout.String())
+		t.Errorf("log leaks the database password:\n%s", stdout.String())
 	}
 }
 
@@ -176,7 +176,7 @@ func TestServeShutdown_TC_M00_014(t *testing.T) {
 		addr = listeningAddr(stdout.String())
 	}
 	if addr == "" {
-		t.Fatalf("log \"listening\" tidak muncul\nstdout: %s", stdout.String())
+		t.Fatalf("log line \"listening\" did not appear\nstdout: %s", stdout.String())
 	}
 
 	// Klien lambat: header lengkap dengan body 10 byte yang tidak pernah dikirim.
@@ -195,15 +195,15 @@ func TestServeShutdown_TC_M00_014(t *testing.T) {
 	select {
 	case code := <-done:
 		if code != 0 {
-			t.Errorf("kode keluar = %d, ingin 0\nstdout: %s", code, stdout.String())
+			t.Errorf("exit code = %d, want 0\nstdout: %s", code, stdout.String())
 		}
 	case <-time.After(5 * time.Second):
-		t.Fatal("klien lambat menahan shutdown")
+		t.Fatal("a slow client blocked the shutdown")
 	}
 	if elapsed := time.Since(start); elapsed > 3*time.Second {
-		t.Errorf("shutdown butuh %v", elapsed)
+		t.Errorf("shutdown took %v", elapsed)
 	}
 	if !strings.Contains(stdout.String(), "forcing close") {
-		t.Errorf("log tidak mencatat penutupan paksa:\n%s", stdout.String())
+		t.Errorf("log does not record the forced close:\n%s", stdout.String())
 	}
 }
