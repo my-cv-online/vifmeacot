@@ -46,7 +46,8 @@ define go-install
 	fi
 endef
 
-.PHONY: help tools test lint build check gen migrate migrate-down seed test-rules e2e perf
+# db dan web juga nama folder, jadi semua target ditandai .PHONY supaya selalu dijalankan.
+.PHONY: help tools db dev test lint build check gen migrate migrate-down seed test-rules e2e perf
 
 ## help: tampilkan daftar target
 help:
@@ -62,6 +63,21 @@ tools:
 	$(call go-install,golangci-lint,github.com/golangci/golangci-lint/v2/cmd/golangci-lint,$(GOLANGCI_LINT_VERSION))
 	$(call go-install,air,github.com/air-verse/air,$(AIR_VERSION))
 	cd web && npm ci --no-audit --no-fund
+
+## db: jalankan PostgreSQL 18 di Docker dan tunggu sampai sehat
+db:
+	docker compose up -d --wait db
+
+## dev: server Go dengan live reload (air, :8080) + Vite (:5173) dengan proxy /api
+# .env dimuat ke environment supaya server Go dan proxy Vite memakai HTTP_ADDR yang sama.
+# Bila salah satu proses berhenti, yang lain ikut dihentikan; Ctrl+C menghentikan keduanya.
+dev:
+	@test -f .env || { echo "missing .env: run cp .env.example .env"; exit 1; }
+	set -a; . ./.env; set +a; \
+	"$(BIN)/air" -c .air.toml & air_pid=$$!; \
+	(cd web && exec npm run dev) & vite_pid=$$!; \
+	trap 'kill $$air_pid $$vite_pid 2>/dev/null || true' EXIT INT TERM; \
+	wait -n
 
 ## test: test Go (dengan -race) + Vitest
 test:

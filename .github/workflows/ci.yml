@@ -76,6 +76,8 @@ jobs:
           for i in $(seq 1 50); do curl -fsS http://127.0.0.1:8080/healthz > /dev/null && break; sleep 0.2; done
           curl -fsS http://127.0.0.1:8080/healthz
           curl -fsS http://127.0.0.1:8080/ -o "$RUNNER_TEMP/index.html"
+          # Semua placeholder template sudah diganti SvelteKit (tidak ada yang tertelan komentar).
+          if grep -q '%sveltekit' "$RUNNER_TEMP/index.html"; then echo "unreplaced %sveltekit placeholder"; exit 1; fi
           # Deep link mendapat index.html yang sama; aset dirujuk dengan path absolut /_app/.
           curl -fsS http://127.0.0.1:8080/packages/PS-07/pfmea | cmp - "$RUNNER_TEMP/index.html"
           asset=$(grep -o '"/_app/immutable/[^"]*\.js"' "$RUNNER_TEMP/index.html" | head -1 | tr -d '"')
@@ -83,3 +85,16 @@ jobs:
           curl -fsSI "http://127.0.0.1:8080$asset" | tee "$RUNNER_TEMP/asset.headers"
           grep -qi '^cache-control: public, max-age=31536000, immutable' "$RUNNER_TEMP/asset.headers"
           kill "$server"
+
+      # Test case TC-M00-022: `make db` menjalankan PostgreSQL 18 yang sehat dengan JIT mati.
+      - name: TC-M00-022 make db starts PostgreSQL 18
+        run: |
+          cp .env.example .env
+          make db
+          version=$(docker compose exec -T db psql -U pfmea -d pfmea -Atc 'show server_version')
+          jit=$(docker compose exec -T db psql -U pfmea -d pfmea -Atc 'show jit')
+          echo "server_version=$version jit=$jit"
+          case "$version" in 18*) ;; *) exit 1 ;; esac
+          test "$jit" = off
+          docker compose down -v
+          rm .env

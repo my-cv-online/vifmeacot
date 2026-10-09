@@ -1,0 +1,23 @@
+# Konfigurasi air untuk `make dev`: membangun ulang dan menjalankan ulang `pfmea serve` setiap
+# kali file Go atau SQL di backend/ atau db/ berubah (live reload, docs/03-architecture.md §3.3).
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go build -o ./tmp/pfmea ./backend/cmd/pfmea"
+  entrypoint = ["./tmp/pfmea", "serve"]
+  include_dir = ["backend", "db"]
+  include_ext = ["go", "sql"]
+  # Hasil build web yang tertanam dan file test tidak memicu restart server.
+  exclude_dir = ["backend/internal/webui/dist"]
+  exclude_regex = ["_test\\.go$"]
+  delay = 200
+  # Kirim SIGINT dulu supaya server berhenti dengan rapi sebelum dijalankan ulang.
+  send_interrupt = true
+  kill_delay = "2s"
+
+[log]
+  time = false
+
+[misc]
+  clean_on_exit = true

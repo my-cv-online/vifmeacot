@@ -1,13 +1,13 @@
 # Daftar file yang tidak boleh masuk ke Git (rahasia, hasil build, laporan test).
-# Versi awal; M0 melengkapinya.
 
 # Rahasia lokal: .env tidak pernah di-commit, hanya contohnya.
 .env
 .env.*
 !.env.example
 
-# Hasil build Go dan web.
+# Hasil build Go dan web; tmp/ dipakai air (live reload `make dev`).
 /bin/
+/tmp/
 node_modules/
 .svelte-kit/
 web/build/

@@ -37,10 +37,22 @@ export const en = {
 	// Isi halaman yang layarnya dibangun di milestone berikutnya.
 	placeholder: {
 		message: 'This screen is not available yet.'
+	},
+	// Halaman error SPA (route tidak dikenal atau error saat memuat halaman).
+	error: {
+		notFound: 'Page not found',
+		generic: 'Something went wrong',
+		backToDashboard: 'Back to Dashboard'
 	}
 } as const;
 
 // pageTitle menyusun judul tab browser: "<halaman> · <nama aplikasi>".
 export function pageTitle(page: string): string {
 	return `${page} · ${en.app.name}`;
+}
+
+// errorTitle memilih judul halaman error dari status HTTP: 404 untuk route yang tidak dikenal,
+// pesan umum untuk error lain.
+export function errorTitle(status: number): string {
+	return status === 404 ? en.error.notFound : en.error.generic;
 }

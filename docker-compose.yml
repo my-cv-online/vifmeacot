@@ -1,0 +1,33 @@
+# Docker Compose untuk pengembangan: service db (PostgreSQL 18) yang dijalankan `make db`.
+# Profil "prod" (app + db + caddy) dan "perf" ditambahkan di M13 (docs/03-architecture.md §8).
+# Nilai ${...} dibaca dari .env (salinan .env.example); bila .env tidak ada, nilai bawaannya dipakai.
+name: pfmea
+
+services:
+  db:
+    image: postgres:18
+    # JIT dimatikan karena memperlambat query view dan aturan (docs/03-architecture.md §4).
+    command: ["postgres", "-c", "jit=off"]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-pfmea}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pfmea-dev}
+      POSTGRES_DB: ${POSTGRES_DB:-pfmea}
+    # Hanya terbuka di komputer ini (127.0.0.1); port host bisa diubah lewat PG_PORT di .env.
+    ports:
+      - "127.0.0.1:${PG_PORT:-5432}:5432"
+    # PostgreSQL 18 menyimpan data di /var/lib/postgresql/18/docker, jadi volume dipasang di
+    # /var/lib/postgresql (bukan .../data seperti versi lama).
+    volumes:
+      - pgdata:/var/lib/postgresql
+    # Sehat bila server menerima koneksi TCP; server sementara saat inisialisasi hanya membuka
+    # socket, jadi tidak ikut dianggap sehat.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+      start_period: 5s
+
+volumes:
+  # Data database pengembangan; dihapus dengan `docker compose down -v`.
+  pgdata:

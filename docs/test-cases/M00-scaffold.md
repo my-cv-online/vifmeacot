@@ -3,7 +3,7 @@
 Milestone: M0 · Kebutuhan: P1-13 (konfigurasi lewat environment variable, endpoint health),
 `docs/10-milestones.md` M0, `docs/03-architecture.md` §2–3, §8 · User story: — (E2E Playwright
 baru dipakai mulai M2)
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 27 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 24 dari 27 lulus
 
 ## Ringkasan
 
@@ -23,19 +23,19 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 27 lulus
 | TC-M00-012 | Aset ber-hash mendapat header cache permanen; aset yang tidak ada 404 | unit | lulus |
 | TC-M00-013 | Binary `pfmea`: usage, subcommand milestone berikutnya, konfigurasi salah | unit | lulus |
 | TC-M00-014 | `pfmea serve` berjalan, menjawab `/healthz`, lalu berhenti dengan rapi | integrasi | lulus |
-| TC-M00-015 | Target Makefile yang berjalan di M0 tersedia | integrasi | belum dibuat |
-| TC-M00-016 | Target Makefile milestone berikutnya mencetak "available from M<n>" dengan kode 0 | integrasi | belum dibuat |
-| TC-M00-017 | `.gitignore` mengabaikan rahasia dan hasil build | integrasi | belum dibuat |
+| TC-M00-015 | Target Makefile yang berjalan di M0 tersedia | integrasi | lulus |
+| TC-M00-016 | Target Makefile milestone berikutnya mencetak "available from M<n>" dengan kode 0 | integrasi | lulus |
+| TC-M00-017 | `.gitignore` mengabaikan rahasia dan hasil build | integrasi | lulus |
 | TC-M00-018 | App shell menampilkan teks bahasa Inggris dari `en.ts` | unit | lulus |
 | TC-M00-019 | Menu aktif dan breadcrumb sesuai halaman | unit | lulus |
 | TC-M00-020 | Proxy dev Vite meneruskan `/api` (termasuk WebSocket) ke server Go | unit | lulus |
 | TC-M00-021 | `make build` lalu `./bin/pfmea serve` menyajikan SPA di :8080 | integrasi | lulus |
-| TC-M00-022 | `make db` menjalankan PostgreSQL 18 yang sehat dengan JIT mati | integrasi | belum dibuat |
+| TC-M00-022 | `make db` menjalankan PostgreSQL 18 yang sehat dengan JIT mati | integrasi | lulus |
 | TC-M00-023 | `make tools` + `make check` hijau di CI dan tidak mengubah file | integrasi | belum dibuat |
-| TC-M00-024 | `make dev` menampilkan app shell di :5173 dan `/healthz` di :8080 | manual | belum dibuat |
+| TC-M00-024 | `make dev` menampilkan app shell di :5173 dan `/healthz` di :8080 | manual | lulus |
 | TC-M00-025 | Clone baru mengikuti panduan instalasi sampai `make check` hijau | manual | belum dibuat |
 | TC-M00-026 | Komentar bahasa Indonesia dan teks tampilan bahasa Inggris | manual | belum dibuat |
-| TC-M00-027 | Path SPA yang tidak dikenal menampilkan halaman error bahasa Inggris dari `en.ts` | unit | belum dibuat |
+| TC-M00-027 | Path SPA yang tidak dikenal menampilkan halaman error bahasa Inggris dari `en.ts` | unit | lulus |
 
 ## TC-M00-001 — `/healthz` menjawab 200 selama proses berjalan
 
@@ -280,7 +280,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 27 lulus
     `backend/internal/webui/dist` dan menjalankan `go build`.
   - `check` menjalankan `gen`, `lint`, `test`, `test-rules` dalam urutan itu.
 - **Test otomatis:** `backend/internal/repotest/makefile_test.go` › `TestTargets_TC_M00_015`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-016 — Target Makefile milestone berikutnya mencetak "available from M<n>" dengan kode 0
 
@@ -296,7 +296,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 27 lulus
   2. Mencetak "available from M2", kode keluar 0.
   3. Mencetak "available from M13", kode keluar 0.
 - **Test otomatis:** `backend/internal/repotest/makefile_test.go` › `TestPlaceholders_TC_M00_016`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-017 — `.gitignore` mengabaikan rahasia dan hasil build
 
@@ -314,7 +314,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 27 lulus
   1. Semua diabaikan.
   2. Keduanya tidak diabaikan.
 - **Test otomatis:** `backend/internal/repotest/gitignore_test.go` › `TestGitignore_TC_M00_017`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-018 — App shell menampilkan teks bahasa Inggris dari `en.ts`
 
@@ -406,7 +406,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 27 lulus
   - Versi server diawali `18`, `jit` = `off`.
 - **Test otomatis:** `.github/workflows/ci.yml` › langkah
   `TC-M00-022 make db starts PostgreSQL 18`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-023 — `make tools` + `make check` hijau di CI dan tidak mengubah file
 
@@ -440,7 +440,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 27 lulus
   - `/healthz` → 200; `/api/v1/nothing` lewat proxy Vite → 404 Problem dari server Go.
   - Server Go di-build ulang dan dijalankan ulang otomatis (live reload).
 - **Test otomatis:** — (manual)
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-025 — Clone baru mengikuti panduan instalasi sampai `make check` hijau
 
@@ -489,4 +489,4 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 27 lulus
   2. App shell tetap tampil, halaman menampilkan "Page not found" dan tautan "Back to Dashboard".
 - **Test otomatis:** `web/src/lib/i18n/en.test.ts` ›
   `TC-M00-027 unknown SPA routes show an English error page`
-- **Status:** belum dibuat
+- **Status:** lulus
