@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"math"
 	"net"
 	"net/http"
 	"os"
@@ -19,7 +20,9 @@ import (
 	"pfmea/backend/internal/config"
 	"pfmea/backend/internal/httpapi"
 	"pfmea/backend/internal/i18n"
+	"pfmea/backend/internal/store"
 	"pfmea/backend/internal/webui"
+	"pfmea/db"
 )
 
 // Batas waktu server HTTP.
@@ -132,10 +135,24 @@ func serveWith(ctx context.Context, getenv func(string) string, stdout, stderr i
 	// Config mengimplementasikan slog.LogValuer, jadi kata sandi database sudah disamarkan.
 	logger.InfoContext(ctx, "starting", slog.Any("config", cfg))
 
-	// TODO(M1): daftarkan pemeriksaan kesiapan "database reachable and migrations current".
+	// Pool dibuat tanpa langsung konek, jadi server tetap start walaupun database belum siap;
+	// keadaan database dilaporkan oleh /readyz.
+	pool, err := store.Open(ctx, cfg.DatabaseURL, int32(min(cfg.DBMaxConns, math.MaxInt32)))
+	if err != nil {
+		logger.ErrorContext(ctx, "open database pool failed", slog.Any("error", err))
+		return exitError
+	}
+	defer pool.Close()
+
 	handler := httpapi.NewHandler(httpapi.Options{
 		Logger: logger,
-		UI:     webui.Handler(webui.Files()),
+		Readiness: []httpapi.ReadinessCheck{{
+			// "database reachable and migrations current" (docs/03-architecture.md §8): versi
+			// dibaca tanpa goose supaya pemeriksaan tidak pernah mengubah database.
+			Name:  "database",
+			Check: func(ctx context.Context) error { return db.CheckSchema(ctx, pool) },
+		}},
+		UI: webui.Handler(webui.Files()),
 	})
 
 	ln, err := new(net.ListenConfig).Listen(ctx, "tcp", cfg.HTTPAddr)

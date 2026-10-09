@@ -21,7 +21,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 | TC-M01-006 | `seed-demo` menolak tanpa `DEV_MODE=true` | integrasi | lulus |
 | TC-M01-007 | `seed-demo` memuat data demo sekali | integrasi | lulus |
 | TC-M01-008 | `seed-demo --reset` memulai dari nol | integrasi | lulus |
-| TC-M01-009 | `/readyz` memeriksa database dan migrasi | integrasi | belum dibuat |
+| TC-M01-009 | `/readyz` memeriksa database dan migrasi | integrasi | lulus |
 | TC-M01-010 | Target Makefile M1 berjalan | integrasi | belum dibuat |
 | TC-M01-011 | `make db migrate seed` dan `make migrate-down` di CI | integrasi | belum dibuat |
 | TC-M01-012 | `testdb.New` memberi database demo yang terisolasi | integrasi | lulus |
@@ -174,7 +174,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   3. 503 dalam waktu kurang dari 3 detik.
   - `/healthz` 200 di ketiga keadaan.
 - **Test otomatis:** `backend/cmd/pfmea/readiness_test.go` › `TestReadyzDatabase_TC_M01_009`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-010 — Target Makefile M1 berjalan
 

@@ -294,7 +294,10 @@ during upgrades.
 - `/healthz` (process alive) and `/readyz` (database reachable and migrations current).
   Bodies (decided in M0): `/healthz` → 200 `{"status":"ok"}`; `/readyz` runs the registered
   checks in parallel (2 s timeout each) → 200 `{"status":"ready","checks":[{"name":…,"status":"ok"}]}`
-  or 503 `{"status":"not_ready",…}` with `failed` checks; error details go to the log only. Both
+  or 503 `{"status":"not_ready",…}` with `failed` checks; error details go to the log only. The
+  check `database` (M1) reads `max(version_id)` from `goose_db_version` through the server pool
+  and compares it with the latest embedded migration; it does not call goose, which would create
+  its table in an empty database (`db.CheckSchema`, also used by `seed-demo`). Both
   send `Cache-Control: no-store`. Unknown paths under `/api` answer 404 Problem `not_found`,
   never the SPA; a binary built without the web build answers 503 "UI not built yet".
 
