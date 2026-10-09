@@ -2,7 +2,7 @@
 
 Milestone: M1 · Kebutuhan: P1-13 (operasional), `docs/10-milestones.md` M1,
 `docs/04-data-model.md`, `docs/06-rules.md` §1, §5, §7, `docs/11-testing.md` §2–3 · User story: —
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 9 dari 30 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 17 dari 30 lulus
 
 Test aturan (fixture 32 aturan dan baseline) ada di `rules.md` (`TC-RULE-*`) dan diotomatisasi di
 milestone ini. Test karakterisasi trigger (TC-M01-021 sampai 028) menguji skema yang sudah ada
@@ -33,14 +33,14 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 | TC-M01-018 | `LockPackage` mengunci baris paket | integrasi | lulus |
 | TC-M01-019 | `store.Open` membuat pool dengan pengaturan sesi | integrasi | lulus |
 | TC-M01-020 | Query sqlc pengguna dan paket | integrasi | belum dibuat |
-| TC-M01-021 | `failure_chains.s` mengikuti severity effect | integrasi | belum dibuat |
-| TC-M01-022 | `rpn` dan `new_rpn` dihitung database | integrasi | belum dibuat |
-| TC-M01-023 | `version` hanya naik untuk perubahan bermakna | integrasi | belum dibuat |
-| TC-M01-024 | `content_version` naik satu per statement per paket | integrasi | belum dibuat |
-| TC-M01-025 | `audit_log` hanya menyimpan kolom yang berubah | integrasi | belum dibuat |
-| TC-M01-026 | Hapus baris yang masih dipakai ditolak (RESTRICT, SQLSTATE 23001) | integrasi | belum dibuat |
-| TC-M01-027 | Referensi lintas paket ditolak | integrasi | belum dibuat |
-| TC-M01-028 | `snake_to_camel` | integrasi | belum dibuat |
+| TC-M01-021 | `failure_chains.s` mengikuti severity effect | integrasi | lulus |
+| TC-M01-022 | `rpn` dan `new_rpn` dihitung database | integrasi | lulus |
+| TC-M01-023 | `version` hanya naik untuk perubahan bermakna | integrasi | lulus |
+| TC-M01-024 | `content_version` naik satu per statement per paket | integrasi | lulus |
+| TC-M01-025 | `audit_log` hanya menyimpan kolom yang berubah | integrasi | lulus |
+| TC-M01-026 | Hapus baris yang masih dipakai ditolak (RESTRICT, SQLSTATE 23001) | integrasi | lulus |
+| TC-M01-027 | Referensi lintas paket ditolak | integrasi | lulus |
+| TC-M01-028 | `snake_to_camel` | integrasi | lulus |
 | TC-M01-029 | Parser fixture dan pencocokan hasil aturan | unit | belum dibuat |
 | TC-M01-030 | Satu file SQL dan satu fixture untuk setiap aturan Tahap 1 | unit | belum dibuat |
 
@@ -343,7 +343,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Hasil yang diharapkan:** setiap kali, `s` semua chain di failure mode yang terlibat = S
   effect tertinggi; failure mode tanpa effect → `s` NULL.
 - **Test otomatis:** `backend/internal/store/schema_test.go` › `TestChainSeverity_TC_M01_021`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-022 — `rpn` dan `new_rpn` dihitung database
 
@@ -354,7 +354,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Hasil yang diharapkan:** `rpn` = s × o × d; NULL bila ada faktor NULL; `new_rpn` =
   new_s × new_o × new_d.
 - **Test otomatis:** `backend/internal/store/schema_test.go` › `TestRPN_TC_M01_022`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-023 — `version` hanya naik untuk perubahan bermakna
 
@@ -364,7 +364,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Langkah:** ubah `o` chain; `UPDATE … SET o = o`; ubah S effect (mengubah `s` dan `rpn` chain).
 - **Hasil yang diharapkan:** version chain +1; tetap; tetap (version effect +1).
 - **Test otomatis:** `backend/internal/store/schema_test.go` › `TestVersion_TC_M01_023`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-024 — `content_version` naik satu per statement per paket
 
@@ -376,7 +376,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   `check_runs`/`findings`.
 - **Hasil yang diharapkan:** +1; +1; +1 untuk masing-masing paket; +0; +1 total; +0.
 - **Test otomatis:** `backend/internal/store/schema_test.go` › `TestContentVersion_TC_M01_024`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-025 — `audit_log` hanya menyimpan kolom yang berubah
 
@@ -389,7 +389,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   tidak ada baris untuk no-op, untuk perubahan `s` chain atau untuk kenaikan `content_version`;
   insert dan delete menyimpan baris lengkap.
 - **Test otomatis:** `backend/internal/store/schema_test.go` › `TestAudit_TC_M01_025`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-026 — Hapus baris yang masih dipakai ditolak (RESTRICT)
 
@@ -403,7 +403,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   baris terhapus; yang ketiga terhapus beserta karakteristik dan alurnya. (Diperbarui saat M1:
   test menunjukkan RESTRICT memakai 23001.)
 - **Test otomatis:** `backend/internal/store/schema_test.go` › `TestRestrict_TC_M01_026`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-027 — Referensi lintas paket ditolak
 
@@ -414,7 +414,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   yang menunjuk karakteristik GENERAL.
 - **Hasil yang diharapkan:** keduanya 23503.
 - **Test otomatis:** `backend/internal/store/schema_test.go` › `TestCrossPackage_TC_M01_027`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-028 — `snake_to_camel`
 
@@ -424,7 +424,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Langkah:** `snake_to_camel` untuk `sample_freq`, `ep_verify_freq`, `d`, `package_id`, NULL.
 - **Hasil yang diharapkan:** `sampleFreq`, `epVerifyFreq`, `d`, `packageId`, NULL.
 - **Test otomatis:** `backend/internal/store/schema_test.go` › `TestSnakeToCamel_TC_M01_028`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-029 — Parser fixture dan pencocokan hasil aturan
 

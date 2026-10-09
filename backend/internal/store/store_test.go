@@ -294,6 +294,12 @@ func TestErrorMapping_TC_M01_017(t *testing.T) {
 	if !errors.Is(err, store.ErrNotNull) || !errors.As(err, &dbErr) || dbErr.Column != "name" {
 		t.Errorf("not null: err = %v, want ErrNotNull on column name", err)
 	}
+
+	// 6. ON DELETE RESTRICT (SQLSTATE 23001) dipetakan sama dengan foreign key.
+	err = exec("DELETE FROM process_steps WHERE id = $1", step50)
+	if !errors.Is(err, store.ErrForeignKey) || !errors.As(err, &dbErr) || dbErr.Code != "23001" {
+		t.Errorf("restrict delete: err = %v, want ErrForeignKey with SQLSTATE 23001", err)
+	}
 }
 
 // TestLockPackage_TC_M01_018 memastikan LockPackage mengembalikan ErrNotFound untuk paket yang

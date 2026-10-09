@@ -18,8 +18,8 @@ var (
 	ErrDuplicate = errors.New("duplicate value")
 	// ErrCheckViolation: pelanggaran check constraint (23514).
 	ErrCheckViolation = errors.New("check constraint violated")
-	// ErrForeignKey: pelanggaran foreign key (23503): referensi tidak ada, atau baris masih
-	// dipakai baris lain (RESTRICT) saat dihapus.
+	// ErrForeignKey: pelanggaran foreign key: referensi tidak ada (23503), atau baris masih
+	// dipakai baris lain saat dihapus (23001 restrict_violation untuk ON DELETE RESTRICT).
 	ErrForeignKey = errors.New("foreign key violated")
 	// ErrNotNull: kolom wajib bernilai NULL (23502).
 	ErrNotNull = errors.New("required value missing")
@@ -81,7 +81,7 @@ func kindOf(code string) error {
 		return ErrDuplicate
 	case code == "23514":
 		return ErrCheckViolation
-	case code == "23503":
+	case code == "23503", code == "23001":
 		return ErrForeignKey
 	case code == "23502":
 		return ErrNotNull
