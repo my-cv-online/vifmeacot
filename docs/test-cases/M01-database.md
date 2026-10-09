@@ -2,7 +2,8 @@
 
 Milestone: M1 · Kebutuhan: P1-13 (operasional), `docs/10-milestones.md` M1,
 `docs/04-data-model.md`, `docs/06-rules.md` §1, §5, §7, `docs/11-testing.md` §2–3 · User story: —
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 30 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 30 dari 30 lulus (TC-M01-012,
+015 dan 017 diperluas setelah review M1)
 
 Test aturan (fixture 32 aturan dan baseline) ada di `rules.md` (`TC-RULE-*`) dan diotomatisasi di
 milestone ini. Test karakterisasi trigger (TC-M01-021 sampai 028) menguji skema yang sudah ada
@@ -209,11 +210,19 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Langkah:**
   1. Dua test paralel memanggil `testdb.New`; test pertama menghapus PS-07.
   2. Periksa versi server, `jit`, data demo, nama database.
+  3. Jalankan test di proses terpisah tanpa Docker (`DOCKER_HOST` ke socket yang tidak ada) dan
+     tanpa `TEST_DATABASE_URL`.
+  4. `TEST_DATABASE_URL` tidak terjangkau dengan kata sandi `secret` di bagian `user:sandi@`, di
+     parameter `?password=`, dan dalam bentuk `key=value` (ditambahkan setelah review M1).
 - **Hasil yang diharapkan:**
   - Versi server 18, `jit` = off, 6 pengguna, PS-07 ada di test kedua (terisolasi).
-  - Database test dihapus setelah test selesai; template dibuat sekali per hash isi migrasi+seed.
-  - Tanpa Docker dan tanpa `TEST_DATABASE_URL` test gagal dengan pesan jelas (tidak di-skip).
-- **Test otomatis:** `backend/internal/testdb/testdb_test.go` › `TestNew_TC_M01_012`
+  - Database test dihapus setelah test selesai; template tidak dibangun ulang oleh `New`
+    berikutnya (database template yang sama, oid tidak berubah).
+  - Tanpa Docker dan tanpa `TEST_DATABASE_URL` test gagal (bukan di-skip, bukan menggantung)
+    dengan pesan yang menyebut Docker dan `TEST_DATABASE_URL`.
+  - Error `TEST_DATABASE_URL` yang tidak terjangkau tidak pernah memuat `secret`.
+- **Test otomatis:** `backend/internal/testdb/testdb_test.go` › `TestNew_TC_M01_012`,
+  `TestNoDocker_TC_M01_012`, `TestUnreachableServer_TC_M01_012`
 - **Status:** lulus
 
 ## TC-M01-013 — `testdb.NewEmpty` memberi database kosong
@@ -246,9 +255,11 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Level:** integrasi · **Kebutuhan:** `docs/03-architecture.md` §3.1, §5 (satu request = satu
   transaksi)
 - **Prasyarat:** database demo.
-- **Langkah:** fn sukses; fn mengembalikan error; fn panic.
+- **Langkah:** fn sukses; fn mengembalikan error; fn panic; fn mengakhiri goroutine-nya dengan
+  `runtime.Goexit` (seperti `t.Fatal` di dalam fn; ditambahkan setelah review M1).
 - **Hasil yang diharapkan:** perubahan tersimpan; tidak tersimpan dan error diteruskan; tidak
-  tersimpan dan panic diteruskan ke pemanggil.
+  tersimpan dan panic diteruskan ke pemanggil; pada `Goexit` transaksi tetap di-rollback: tidak
+  tersimpan, koneksi kembali ke pool dan tidak ada sesi "idle in transaction" yang menahan lock.
 - **Test otomatis:** `backend/internal/store/store_test.go` › `TestWithTxCommitRollback_TC_M01_015`
 - **Status:** lulus
 
@@ -260,7 +271,8 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Langkah:**
   1. fn mengembalikan error 40001 dua kali, lalu sukses.
   2. fn selalu mengembalikan error 40P01.
-  3. fn mengembalikan error 23505; konteks dibatalkan saat menunggu retry.
+  3. fn mengembalikan error 23505; fn mengembalikan 40001 dan konteks dibatalkan sebelum jeda
+     retry selesai.
   4. Deadlock nyata: dua transaksi mengubah dua baris dengan urutan terbalik.
 - **Hasil yang diharapkan:**
   1. fn dipanggil 3 kali, hasil sukses.
