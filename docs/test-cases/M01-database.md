@@ -210,8 +210,9 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Langkah:**
   1. Dua test paralel memanggil `testdb.New`; test pertama menghapus PS-07.
   2. Periksa versi server, `jit`, data demo, nama database.
-  3. Jalankan test di proses terpisah tanpa Docker (`DOCKER_HOST` ke socket yang tidak ada) dan
-     tanpa `TEST_DATABASE_URL`.
+  3. Jalankan test di proses terpisah tanpa `TEST_DATABASE_URL`, dengan start container yang
+     gagal seperti saat Docker tidak berjalan (testcontainers tetap menemukan
+     `/var/run/docker.sock` walaupun `DOCKER_HOST` salah, jadi kegagalan itu disimulasikan).
   4. `TEST_DATABASE_URL` tidak terjangkau dengan kata sandi `secret` di bagian `user:sandi@`, di
      parameter `?password=`, dan dalam bentuk `key=value` (ditambahkan setelah review M1).
 - **Hasil yang diharapkan:**
