@@ -101,7 +101,8 @@ Perilaku setiap layar dan teks bahasa Inggrisnya ada di [`docs/08-screens.md`](d
   Integritas, nilai turunan (S, RPN, versi) dan audit log dijaga oleh constraint dan trigger
   database.
 - **Frontend**: SPA Svelte 5 + SvelteKit 3 (grid Tabulator, diagram Svelte Flow + ELK) yang
-  berbicara dengan server hanya lewat API JSON `/api/v1` (kontrak: `api/openapi.yaml`).
+  berbicara dengan server hanya lewat API JSON `/api/v1` (kontrak: `api/openapi.yaml`) dan
+  WebSocket `/api/v1/ws` untuk perubahan langsung (protokol: `docs/05-api.md` §10).
 - **Hosting on-premise** di server pabrik dengan Docker Compose; tidak ada data yang keluar dari
   lokasi pabrik.
 
