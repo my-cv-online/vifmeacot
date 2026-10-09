@@ -1,5 +1,6 @@
 // Test untuk /healthz dan /readyz (test case TC-M00-001 sampai TC-M00-004,
 // docs/test-cases/M00-scaffold.md).
+
 package httpapi
 
 import (

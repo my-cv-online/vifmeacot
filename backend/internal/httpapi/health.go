@@ -1,5 +1,6 @@
 // Endpoint operasional /healthz (proses hidup) dan /readyz (siap melayani request),
 // docs/03-architecture.md §8 Observability.
+
 package httpapi
 
 import (

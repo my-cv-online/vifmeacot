@@ -1,5 +1,6 @@
 // Test untuk pembacaan dan validasi konfigurasi (test case TC-M00-005 sampai TC-M00-008,
 // docs/test-cases/M00-scaffold.md).
+
 package config
 
 import (

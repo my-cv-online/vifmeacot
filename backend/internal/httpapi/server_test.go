@@ -1,5 +1,6 @@
 // Test untuk pembagian rute server: path /api yang tidak dikenal tidak boleh jatuh ke SPA
 // (test case TC-M00-011, docs/test-cases/M00-scaffold.md).
+
 package httpapi
 
 import (
