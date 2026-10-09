@@ -1,0 +1,28 @@
+# Daftar file yang tidak boleh masuk ke Git (rahasia, hasil build, laporan test).
+# Versi awal; M0 melengkapinya.
+
+# Rahasia lokal: .env tidak pernah di-commit, hanya contohnya.
+.env
+.env.*
+!.env.example
+
+# Hasil build Go dan web.
+/bin/
+node_modules/
+.svelte-kit/
+web/build/
+
+# Salinan build web yang ditanam ke binary; hanya penanda .keep yang di-commit.
+backend/internal/webui/dist/*
+!backend/internal/webui/dist/.keep
+
+# Laporan test dan performa.
+test-results/
+playwright-report/
+coverage/
+perf-report.json
+*.log
+
+# File sistem operasi dan pengaturan lokal Claude Code.
+.DS_Store
+.claude/settings.local.json
