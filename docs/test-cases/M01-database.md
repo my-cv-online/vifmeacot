@@ -2,7 +2,7 @@
 
 Milestone: M1 · Kebutuhan: P1-13 (operasional), `docs/10-milestones.md` M1,
 `docs/04-data-model.md`, `docs/06-rules.md` §1, §5, §7, `docs/11-testing.md` §2–3 · User story: —
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 0 dari 30 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 1 dari 30 lulus
 
 Test aturan (fixture 32 aturan dan baseline) ada di `rules.md` (`TC-RULE-*`) dan diotomatisasi di
 milestone ini. Test karakterisasi trigger (TC-M01-021 sampai 028) menguji skema yang sudah ada
@@ -13,7 +13,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 
 | ID | Judul | Level | Status |
 | --- | --- | --- | --- |
-| TC-M01-001 | File migrasi dan seed tertanam di binary | unit | belum dibuat |
+| TC-M01-001 | File migrasi dan seed tertanam di binary | unit | lulus |
 | TC-M01-002 | `pfmea migrate up` dan `status` di database kosong | integrasi | belum dibuat |
 | TC-M01-003 | `pfmea migrate down` hanya menyisakan tabel goose dan pg_trgm | integrasi | belum dibuat |
 | TC-M01-004 | Argumen dan konfigurasi `pfmea migrate` | unit | belum dibuat |
@@ -52,7 +52,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Hasil yang diharapkan:** `migrations/00001_init.sql` dan `seed/demo.sql` ada; versi migrasi
   terakhir = 1.
 - **Test otomatis:** `db/embed_test.go` › `TestFiles_TC_M01_001`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-002 — `pfmea migrate up` dan `status` di database kosong
 

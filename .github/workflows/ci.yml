@@ -26,11 +26,11 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # Versi Go diambil dari go.mod. Belum ada go.sum di M0, jadi cache modul dikunci pada go.mod.
+      # Versi Go diambil dari go.mod; cache modul dikunci pada go.sum.
       - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
-          cache-dependency-path: go.mod
+          cache-dependency-path: go.sum
 
       # Alat Go di bin/ di-cache dengan kunci dari versi Go dan baris versi alat di Makefile,
       # supaya `make tools` tidak membangun ulang sqlc dan golangci-lint di setiap run.
