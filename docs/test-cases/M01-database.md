@@ -38,7 +38,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 | TC-M01-023 | `version` hanya naik untuk perubahan bermakna | integrasi | belum dibuat |
 | TC-M01-024 | `content_version` naik satu per statement per paket | integrasi | belum dibuat |
 | TC-M01-025 | `audit_log` hanya menyimpan kolom yang berubah | integrasi | belum dibuat |
-| TC-M01-026 | Hapus baris yang masih dipakai ditolak (RESTRICT) | integrasi | belum dibuat |
+| TC-M01-026 | Hapus baris yang masih dipakai ditolak (RESTRICT, SQLSTATE 23001) | integrasi | belum dibuat |
 | TC-M01-027 | Referensi lintas paket ditolak | integrasi | belum dibuat |
 | TC-M01-028 | `snake_to_camel` | integrasi | belum dibuat |
 | TC-M01-029 | Parser fixture dan pencocokan hasil aturan | unit | belum dibuat |
@@ -281,12 +281,14 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   3. Set `o = 11` pada satu chain.
   4. Insert karakteristik dengan step id yang tidak ada.
   5. Insert step tanpa `name`.
+  6. Hapus step 50 PS-07 (masih punya failure mode, `ON DELETE RESTRICT`).
 - **Hasil yang diharapkan:**
   1. `ErrDuplicate` dengan constraint `process_steps_op_no_uq`.
   2. Sukses.
   3. `ErrCheckViolation`.
   4. `ErrForeignKey` dengan nama tabel.
   5. `ErrNotNull` dengan kolom `name`.
+  6. `ErrForeignKey` (SQLSTATE 23001 `restrict_violation`, dipetakan sama dengan 23503).
   - Error asli `*pgconn.PgError` tetap bisa diambil dengan `errors.As`.
 - **Test otomatis:** `backend/internal/store/store_test.go` › `TestErrorMapping_TC_M01_017`
 - **Status:** lulus
@@ -396,8 +398,10 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Prasyarat:** database demo.
 - **Langkah:** hapus step 50 PS-07; hapus karakteristik yang dipakai baris CP; hapus step baru
   tanpa failure mode yang punya karakteristik dan alur NG.
-- **Hasil yang diharapkan:** dua yang pertama 23503 dan tidak ada baris terhapus; yang ketiga
-  terhapus beserta karakteristik dan alurnya.
+- **Hasil yang diharapkan:** dua yang pertama ditolak dengan SQLSTATE 23001
+  (`restrict_violation`, kode PostgreSQL untuk `ON DELETE RESTRICT`; bukan 23503) dan tidak ada
+  baris terhapus; yang ketiga terhapus beserta karakteristik dan alurnya. (Diperbarui saat M1:
+  test menunjukkan RESTRICT memakai 23001.)
 - **Test otomatis:** `backend/internal/store/schema_test.go` › `TestRestrict_TC_M01_026`
 - **Status:** belum dibuat
 

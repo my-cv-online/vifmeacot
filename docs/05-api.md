@@ -60,8 +60,9 @@ Field error codes: `required`, `invalid_format`, `out_of_range`, `too_long`, `du
 Database errors are mapped centrally, including errors raised at `COMMIT` (uniqueness of
 `op_no`, `char_no` and step `seq` is checked at commit): unique violation (23505) → 422
 `validation_failed` with field error `duplicate`; check violation (23514) → 422
-`validation_failed`; foreign-key violation (23503) → 409 `delete_blocked` on delete, otherwise
-422 `validation_failed` with field error `invalid_reference`; serialization failure (40001) and
+`validation_failed`; foreign-key violation (23503, and 23001 `restrict_violation`, which
+PostgreSQL raises for `ON DELETE RESTRICT`, verified in M1) → 409 `delete_blocked` on delete,
+otherwise 422 `validation_failed` with field error `invalid_reference`; serialization failure (40001) and
 deadlock (40P01) → retry the whole transaction up to 3 times, then 409 `version_conflict`.
 Operations not implemented yet (during development) return 501 with code `internal` and title
 "Not implemented yet".
