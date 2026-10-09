@@ -1,0 +1,55 @@
+# Workflow CI: menjalankan `make tools` dan `make check` di setiap push ke main dan setiap pull
+# request (docs/10-milestones.md M0, docs/11-testing.md §1). Mulai M2 job kedua menjalankan
+# `make e2e` dengan Playwright Chromium.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Workflow hanya perlu membaca isi repository.
+permissions:
+  contents: read
+
+# Setiap commit di main tetap diuji sampai selesai; hanya run pull request lama yang dibatalkan
+# bila ada push baru ke pull request yang sama.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: make check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      # Versi Go diambil dari go.mod. Belum ada go.sum di M0, jadi cache modul dikunci pada go.mod.
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.mod
+
+      # Alat Go di bin/ di-cache dengan kunci dari versi Go dan baris versi alat di Makefile,
+      # supaya `make tools` tidak membangun ulang sqlc dan golangci-lint di setiap run.
+      - name: Compute tools cache key
+        id: tools-key
+        run: echo "key=tools-${{ runner.os }}-$(go env GOVERSION)-$(grep -E '^[A-Z_]+_VERSION :=' Makefile | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v6
+        with:
+          path: bin
+          key: ${{ steps.tools-key.outputs.key }}
+
+      - name: make tools
+        run: make tools
+
+      - name: make check
+        run: make check
+
+      # Test case TC-M00-023: make check (termasuk make gen) tidak boleh mengubah file yang di-track.
+      - name: TC-M00-023 working tree stays clean
+        run: |
+          git status --porcelain
+          test -z "$(git status --porcelain)"
