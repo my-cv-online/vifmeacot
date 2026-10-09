@@ -16,6 +16,12 @@ NODE_BIN := $(CURDIR)/web/node_modules/.bin
 # eksplisit dipakai supaya web/node_modules tidak pernah dipindai.
 GO_PKGS := ./backend/... $(if $(wildcard db/*.go),./db/...)
 
+# LOAD_ENV memuat .env (bila ada) ke environment resep, seperti `make dev`; tanpa .env, variabel
+# yang sudah di-export di shell yang dipakai (misalnya di server).
+LOAD_ENV := if [ -f .env ]; then set -a; . ./.env; set +a; fi;
+# PFMEA menjalankan binary dari kode sumber supaya target database tidak menunggu `make build`.
+PFMEA := go run ./backend/cmd/pfmea
+
 # Versi alat yang dipatok; ubah di sini lalu jalankan `make tools`.
 SQLC_VERSION := v1.31.1
 GOOSE_VERSION := v3.28.0
@@ -127,9 +133,19 @@ check:
 gen:
 	"$(BIN)/sqlc" generate
 
+# migrate menerapkan semua migrasi yang pending ke DATABASE_URL.
+## migrate: apply pending database migrations (DATABASE_URL from .env)
+migrate:
+	$(LOAD_ENV) $(PFMEA) migrate up
+
+# migrate-down membatalkan semua migrasi; pfmea menolaknya bila DEV_MODE bukan true.
+## migrate-down: roll back all migrations and delete all data (requires DEV_MODE=true)
+migrate-down:
+	$(LOAD_ENV) $(PFMEA) migrate down
+
 # Target berikut tersedia mulai M1.
-## migrate, migrate-down, seed, test-rules: available from M1
-migrate migrate-down seed test-rules:
+## seed, test-rules: available from M1
+seed test-rules:
 	@echo "make $@: available from M1"
 
 # e2e tersedia mulai M2.

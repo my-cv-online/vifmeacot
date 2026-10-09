@@ -14,10 +14,10 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 | ID | Judul | Level | Status |
 | --- | --- | --- | --- |
 | TC-M01-001 | File migrasi dan seed tertanam di binary | unit | lulus |
-| TC-M01-002 | `pfmea migrate up` dan `status` di database kosong | integrasi | belum dibuat |
-| TC-M01-003 | `pfmea migrate down` hanya menyisakan tabel goose dan pg_trgm | integrasi | belum dibuat |
-| TC-M01-004 | Argumen dan konfigurasi `pfmea migrate` | unit | belum dibuat |
-| TC-M01-005 | `LoadDatabase` hanya mewajibkan `DATABASE_URL` | unit | belum dibuat |
+| TC-M01-002 | `pfmea migrate up` dan `status` di database kosong | integrasi | lulus |
+| TC-M01-003 | `pfmea migrate down` hanya menyisakan tabel goose dan pg_trgm | integrasi | lulus |
+| TC-M01-004 | Argumen dan konfigurasi `pfmea migrate` | unit | lulus |
+| TC-M01-005 | `LoadDatabase` hanya mewajibkan `DATABASE_URL` | unit | lulus |
 | TC-M01-006 | `seed-demo` menolak tanpa `DEV_MODE=true` | integrasi | belum dibuat |
 | TC-M01-007 | `seed-demo` memuat data demo sekali | integrasi | belum dibuat |
 | TC-M01-008 | `seed-demo --reset` memulai dari nol | integrasi | belum dibuat |
@@ -68,7 +68,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   2. Kode 0, output "no pending migrations".
   3. Kode 0, `00001_init.sql` berstatus applied, versi 1.
 - **Test otomatis:** `backend/cmd/pfmea/migrate_test.go` › `TestMigrateUp_TC_M01_002`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-003 — `pfmea migrate down` hanya menyisakan tabel goose dan pg_trgm
 
@@ -86,7 +86,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
      tabel aplikasi (objek milik extension tidak dihitung).
   3. Berhasil (siklus naik-turun-naik).
 - **Test otomatis:** `backend/cmd/pfmea/migrate_test.go` › `TestMigrateDown_TC_M01_003`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-004 — Argumen dan konfigurasi `pfmea migrate`
 
@@ -102,7 +102,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   2. Kode 1, stderr memuat "DATABASE_URL is required" dan tidak menyebut `APP_BASE_URL`.
   3. Kode 1, pesan error bahasa Inggris, tidak memuat `secret`.
 - **Test otomatis:** `backend/cmd/pfmea/migrate_test.go` › `TestMigrateArgs_TC_M01_004`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-005 — `LoadDatabase` hanya mewajibkan `DATABASE_URL`
 
@@ -117,7 +117,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   2. Satu `*ValidationError` dengan tiga masalah (satu per variabel).
   - `config.Load` (untuk `serve`) tetap mewajibkan `APP_BASE_URL` (TC-M00-006 tetap lulus).
 - **Test otomatis:** `backend/internal/config/config_test.go` › `TestLoadDatabase_TC_M01_005`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-006 — `seed-demo` menolak tanpa `DEV_MODE=true`
 

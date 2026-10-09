@@ -139,7 +139,7 @@ pfmea-system/
 | Command | Purpose |
 | --- | --- |
 | `pfmea serve` | HTTP server, WebSocket hub, River workers, rule scheduler |
-| `pfmea migrate up|down|status` | goose migrations, then River's own migrations (`rivermigrate`) |
+| `pfmea migrate up|down|status` | goose migrations, then River's own migrations (`rivermigrate`). Reads only `DATABASE_URL`, `DEV_MODE` and `LOG_LEVEL` (`config.LoadDatabase`; no `APP_BASE_URL`). `down` rolls back to version 0, deletes all data and refuses unless `DEV_MODE=true` (decision 2026-10-09). `make migrate` / `make migrate-down` load `.env` and run it through `go run` |
 | `pfmea init --admin <username>` | Production bootstrap: create the first admin (password prompted) and an empty Template General (`GENERAL`, documents `SH-GEN`, `SF-GEN`, `SC-GEN`) if none exist |
 | `pfmea seed-demo [--reset]` | Load `db/seed/demo.sql`, then (from M8) run a full check of every package. `--reset` first drops the schema and runs the full `migrate up` (goose and River). Refuses unless `DEV_MODE=true`. Restart a running server after `--reset`. |
 | `pfmea perf-gen` / `pfmea perf` | Generate the performance data set (M6; refuses databases whose name does not end in `_perf`) / measure §9 targets (M13; logs in with `PERF_PASSWORD`, which exists only in a perf database). `docs/11-testing.md` §5 |

@@ -260,3 +260,34 @@ func TestLoad_TC_M00_008(t *testing.T) {
 		}
 	})
 }
+
+// TestLoadDatabase_TC_M01_005 memastikan perintah yang hanya butuh database (migrate, seed-demo)
+// cukup dengan DATABASE_URL, tetap memvalidasi variabel yang dibacanya sekaligus, dan Load untuk
+// serve tetap mewajibkan APP_BASE_URL.
+func TestLoadDatabase_TC_M01_005(t *testing.T) {
+	cfg, err := LoadDatabase(envOf(map[string]string{"DATABASE_URL": "postgres://pfmea:secret@localhost:5432/pfmea"}))
+	if err != nil {
+		t.Fatalf("LoadDatabase with only DATABASE_URL: %v", err)
+	}
+	if cfg.URL == "" || cfg.DevMode || cfg.LogLevel != slog.LevelInfo {
+		t.Errorf("cfg = %+v, want the URL, DevMode false and LogLevel info", cfg)
+	}
+
+	_, err = LoadDatabase(envOf(map[string]string{"DATABASE_URL": "mysql://x", "DEV_MODE": "maybe", "LOG_LEVEL": "verbose"}))
+	if err == nil {
+		t.Fatal("LoadDatabase should fail")
+	}
+	problems := problemsOf(t, err)
+	if len(problems) != 3 {
+		t.Errorf("problems = %q, want one each for DATABASE_URL, DEV_MODE, LOG_LEVEL", problems)
+	}
+	for _, p := range problems {
+		if strings.Contains(p, "APP_BASE_URL") {
+			t.Errorf("LoadDatabase must not require APP_BASE_URL: %q", p)
+		}
+	}
+
+	if _, err := Load(envOf(map[string]string{"DATABASE_URL": "postgres://localhost/pfmea"})); err == nil {
+		t.Error("Load (serve) must still require APP_BASE_URL")
+	}
+}

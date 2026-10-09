@@ -321,6 +321,32 @@ func Load(getenv func(string) string) (Config, error) {
 	return c, nil
 }
 
+// Database adalah konfigurasi perintah yang hanya butuh database (migrate, seed-demo). Perintah
+// ini tidak membaca APP_BASE_URL dan variabel server lain supaya bisa dijalankan sebelum
+// konfigurasi server lengkap (docs/03-architecture.md §3.2).
+type Database struct {
+	// URL adalah URL koneksi PostgreSQL (DATABASE_URL, wajib).
+	URL string
+	// DevMode mengizinkan perintah yang menghapus data (migrate down, seed-demo).
+	DevMode bool
+	// LogLevel adalah level log minimum.
+	LogLevel slog.Level
+}
+
+// LoadDatabase membaca dan memvalidasi DATABASE_URL, DEV_MODE dan LOG_LEVEL dengan aturan yang
+// sama seperti Load. Semua masalah dilaporkan sekaligus dalam *ValidationError.
+func LoadDatabase(getenv func(string) string) (Database, error) {
+	l := &loader{getenv: getenv}
+	var c Database
+	c.URL = l.postgresURL("DATABASE_URL")
+	c.LogLevel = l.logLevel("LOG_LEVEL")
+	c.DevMode = l.boolean("DEV_MODE", false)
+	if len(l.problems) > 0 {
+		return Database{}, &ValidationError{Problems: l.problems}
+	}
+	return c, nil
+}
+
 // LogValue menyiapkan konfigurasi untuk dicatat ke log saat start; kata sandi di DATABASE_URL
 // (bagian user:sandi@ maupun parameter query) disamarkan supaya tidak pernah tersimpan di log.
 func (c Config) LogValue() slog.Value {

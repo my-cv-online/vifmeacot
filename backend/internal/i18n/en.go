@@ -53,8 +53,9 @@ const (
 	CLIUsage = `Usage: pfmea <command>
 
 Commands:
-  serve    Start the HTTP server
-  help     Show this help
+  serve                    Start the HTTP server
+  migrate up|down|status   Apply, roll back (DEV_MODE=true only) or list database migrations
+  help                     Show this help
 `
 	// CLIUnknownCommand dipakai untuk subcommand yang tidak dikenal.
 	CLIUnknownCommand = "pfmea: unknown command %q"
@@ -63,4 +64,37 @@ Commands:
 	// CLICommandFailed dipakai bila subcommand gagal sebelum log JSON aktif (misalnya
 	// konfigurasi salah); argumen kedua adalah pesan error.
 	CLICommandFailed = "pfmea %s: %v"
+)
+
+// Teks perintah `pfmea migrate` (docs/03-architecture.md §3.2).
+const (
+	// MigrateUsage ditampilkan bila sub-perintah migrate tidak ada atau tidak dikenal.
+	MigrateUsage = "Usage: pfmea migrate up|down|status"
+	// MigrateDownNeedsDevMode menolak migrate down di luar mode pengembangan karena semua data
+	// ikut terhapus.
+	MigrateDownNeedsDevMode = "pfmea migrate down deletes all data and requires DEV_MODE=true"
+	// MigrateDatabaseURLInvalid dipakai bila URL database tidak bisa dibaca driver; URL tidak
+	// ikut dicetak supaya kata sandi tidak bocor.
+	MigrateDatabaseURLInvalid = "DATABASE_URL cannot be parsed"
+	// MigrateApplied melaporkan satu file migrasi yang baru diterapkan.
+	MigrateApplied = "applied %s"
+	// MigrateNoPending dipakai bila semua migrasi sudah diterapkan.
+	MigrateNoPending = "no pending migrations"
+	// MigrateRolledBack melaporkan satu file migrasi yang dibatalkan.
+	MigrateRolledBack = "rolled back %s"
+	// MigrateNothingToRollBack dipakai bila belum ada migrasi yang diterapkan.
+	MigrateNothingToRollBack = "nothing to roll back"
+	// MigrateStatusLine adalah satu baris `migrate status`: nama file dan statusnya
+	// (applied atau pending).
+	MigrateStatusLine = "%-28s %s"
+	// MigrateVersion adalah baris terakhir `migrate status`: versi skema di database.
+	MigrateVersion = "version %d"
+)
+
+// Status migrasi yang dicetak `pfmea migrate status`.
+const (
+	// MigrateStateApplied berarti file migrasi sudah diterapkan di database.
+	MigrateStateApplied = "applied"
+	// MigrateStatePending berarti file migrasi belum diterapkan.
+	MigrateStatePending = "pending"
 )

@@ -1,5 +1,5 @@
-// Command pfmea adalah binary tunggal aplikasi (docs/03-architecture.md §3.2). Di M0 hanya
-// subcommand serve yang tersedia; migrate, seed-demo, init, perf-gen, xlsx-compare dan perf
+// Command pfmea adalah binary tunggal aplikasi (docs/03-architecture.md §3.2). Subcommand serve
+// (M0) dan migrate (M1) sudah tersedia; seed-demo, init, perf-gen, xlsx-compare dan perf
 // ditambahkan oleh milestone masing-masing.
 package main
 
@@ -69,6 +69,8 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 	switch cmd := args[0]; cmd {
 	case "serve":
 		return serve(ctx, getenv, stdout, stderr)
+	case "migrate":
+		return migrateCmd(ctx, args[1:], getenv, stdout, stderr)
 	case "help", "-h", "--help":
 		_, _ = fmt.Fprint(stdout, i18n.CLIUsage)
 		return exitOK
@@ -87,7 +89,7 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 // atau string kosong bila subcommand tidak dikenal sama sekali.
 func availableFrom(cmd string) string {
 	switch cmd {
-	case "migrate", "seed-demo":
+	case "seed-demo":
 		return "M1"
 	case "init":
 		return "M2"
