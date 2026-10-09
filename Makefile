@@ -143,9 +143,14 @@ migrate:
 migrate-down:
 	$(LOAD_ENV) $(PFMEA) migrate down
 
+# seed memuat data demo; RESET=1 menghapus skema dan menjalankan semua migrasi lebih dulu.
+## seed: load the demo data (requires DEV_MODE=true; RESET=1 drops and rebuilds the schema first)
+seed:
+	$(LOAD_ENV) $(PFMEA) seed-demo $(if $(filter 1,$(RESET)),--reset)
+
 # Target berikut tersedia mulai M1.
-## seed, test-rules: available from M1
-seed test-rules:
+## test-rules: available from M1
+test-rules:
 	@echo "make $@: available from M1"
 
 # e2e tersedia mulai M2.

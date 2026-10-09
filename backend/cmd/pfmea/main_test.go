@@ -55,7 +55,6 @@ func TestRun_TC_M00_013(t *testing.T) {
 	}{
 		{"no arguments", nil, 2, nil, []string{"Usage: pfmea", "serve"}},
 		{"help", []string{"help"}, 0, []string{"Usage: pfmea", "serve"}, nil},
-		{"seed-demo", []string{"seed-demo"}, 2, nil, []string{"pfmea seed-demo: available from M1"}},
 		{"init", []string{"init"}, 2, nil, []string{"pfmea init: available from M2"}},
 		{"unknown command", []string{"unknown"}, 2, nil, []string{`unknown command "unknown"`, "Usage: pfmea"}},
 		{"serve without configuration", []string{"serve"}, 1, nil, []string{"DATABASE_URL is required", "APP_BASE_URL is required"}},

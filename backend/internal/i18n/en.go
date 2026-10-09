@@ -55,6 +55,7 @@ const (
 Commands:
   serve                    Start the HTTP server
   migrate up|down|status   Apply, roll back (DEV_MODE=true only) or list database migrations
+  seed-demo [--reset]      Load the demo data (DEV_MODE=true only); --reset rebuilds the schema first
   help                     Show this help
 `
 	// CLIUnknownCommand dipakai untuk subcommand yang tidak dikenal.
@@ -97,4 +98,25 @@ const (
 	MigrateStateApplied = "applied"
 	// MigrateStatePending berarti file migrasi belum diterapkan.
 	MigrateStatePending = "pending"
+)
+
+// Teks perintah `pfmea seed-demo` (docs/03-architecture.md §3.2).
+const (
+	// SeedUsage ditampilkan bila argumen seed-demo tidak dikenal.
+	SeedUsage = "Usage: pfmea seed-demo [--reset]"
+	// SeedNeedsDevMode menolak seed-demo di luar mode pengembangan (data demo bukan untuk
+	// produksi).
+	SeedNeedsDevMode = "pfmea seed-demo requires DEV_MODE=true"
+	// SeedNotMigrated dipakai bila versi skema tidak sama dengan migrasi terbaru; argumen adalah
+	// keterangan versinya.
+	SeedNotMigrated = "pfmea seed-demo: %v; run pfmea migrate up first"
+	// SeedHasData menolak memuat data demo di atas data yang sudah ada.
+	SeedHasData = "pfmea seed-demo: database already contains data; use --reset to drop everything and start again"
+	// SeedSchemaReset melaporkan bahwa skema public sudah dihapus dan dibuat lagi (--reset).
+	SeedSchemaReset = "dropped and recreated schema public"
+	// SeedLoaded melaporkan data demo yang dimuat.
+	SeedLoaded = "loaded demo data: %d users, %d packages"
+	// SeedRestartServer mengingatkan bahwa server yang sedang berjalan masih memegang koneksi ke
+	// objek skema lama setelah --reset.
+	SeedRestartServer = "restart a running pfmea serve: its connections still refer to the dropped schema"
 )

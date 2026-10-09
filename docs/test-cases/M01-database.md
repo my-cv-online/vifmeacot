@@ -18,9 +18,9 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 | TC-M01-003 | `pfmea migrate down` hanya menyisakan tabel goose dan pg_trgm | integrasi | lulus |
 | TC-M01-004 | Argumen dan konfigurasi `pfmea migrate` | unit | lulus |
 | TC-M01-005 | `LoadDatabase` hanya mewajibkan `DATABASE_URL` | unit | lulus |
-| TC-M01-006 | `seed-demo` menolak tanpa `DEV_MODE=true` | integrasi | belum dibuat |
-| TC-M01-007 | `seed-demo` memuat data demo sekali | integrasi | belum dibuat |
-| TC-M01-008 | `seed-demo --reset` memulai dari nol | integrasi | belum dibuat |
+| TC-M01-006 | `seed-demo` menolak tanpa `DEV_MODE=true` | integrasi | lulus |
+| TC-M01-007 | `seed-demo` memuat data demo sekali | integrasi | lulus |
+| TC-M01-008 | `seed-demo --reset` memulai dari nol | integrasi | lulus |
 | TC-M01-009 | `/readyz` memeriksa database dan migrasi | integrasi | belum dibuat |
 | TC-M01-010 | Target Makefile M1 berjalan | integrasi | belum dibuat |
 | TC-M01-011 | `make db migrate seed` dan `make migrate-down` di CI | integrasi | belum dibuat |
@@ -128,7 +128,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Hasil yang diharapkan:** kode 1, pesan "seed-demo requires DEV_MODE=true"; tabel `users`
   tetap kosong.
 - **Test otomatis:** `backend/cmd/pfmea/seed_test.go` › `TestSeedDemoRefuses_TC_M01_006`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-007 — `seed-demo` memuat data demo sekali
 
@@ -145,7 +145,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
      `seed`.
   3. Kode 1, pesan "database already contains data; use --reset"; jumlah data tidak berubah.
 - **Test otomatis:** `backend/cmd/pfmea/seed_test.go` › `TestSeedDemo_TC_M01_007`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-008 — `seed-demo --reset` memulai dari nol
 
@@ -157,7 +157,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   berjalan; data sama dengan seed baru (nama PS-07 asli, jumlah step seperti seed), versi
   migrasi 1.
 - **Test otomatis:** `backend/cmd/pfmea/seed_test.go` › `TestSeedDemoReset_TC_M01_008`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-009 — `/readyz` memeriksa database dan migrasi
 

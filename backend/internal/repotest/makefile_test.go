@@ -60,7 +60,6 @@ func TestTargets_TC_M00_015(t *testing.T) {
 // tersedia dan keluar dengan kode 0, sehingga `make check` dan CI tetap hijau di M0.
 func TestPlaceholders_TC_M00_016(t *testing.T) {
 	want := map[string]string{
-		"seed":       "M1",
 		"test-rules": "M1",
 		"e2e":        "M2",
 		"perf":       "M13",
@@ -84,6 +83,7 @@ func TestTargets_TC_M01_010(t *testing.T) {
 	want := map[string][]string{
 		"migrate":      {".env", "go run ./backend/cmd/pfmea migrate up"},
 		"migrate-down": {".env", "go run ./backend/cmd/pfmea migrate down"},
+		"seed":         {".env", "go run ./backend/cmd/pfmea seed-demo"},
 	}
 	for target, parts := range want {
 		t.Run(target, func(t *testing.T) {
@@ -100,5 +100,13 @@ func TestTargets_TC_M01_010(t *testing.T) {
 				}
 			}
 		})
+	}
+
+	// `make seed` tanpa RESET tidak boleh menghapus apa pun; RESET=1 meneruskan --reset.
+	if out, _ := run(t, "make", "--no-print-directory", "-n", "seed"); strings.Contains(out, "--reset") {
+		t.Errorf("make seed must not pass --reset without RESET=1:\n%s", out)
+	}
+	if out, _ := run(t, "make", "--no-print-directory", "-n", "seed", "RESET=1"); !strings.Contains(out, "seed-demo --reset") {
+		t.Errorf("make seed RESET=1 must pass --reset:\n%s", out)
 	}
 }
