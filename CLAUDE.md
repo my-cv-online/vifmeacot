@@ -32,8 +32,8 @@ needed (they are not imported on purpose).
 | `docs/mockups/` | Static HTML mockups of the end state with Indonesian labels (layout reference only) |
 
 Already written and executed while preparing this spec (on PostgreSQL 16 with a `uuidv7()`
-shim; M1 re-runs everything on PostgreSQL 18): the schema (`db/migrations/00001_init.sql`),
-demo data (`db/seed/demo.sql`), 32 rule queries with fixtures. The OpenAPI file passes
+shim; M1 re-ran everything unchanged on PostgreSQL 18): the schema
+(`db/migrations/00001_init.sql`), demo data (`db/seed/demo.sql`), 32 rule queries with fixtures. The OpenAPI file passes
 `redocly lint` and generates TypeScript types; the Go generator runs for the first time in M2.
 
 ## Stack

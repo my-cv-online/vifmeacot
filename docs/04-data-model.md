@@ -6,8 +6,12 @@ this file must be corrected in the same change.
 
 The schema, the demo seed (`db/seed/demo.sql`) and the 32 rule queries were executed together
 while writing this spec: migration up and down, seed, trigger behaviour and every rule fixture.
-That run used PostgreSQL 16 with a stand-in `uuidv7()` function; milestone M1 repeats it on
-PostgreSQL 18, the production target.
+That run used PostgreSQL 16 with a stand-in `uuidv7()` function; milestone M1 repeated it on
+PostgreSQL 18, the production target, without changing the migration, the seed or the rules
+(trigger tests in `backend/internal/store/schema_test.go`, rule fixtures in
+`backend/internal/rules`). One behaviour found there: deleting a row still referenced through an
+`ON DELETE RESTRICT` foreign key raises SQLSTATE 23001 (`restrict_violation`), not 23503;
+`store` maps both to `ErrForeignKey` (`docs/05-api.md` §2).
 
 ## 1. Conventions
 

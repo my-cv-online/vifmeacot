@@ -28,11 +28,24 @@ it again on every push to `main`; from M2 it also runs `make e2e`.
 
 ## 2. Database in tests
 
-- `backend/internal/testdb` starts `postgres:18` (with `-c jit=off`) once per `go test`
-  process with testcontainers-go, or uses `TEST_DATABASE_URL` when set (CI without Docker).
-- It creates a template database once: migrate up, load `db/seed/demo.sql`. Each test calls
-  `testdb.New(t)` which runs `CREATE DATABASE t_<random> TEMPLATE pfmea_tpl` (tens of
-  milliseconds) and drops it in `t.Cleanup`. Tests can run in parallel.
+- `backend/internal/testdb` starts `postgres:18` (with `-c jit=off`; `fsync`,
+  `synchronous_commit` and `full_page_writes` off because test data is disposable) once per
+  `go test` process with testcontainers-go, or uses `TEST_DATABASE_URL` when set (an admin
+  connection, e.g. CI without Docker). Without Docker and without `TEST_DATABASE_URL` the
+  database tests **fail**; they are never skipped. Every package that uses it has
+  `func TestMain(m *testing.M) { testdb.Main(m) }`, which stops the container (Ryuk removes it
+  if the process dies).
+- It creates a template database once: migrate up, load `db/seed/demo.sql`. The template is
+  named `pfmea_tpl_<hash>`, where the hash covers the embedded migrations, the seed and the
+  harness version, so a changed migration or seed builds a new template and a shared server
+  (`TEST_DATABASE_URL`) never serves a stale one. It is built under an advisory lock (several
+  test processes may share one server) and then marked `IS_TEMPLATE`. Each test calls
+  `testdb.New(t)` which runs `CREATE DATABASE pfmea_t_<random> TEMPLATE pfmea_tpl_<hash>` (tens
+  of milliseconds) and drops it `WITH (FORCE)` in `t.Cleanup`; `testdb.NewEmpty(t)` gives an
+  empty database (from `template0`) for migration tests. Sessions use `jit = off` and the plant
+  time zone. Tests can run in parallel.
+- `make test` skips `TestRuleFixtures` and `TestBaseline` (`-skip`); `make test-rules` runs only
+  those two (decided in M1, so a rule failure is reported on its own).
 - Time is injected: services take a `clock.Clock`; tests use 2026-10-08 in `Asia/Jakarta`, the
   date the demo data and fixtures assume. The server honours `DEV_FAKE_TODAY=2026-10-08` only
   when `DEV_MODE=true` (used by E2E).

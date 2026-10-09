@@ -144,6 +144,25 @@ extension remain.
 
 **Not in M1:** HTTP endpoints, rule engine.
 
+**Decisions recorded in M1** (2026-10-09)
+
+- Commands that only need the database (`migrate`, `seed-demo`) read `DATABASE_URL`, `DEV_MODE`
+  and `LOG_LEVEL` through `config.LoadDatabase`; `APP_BASE_URL` is required by `serve` only.
+- `pfmea migrate down` deletes all data and refuses unless `DEV_MODE=true`. `seed-demo` also
+  refuses a database that is not at the latest migration or that already holds users,
+  customers or packages; `make seed RESET=1` passes `--reset`.
+- The readiness check `database` and `seed-demo` read the schema version from
+  `goose_db_version` themselves (`db.CheckSchema`): goose would create its table in an empty
+  database.
+- `store` maps PostgreSQL errors to sentinel kinds inside `*store.DBError` (`ErrDuplicate`
+  23505, `ErrCheckViolation` 23514, `ErrForeignKey` 23503 and 23001, `ErrNotNull` 23502,
+  `ErrInvalidValue` class 22, `ErrConflict` 40001/40P01 after 3 retries, `ErrNotFound`); M2 maps
+  them to Problem Details. `ON DELETE RESTRICT` raises 23001 (`restrict_violation`).
+- Every content write takes the package row lock anyway through the `content_version` trigger;
+  `LockPackage` first makes that lock order explicit (`package_links` → package → content rows).
+- Test databases: `docs/11-testing.md` §2 (template `pfmea_tpl_<hash>`, failure without
+  Docker). `make test` skips `TestRuleFixtures` and `TestBaseline`, `make test-rules` runs them.
+
 ## M2 · API contract, auth, users
 
 **Goal:** the generated API skeleton, login and user administration.

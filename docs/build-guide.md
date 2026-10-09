@@ -56,13 +56,23 @@ git config user.name && git config user.email
 | 2 | `make tools` | Alat Go yang versinya dipatok (sqlc, goose, oapi-codegen, golangci-lint, dan air untuk live reload `make dev`) terpasang di `bin/` project, dependensi web terpasang dengan `npm ci` di `web/`; mulai M2 juga Playwright Chromium. Pertama kali ±3–5 menit; berikutnya hanya alat yang versinya berubah yang dipasang ulang | M0 |
 | 3 | `cp .env.example .env` | File konfigurasi lokal (tidak pernah di-commit); wajib sebelum `make dev` | M0 |
 | 4 | `make db` | PostgreSQL 18 berjalan di Docker (dengan healthcheck dan volume data), hanya terbuka di `127.0.0.1:5432`; perintah selesai setelah database sehat | M0 |
-| 5 | `make migrate` | Skema database terpasang (`db/migrations`) | M1 |
-| 6 | `make seed` | Data demo dimuat (`db/seed/demo.sql`) | M1 |
+| 5 | `make migrate` | Skema database terpasang (`db/migrations`); mencetak `applied 00001_init.sql`, atau `no pending migrations` bila sudah terpasang. Hanya butuh `DATABASE_URL` dari `.env` | M1 |
+| 6 | `make seed` | Data demo dimuat (`db/seed/demo.sql`): `loaded demo data: 6 users, 2 packages`. Butuh `DEV_MODE=true` (sudah di `.env.example`); ditolak bila database sudah berisi data. Mulai ulang dari nol: `make seed RESET=1` (skema dihapus, migrasi dijalankan ulang, data demo dimuat; restart `make dev` sesudahnya) | M1 |
 | 7 | `make dev` | Server Go di http://localhost:8080 (dibangun ulang otomatis bila file Go berubah) dan Vite di http://localhost:5173 (proxy `/api` ke :8080); hentikan dengan Ctrl+C | M0 |
 | 8 | Buka http://localhost:5173 | M0: kerangka aplikasi (app shell) dengan halaman placeholder; mulai M2: halaman login | M0 |
 | 9 | `make check` | Semua pemeriksaan hijau (wajib sebelum setiap commit) | M0 |
 
-Cek server berjalan: `curl -i localhost:8080/healthz` → `200`.
+Cek server berjalan: `curl -i localhost:8080/healthz` → `200`. Cek server siap:
+`curl -i localhost:8080/readyz` → `200` bila database terjangkau dan sudah dimigrasi sampai versi
+terbaru (mulai M1), `503` bila belum (detailnya di log server).
+
+Perintah database lain (mulai M1; `.env` dimuat otomatis oleh `make`):
+
+```bash
+make migrate-down                                    # hapus semua tabel dan data (butuh DEV_MODE=true)
+set -a && . ./.env && set +a                         # muat .env ke shell untuk perintah di bawah
+go run ./backend/cmd/pfmea migrate status            # daftar migrasi: applied/pending dan versi skema
+```
 
 Versi produksi lokal (binary dengan SPA tertanam, tersedia mulai M0). `./bin/pfmea serve`
 membaca konfigurasi dari environment variable; `DATABASE_URL` dan `APP_BASE_URL` wajib di-set
@@ -135,7 +145,7 @@ rencana dan ditetapkan saat milestone itu dikerjakan.
 | Milestone | Isi singkat | File test case | User story E2E | Input dari perusahaan | Status |
 | --- | --- | --- | --- | --- | --- |
 | M0 Scaffold | Repository kosong yang bisa dijalankan: `go.mod`, `pfmea serve` (`/healthz`, `/readyz`), konfigurasi, Makefile, Docker Compose, CI, kerangka SvelteKit, SPA tertanam | `M00-scaffold.md` | — (unit dengan Vitest) | — | selesai (9 Oktober 2026) |
-| M1 Database | Migrasi (goose), seed demo, `store.WithTx`, sqlc, harness test database, test trigger, `make test-rules` | `M01-database.md`, `rules.md` | — | — | belum mulai |
+| M1 Database | Migrasi (goose), seed demo, `store.WithTx`, sqlc, harness test database, test trigger, `make test-rules` | `M01-database.md`, `rules.md` | — | — | sedang dikerjakan (review) |
 | M2 API dan auth | `make gen`, kerangka API hasil generator (operasi lain 501), login, sesi, pengguna, `pfmea init`, halaman login | `M02-api-auth.md` | Login/logout `apratama` (Playwright) | — | belum mulai |
 | M3 Master data | Customer, kelas, part, library kontrol, kriteria, istilah terlarang, aturan, pengaturan; layar `/master/*` | `M03-master-data.md` | Admin mengedit tabel simbol Customer B (Playwright) | Daftar customer, tabel konversi simbol, ambang CSR (RPN, S minimum untuk CC); teks kriteria S/O/D AIAG 4th dari manual berlisensi | belum mulai |
 | M4 Paket | Daftar, buat dari Template General, nomor dokumen, ringkasan paket, sidebar | `M04-packages.md` | US-01 (tanpa klausul cek) | — | belum mulai |
@@ -173,7 +183,7 @@ Tahap 1 selesai bila semua kriteria ini terpenuhi (`docs/11-testing.md` §6):
 | Perintah | Isi | Tersedia mulai |
 | --- | --- | --- |
 | `make check` | `make gen` (tidak boleh mengubah file yang di-track) + `make lint` + `make test` + `make test-rules`; wajib hijau sebelum setiap commit dan push | M0 |
-| `make test` | Test Go (unit dan integrasi, dengan `-race`) + Vitest | M0 |
+| `make test` | Test Go (unit dan integrasi, dengan `-race`; tanpa fixture aturan) + Vitest. Test database butuh Docker (lihat di bawah) | M0 |
 | `make lint` | golangci-lint, `svelte-check`, eslint, `redocly lint` (`docs/03-architecture.md` §3.3) | M0 |
 | `make test-rules` | Fixture 32 aturan (hanya SQL aturan; pesan temuan diperiksa mulai M8) + baseline (PS-07 = 14 temuan, GENERAL = 0) | M1 |
 | `make e2e` | Playwright (Chromium) untuk user story US-01 … US-13 | M2 |
@@ -181,6 +191,14 @@ Tahap 1 selesai bila semua kriteria ini terpenuhi (`docs/11-testing.md` §6):
 
 Sebelum milestone-nya, target yang belum tersedia mencetak "available from M<n>" dan selesai
 dengan kode 0.
+
+**Database untuk test (mulai M1).** Test yang memakai database menjalankan PostgreSQL 18 sendiri
+di Docker (testcontainers) sekali per paket Go yang diuji, membangun database template berisi
+skema dan data demo sekali, lalu memberi setiap test salinannya sendiri yang dihapus setelah
+test selesai. Database `make db` tidak dipakai dan tidak diubah. Docker harus berjalan; tanpa
+Docker test database **gagal** (tidak dilewati). Bila Docker tidak bisa dipakai, arahkan test ke
+server PostgreSQL 18 lain dengan user yang boleh membuat database:
+`TEST_DATABASE_URL=postgres://user:sandi@host:5432/postgres make test`.
 
 Menjalankan satu test berdasarkan ID (dari root repository; tanda kurung membuat `cd` tidak
 mengubah folder terminal Anda):
@@ -256,6 +274,13 @@ tetap bahasa Inggris karena menjadi dokumentasi API.
 | Port 8080 sudah terpakai | Cari PID-nya dengan `sudo lsof -i :8080` (atau `sudo ss -ltnp 'sport = :8080'`), lalu hentikan dengan `kill <PID>`. Atau ubah `HTTP_ADDR` di `.env` (misalnya `:8081`); proxy `/api` Vite di `make dev` membaca `HTTP_ADDR` yang sama. |
 | Port 5173 sudah terpakai | Biasanya `make dev` lama masih berjalan; Vite lalu pindah ke 5174 dan mencetak alamat barunya. Hentikan yang lama (Ctrl+C di terminalnya, atau `sudo lsof -i :5173` lalu `kill <PID>`) dan jalankan `make dev` lagi. |
 | `make check` gagal karena `make gen` mengubah file | Hasil generator di repository tidak sama dengan kontrak/query. Jalankan `make gen`, periksa `git diff`, lalu commit file hasil generator bersama perubahan kontrak/query-nya. File hasil generator tidak boleh diedit manual. |
+| Test Go gagal dengan *testdb: … Cannot connect to the Docker daemon* atau *failed to start PostgreSQL* | Test database butuh Docker. Nyalakan Docker (lihat baris `make db` di atas) lalu ulangi, atau pakai `TEST_DATABASE_URL` (bagian 6). Pertama kali image `postgres:18` dan `testcontainers/ryuk` diunduh, jadi butuh internet atau image yang sudah ada. |
+| Test lama di mesin lambat, container test tertinggal | Container test dihapus otomatis setelah `go test` selesai (Ryuk menghapusnya walaupun proses test dihentikan paksa). Daftar yang tertinggal: `docker ps --filter label=org.testcontainers=true`. |
+| `make migrate` / `make seed` gagal: *connection refused* | Database belum berjalan atau port di `DATABASE_URL` salah. Jalankan `make db`, cek `PG_PORT` dan `DATABASE_URL` di `.env`. |
+| `make seed` ditolak: *requires DEV_MODE=true* | Set `DEV_MODE=true` di `.env` (hanya untuk pengembangan; jangan di server produksi). |
+| `make seed` ditolak: *run pfmea migrate up first* | Skema belum dimigrasi atau versinya beda dengan kode. Jalankan `make migrate`, lalu `make seed` lagi. |
+| `make seed` ditolak: *database already contains data* | Data demo (atau data lain) sudah ada. Pakai `make seed RESET=1` untuk menghapus semuanya dan memuat data demo dari nol, lalu restart `make dev`. |
+| `/readyz` menjawab 503 | Database tidak terjangkau atau belum dimigrasi. Lihat log server (`readiness check failed`), lalu `make db` dan `make migrate`. |
 | CI merah | `gh run list`, lalu `gh run view <id> --log-failed`. Reproduksi di lokal dengan `make check`, perbaiki, commit dan push lagi. Jangan menonaktifkan atau melemahkan test. |
 | Push `.github/workflows/ci.yml` ditolak (*refusing to allow an OAuth App to create or update workflow … without `workflow` scope*) | Token `gh` belum punya scope `workflow`. Jalankan `gh auth refresh -h github.com -s workflow`, lalu `gh auth setup-git`, lalu push lagi. |
 | Semua perintah lambat di WSL2 | Folder project berada di `/mnt/c/...` (file system Windows). Pindahkan/clone ulang ke file system Linux, misalnya `~/projects/vifmeacot`, dan buka dari sana (VS Code: "WSL: Open Folder"). |
