@@ -23,7 +23,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 | TC-M01-008 | `seed-demo --reset` memulai dari nol | integrasi | lulus |
 | TC-M01-009 | `/readyz` memeriksa database dan migrasi | integrasi | lulus |
 | TC-M01-010 | Target Makefile M1 berjalan | integrasi | lulus |
-| TC-M01-011 | `make db migrate seed` dan `make migrate-down` di CI | integrasi | belum dibuat |
+| TC-M01-011 | `make db migrate seed` dan `make migrate-down` di CI | integrasi | lulus |
 | TC-M01-012 | `testdb.New` memberi database demo yang terisolasi | integrasi | lulus |
 | TC-M01-013 | `testdb.NewEmpty` memberi database kosong | integrasi | lulus |
 | TC-M01-014 | `WithTx` mengisi `app.*` tanpa bocor | integrasi | lulus |
@@ -199,7 +199,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Hasil yang diharapkan:** setelah seed: 6 pengguna dan 2 paket; setelah migrate-down: tabel di
   `public` hanya `goose_db_version`.
 - **Test otomatis:** `.github/workflows/ci.yml` › langkah `TC-M01-011 make db migrate seed`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-012 — `testdb.New` memberi database demo yang terisolasi
 

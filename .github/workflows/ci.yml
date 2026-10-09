@@ -87,6 +87,7 @@ jobs:
           kill "$server"
 
       # Test case TC-M00-022: `make db` menjalankan PostgreSQL 18 yang sehat dengan JIT mati.
+      # Database dan .env dipakai lagi oleh langkah TC-M01-011 di bawah.
       - name: TC-M00-022 make db starts PostgreSQL 18
         run: |
           cp .env.example .env
@@ -96,5 +97,25 @@ jobs:
           echo "server_version=$version jit=$jit"
           case "$version" in 18*) ;; *) exit 1 ;; esac
           test "$jit" = off
+
+      # Test case TC-M01-011: `make migrate` dan `make seed` (memuat .env dengan DEV_MODE=true) di
+      # database dari `make db`, lalu `make migrate-down` hanya menyisakan tabel goose dan
+      # extension pg_trgm.
+      - name: TC-M01-011 make db migrate seed
+        run: |
+          q() { docker compose exec -T db psql -U pfmea -d pfmea -Atc "$1"; }
+          make migrate
+          make seed
+          users=$(q 'select count(*) from users')
+          packages=$(q 'select count(*) from packages')
+          echo "users=$users packages=$packages"
+          test "$users" = 6
+          test "$packages" = 2
+          make migrate-down
+          tables=$(q "select string_agg(tablename, ',' order by tablename) from pg_tables where schemaname = 'public'")
+          extensions=$(q "select string_agg(extname, ',' order by extname) from pg_extension")
+          echo "tables=$tables extensions=$extensions"
+          test "$tables" = goose_db_version
+          test "$extensions" = pg_trgm,plpgsql
           docker compose down -v
           rm .env
