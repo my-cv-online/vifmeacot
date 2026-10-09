@@ -1,4 +1,5 @@
-# Konfigurasi lint untuk api/openapi.yaml (make lint menjalankan: npx @redocly/cli lint api/openapi.yaml --config api/redocly.yaml)
+# Konfigurasi lint untuk api/openapi.yaml (make lint menjalankan redocly dari web/node_modules:
+# redocly lint api/openapi.yaml --config api/redocly.yaml)
 extends:
   - recommended
 rules:

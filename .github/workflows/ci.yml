@@ -12,11 +12,11 @@ on:
 permissions:
   contents: read
 
-# Setiap commit di main tetap diuji sampai selesai; hanya run pull request lama yang dibatalkan
-# bila ada push baru ke pull request yang sama.
+# Setiap commit di main punya grup sendiri (per SHA) sehingga semuanya diuji sampai selesai;
+# untuk pull request, run lama dibatalkan bila ada push baru ke pull request yang sama.
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: true
 
 jobs:
   check:
@@ -41,6 +41,13 @@ jobs:
         with:
           path: bin
           key: ${{ steps.tools-key.outputs.key }}
+
+      # Node 24 LTS untuk web/; cache npm dikunci pada package-lock.json.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
 
       - name: make tools
         run: make tools

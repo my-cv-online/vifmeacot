@@ -1,0 +1,86 @@
+/*
+	Gaya dasar aplikasi: token desain dari docs/08-screens.md §1 sebagai CSS custom properties,
+	font IBM Plex (self-hosted lewat @fontsource) dan aturan aksesibilitas umum. Tidak memakai
+	kit UI atau framework CSS (.claude/rules/frontend.md).
+*/
+:root {
+	/* Permukaan */
+	--color-page: #eef0f3;
+	--color-surface: #ffffff;
+	--color-surface-subtle: #f7f8fa;
+	--color-topbar: #14181d;
+
+	/* Garis: baris tabel, kontrol, tegas */
+	--color-border-row: #e6e9ee;
+	--color-border-control: #d5dae1;
+	--color-border-strong: #c3cad3;
+
+	/* Teks: utama, sekunder, redup */
+	--color-text: #16191d;
+	--color-text-secondary: #4a5361;
+	--color-text-muted: #7d8794;
+
+	/* Aksen (tautan, tombol utama) */
+	--color-accent: #0a57a8;
+	--color-accent-hover: #073f7c;
+
+	/* Navigasi terpilih */
+	--color-nav-selected-bg: #e6eef8;
+	--color-nav-selected-text: #0a3f7a;
+
+	/* Chip dan bar level temuan (dipakai mulai M8) */
+	--color-error-chip-bg: #fce8e6;
+	--color-error-chip-text: #8f1d14;
+	--color-error-bar: #b42318;
+	--color-warning-chip-bg: #fdf0d9;
+	--color-warning-chip-text: #7a4100;
+	--color-warning-bar: #c26a00;
+	--color-info-chip-bg: #e6eef8;
+	--color-info-chip-text: #0a3f7a;
+	--color-ok-chip-bg: #f2f9f3;
+	--color-ok-chip-text: #1d4620;
+
+	/* Chip GENERAL untuk baris yang tertaut ke Template General (mulai M4) */
+	--color-general-chip-bg: #ddf1ee;
+	--color-general-chip-text: #0b5a50;
+
+	/* Sel read-only yang berasal dari dokumen lain (mulai M5) */
+	--color-readonly-bg: #f7f8fa;
+	--color-readonly-text: #4a5361;
+
+	/* Font dan ukuran */
+	--font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+	--font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+	--font-size-body: 14px;
+	--font-size-table: 13.5px;
+	--touch-target: 44px;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	background: var(--color-page);
+	color: var(--color-text);
+	font-family: var(--font-sans);
+	font-size: var(--font-size-body);
+	line-height: 1.45;
+}
+
+a {
+	color: var(--color-accent);
+}
+
+a:hover {
+	color: var(--color-accent-hover);
+}
+
+/* Fokus selalu terlihat untuk pengguna keyboard: garis 2 px warna aksen. */
+:focus-visible {
+	outline: 2px solid var(--color-accent);
+	outline-offset: 2px;
+}

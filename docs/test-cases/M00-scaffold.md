@@ -3,7 +3,7 @@
 Milestone: M0 · Kebutuhan: P1-13 (konfigurasi lewat environment variable, endpoint health),
 `docs/10-milestones.md` M0, `docs/03-architecture.md` §2–3, §8 · User story: — (E2E Playwright
 baru dipakai mulai M2)
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 14 dari 26 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 17 dari 26 lulus
 
 ## Ringkasan
 
@@ -26,9 +26,9 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 14 dari 26 lulus
 | TC-M00-015 | Target Makefile yang berjalan di M0 tersedia | integrasi | belum dibuat |
 | TC-M00-016 | Target Makefile milestone berikutnya mencetak "available from M<n>" dengan kode 0 | integrasi | belum dibuat |
 | TC-M00-017 | `.gitignore` mengabaikan rahasia dan hasil build | integrasi | belum dibuat |
-| TC-M00-018 | App shell menampilkan teks bahasa Inggris dari `en.ts` | unit | belum dibuat |
-| TC-M00-019 | Menu aktif dan breadcrumb sesuai halaman | unit | belum dibuat |
-| TC-M00-020 | Proxy dev Vite meneruskan `/api` (termasuk WebSocket) ke server Go | unit | belum dibuat |
+| TC-M00-018 | App shell menampilkan teks bahasa Inggris dari `en.ts` | unit | lulus |
+| TC-M00-019 | Menu aktif dan breadcrumb sesuai halaman | unit | lulus |
+| TC-M00-020 | Proxy dev Vite meneruskan `/api` (termasuk WebSocket) ke server Go | unit | lulus |
 | TC-M00-021 | `make build` lalu `./bin/pfmea serve` menyajikan SPA di :8080 | integrasi | belum dibuat |
 | TC-M00-022 | `make db` menjalankan PostgreSQL 18 yang sehat dengan JIT mati | integrasi | belum dibuat |
 | TC-M00-023 | `make tools` + `make check` hijau di CI dan tidak mengubah file | integrasi | belum dibuat |
@@ -332,7 +332,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 14 dari 26 lulus
     mockup (misalnya "Cek konsistensi", "Paket").
 - **Test otomatis:** `web/src/lib/components/AppShell.test.ts` ›
   `TC-M00-018 app shell shows the English texts from en.ts`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-019 — Menu aktif dan breadcrumb sesuai halaman
 
@@ -351,7 +351,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 14 dari 26 lulus
      item terakhir sebagai halaman saat ini.
 - **Test otomatis:** `web/src/lib/navigation.test.ts` ›
   `TC-M00-019 active navigation item and breadcrumb follow the path`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-020 — Proxy dev Vite meneruskan `/api` (termasuk WebSocket) ke server Go
 
@@ -367,7 +367,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 14 dari 26 lulus
   2. Target mengikuti port `HTTP_ADDR`: `http://127.0.0.1:8081` dan `http://127.0.0.1:9090`.
 - **Test otomatis:** `web/vite.proxy.test.ts` ›
   `TC-M00-020 dev proxy forwards /api and WebSocket to the Go server`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-021 — `make build` lalu `./bin/pfmea serve` menyajikan SPA di :8080
 

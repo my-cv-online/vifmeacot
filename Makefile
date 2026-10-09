@@ -9,6 +9,8 @@ SHELL := /bin/bash
 
 # Alat Go yang versinya dipatok dipasang di bin/ milik project (bukan alat global di komputer).
 BIN := $(CURDIR)/bin
+# Alat Node (redocly) dipasang oleh `npm ci` di web/node_modules.
+NODE_BIN := $(CURDIR)/web/node_modules/.bin
 
 # Paket Go yang diuji dan di-lint. ./db/... baru ikut setelah db/embed.go ada (M1). Pola
 # eksplisit dipakai supaya web/node_modules tidak pernah dipindai.
@@ -50,7 +52,8 @@ endef
 help:
 	@grep -E '^## ' $(MAKEFILE_LIST) | sed -e 's/^## /  /'
 
-## tools: pasang alat Go yang versinya dipatok ke bin/
+## tools: pasang alat Go yang versinya dipatok ke bin/ dan dependensi web (npm ci)
+# TODO(M2): pasang juga Playwright Chromium (npx playwright install --with-deps chromium).
 tools:
 	@mkdir -p "$(BIN)"
 	$(call go-install,sqlc,github.com/sqlc-dev/sqlc/cmd/sqlc,$(SQLC_VERSION))
@@ -58,14 +61,21 @@ tools:
 	$(call go-install,oapi-codegen,github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen,$(OAPI_CODEGEN_VERSION))
 	$(call go-install,golangci-lint,github.com/golangci/golangci-lint/v2/cmd/golangci-lint,$(GOLANGCI_LINT_VERSION))
 	$(call go-install,air,github.com/air-verse/air,$(AIR_VERSION))
+	cd web && npm ci --no-audit --no-fund
 
-## test: test Go (dengan -race)
+## test: test Go (dengan -race) + Vitest
 test:
 	go test -race $(GO_PKGS)
+	cd web && npm run test
 
-## lint: golangci-lint
+## lint: golangci-lint, svelte-check, eslint, redocly
+# Telemetri dan cek versi redocly dimatikan karena jaringan pabrik bisa offline.
 lint:
 	"$(BIN)/golangci-lint" run $(GO_PKGS)
+	cd web && npm run check
+	cd web && npm run lint
+	REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true \
+		"$(NODE_BIN)/redocly" lint api/openapi.yaml --config api/redocly.yaml
 
 ## check: gen + lint + test + test-rules (wajib hijau sebelum setiap commit dan push)
 # Dijalankan berurutan lewat sub-make, bukan sebagai prasyarat, supaya `make -j` tidak

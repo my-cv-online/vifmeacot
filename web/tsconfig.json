@@ -1,0 +1,18 @@
+// Konfigurasi TypeScript untuk web/. Dasar konfigurasinya dibuat oleh `svelte-kit sync`
+// ($app/tsconfig); di sini hanya pengaturan tambahan project.
+{
+	"extends": "$app/tsconfig",
+	"compilerOptions": {
+		"strict": true,
+		// TypeScript 6 tidak lagi memuat semua @types otomatis; tipe Node dibutuhkan oleh
+		// vite.config.ts dan playwright.config.ts.
+		"types": ["$app/types", "node"]
+	},
+	"include": [
+		"src",
+		"vite.config.ts",
+		"vite.proxy.ts",
+		"vite.proxy.test.ts",
+		"playwright.config.ts"
+	]
+}
