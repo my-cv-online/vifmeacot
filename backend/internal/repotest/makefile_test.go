@@ -31,9 +31,9 @@ func TestTargets_TC_M00_015(t *testing.T) {
 			if code != 0 {
 				t.Fatalf("make -n %s: exit code %d\n%s", target, code, out)
 			}
-			// check memanggil gen dan test-rules yang di M0 masih placeholder, jadi hanya target
-			// lain yang tidak boleh mencetak "available from".
-			if target != "check" && strings.Contains(out, "available from") {
+			// Mulai M1 gen dan test-rules yang dipanggil check juga nyata, jadi tidak ada target
+			// di daftar ini yang boleh mencetak "available from".
+			if strings.Contains(out, "available from") {
 				t.Errorf("make %s should already work in M0:\n%s", target, out)
 			}
 			for _, p := range parts {
@@ -60,9 +60,8 @@ func TestTargets_TC_M00_015(t *testing.T) {
 // tersedia dan keluar dengan kode 0, sehingga `make check` dan CI tetap hijau di M0.
 func TestPlaceholders_TC_M00_016(t *testing.T) {
 	want := map[string]string{
-		"test-rules": "M1",
-		"e2e":        "M2",
-		"perf":       "M13",
+		"e2e":  "M2",
+		"perf": "M13",
 	}
 	for target, milestone := range want {
 		t.Run(target, func(t *testing.T) {
@@ -77,13 +76,17 @@ func TestPlaceholders_TC_M00_016(t *testing.T) {
 	}
 }
 
-// TestTargets_TC_M01_010 memastikan target database M1 memuat .env lalu memanggil subcommand
-// pfmea yang benar. `make -n` hanya mencetak resep, jadi database tidak disentuh.
+// TestTargets_TC_M01_010 memastikan target M1 nyata: target database memuat .env lalu memanggil
+// subcommand pfmea yang benar, gen menjalankan sqlc, test melewati fixture aturan dan test-rules
+// menjalankannya. `make -n` hanya mencetak resep, jadi database tidak disentuh.
 func TestTargets_TC_M01_010(t *testing.T) {
 	want := map[string][]string{
 		"migrate":      {".env", "go run ./backend/cmd/pfmea migrate up"},
 		"migrate-down": {".env", "go run ./backend/cmd/pfmea migrate down"},
 		"seed":         {".env", "go run ./backend/cmd/pfmea seed-demo"},
+		"gen":          {"sqlc", "generate"},
+		"test":         {"go test -race", "-skip '^(TestRuleFixtures|TestBaseline)$'", "./backend/...", "./db/...", "npm run test"},
+		"test-rules":   {"go test -race", "-run '^(TestRuleFixtures|TestBaseline)$'", "./backend/internal/rules/"},
 	}
 	for target, parts := range want {
 		t.Run(target, func(t *testing.T) {

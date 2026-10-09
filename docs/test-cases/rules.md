@@ -11,40 +11,40 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 
 | ID | Judul | Level | Status |
 | --- | --- | --- | --- |
-| TC-RULE-BASE-1 | Semua aturan pada PS-07 menghasilkan tepat 14 temuan baseline | integrasi | belum dibuat (query sudah diverifikasi) |
-| TC-RULE-BASE-2 | Semua aturan pada GENERAL tidak menghasilkan temuan | integrasi | belum dibuat (query sudah diverifikasi) |
-| TC-RULE-C01-1 | Sample size dan reaction plan kosong pada baris CP step 90. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-F01-1 | Teks failure mode kosong dan D tidak diisi. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-F02-1 | Dua failure mode diketik dalam satu sel. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-F03-1 | Teks effect yang sama dinilai 6 sekali dan 7 dua kali. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-F07-1 | S dinaikkan menjadi 9 pada chain tanpa aksi atau justifikasi. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-F08-1 | Customer B menetapkan ambang RPN 100; chain dengan RPN >= 100 tanpa aksi dilaporkan. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-F09-1 | Aksi selesai tanpa D baru. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-F10-1 | S baru lebih rendah dari S saat ini tanpa catatan perubahan desain. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-F11-1 | Aksi kedua yang lewat target. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-F12-1 | Nomor dokumen diketik di sel kontrol. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-K01-1 | Step baru tanpa failure mode dilaporkan. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-K02-1 | Menghapus baris CP 50-03 menambah K02 kedua di samping baseline demo 60-03. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-K03-1 | Failure mode step 50 yang menunjuk karakteristik milik step 60. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-K05-1 | Mesin tak terdaftar kedua pada baris CP. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-K06-1 | Header PFMEA kini juga berbeda dengan data part (part number). | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-R01-1 | Menghapus baris CP 60-01 membuat detection control-nya tidak tercakup. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-R02-1 | Menandai zone temperature alarm sebagai kontrol sistem menghilangkan temuan demo. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-R03-1 | Memutus tautan baris CP AOI dari PFMEA menambah R03 kedua. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-R04-1 | D di step 90 diperbaiki; D terlalu optimis di step 50 (AOI hanya membenarkan D >= 3). | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-R05-1 | O = 3 dengan satu-satunya prevention control dihapus. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-R06-1 | Menambah frekuensi verifikasi menghilangkan temuan demo. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-S01-1 | Karakteristik SC baru yang belum ada di PFMEA maupun CP. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-S02-1 | Karakteristik CC kedua di paket Customer B (Customer B tidak punya pemetaan CC). | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-S03-1 | Menandai 90-01 sebagai SC memperlihatkan kontrolnya yang lemah (visual 100%). | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-S04-1 | Menurunkan syarat CC customer menjadi 8 menghilangkan temuan demo. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-T01-1 | Step Shipping tertaut (wajib di rev 1) dihapus dari paket model. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-T02-1 | Template General merilis rev 2 tetapi paket model masih mengikuti rev 1. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-T03-1 | Dua konflik sinkron yang belum diselesaikan: konflik override kolom pada baris CP 20-02 dan konflik baris pada step 20 (dihapus di template, masih dipakai baris lokal). | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-T04-1 | Baris tertaut dilepas dari template tanpa alasan. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-W01-1 | Menganalisis step rework menghilangkan temuan demo. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-W02-1 | Final inspection tanpa cabang NG. | integrasi | belum dibuat (fixture SQL lulus) |
-| TC-RULE-W04-1 | Review terbaru menghilangkan temuan demo. | integrasi | belum dibuat (fixture SQL lulus) |
+| TC-RULE-BASE-1 | Semua aturan pada PS-07 menghasilkan tepat 14 temuan baseline | integrasi | lulus (pesan mulai M8) |
+| TC-RULE-BASE-2 | Semua aturan pada GENERAL tidak menghasilkan temuan | integrasi | lulus |
+| TC-RULE-C01-1 | Sample size dan reaction plan kosong pada baris CP step 90. | integrasi | lulus |
+| TC-RULE-F01-1 | Teks failure mode kosong dan D tidak diisi. | integrasi | lulus |
+| TC-RULE-F02-1 | Dua failure mode diketik dalam satu sel. | integrasi | lulus |
+| TC-RULE-F03-1 | Teks effect yang sama dinilai 6 sekali dan 7 dua kali. | integrasi | lulus |
+| TC-RULE-F07-1 | S dinaikkan menjadi 9 pada chain tanpa aksi atau justifikasi. | integrasi | lulus |
+| TC-RULE-F08-1 | Customer B menetapkan ambang RPN 100; chain dengan RPN >= 100 tanpa aksi dilaporkan. | integrasi | lulus |
+| TC-RULE-F09-1 | Aksi selesai tanpa D baru. | integrasi | lulus |
+| TC-RULE-F10-1 | S baru lebih rendah dari S saat ini tanpa catatan perubahan desain. | integrasi | lulus |
+| TC-RULE-F11-1 | Aksi kedua yang lewat target. | integrasi | lulus |
+| TC-RULE-F12-1 | Nomor dokumen diketik di sel kontrol. | integrasi | lulus |
+| TC-RULE-K01-1 | Step baru tanpa failure mode dilaporkan. | integrasi | lulus |
+| TC-RULE-K02-1 | Menghapus baris CP 50-03 menambah K02 kedua di samping baseline demo 60-03. | integrasi | lulus |
+| TC-RULE-K03-1 | Failure mode step 50 yang menunjuk karakteristik milik step 60. | integrasi | lulus |
+| TC-RULE-K05-1 | Mesin tak terdaftar kedua pada baris CP. | integrasi | lulus |
+| TC-RULE-K06-1 | Header PFMEA kini juga berbeda dengan data part (part number). | integrasi | lulus |
+| TC-RULE-R01-1 | Menghapus baris CP 60-01 membuat detection control-nya tidak tercakup. | integrasi | lulus |
+| TC-RULE-R02-1 | Menandai zone temperature alarm sebagai kontrol sistem menghilangkan temuan demo. | integrasi | lulus |
+| TC-RULE-R03-1 | Memutus tautan baris CP AOI dari PFMEA menambah R03 kedua. | integrasi | lulus |
+| TC-RULE-R04-1 | D di step 90 diperbaiki; D terlalu optimis di step 50 (AOI hanya membenarkan D >= 3). | integrasi | lulus |
+| TC-RULE-R05-1 | O = 3 dengan satu-satunya prevention control dihapus. | integrasi | lulus |
+| TC-RULE-R06-1 | Menambah frekuensi verifikasi menghilangkan temuan demo. | integrasi | lulus |
+| TC-RULE-S01-1 | Karakteristik SC baru yang belum ada di PFMEA maupun CP. | integrasi | lulus |
+| TC-RULE-S02-1 | Karakteristik CC kedua di paket Customer B (Customer B tidak punya pemetaan CC). | integrasi | lulus |
+| TC-RULE-S03-1 | Menandai 90-01 sebagai SC memperlihatkan kontrolnya yang lemah (visual 100%). | integrasi | lulus |
+| TC-RULE-S04-1 | Menurunkan syarat CC customer menjadi 8 menghilangkan temuan demo. | integrasi | lulus |
+| TC-RULE-T01-1 | Step Shipping tertaut (wajib di rev 1) dihapus dari paket model. | integrasi | lulus |
+| TC-RULE-T02-1 | Template General merilis rev 2 tetapi paket model masih mengikuti rev 1. | integrasi | lulus |
+| TC-RULE-T03-1 | Dua konflik sinkron yang belum diselesaikan: konflik override kolom pada baris CP 20-02 dan konflik baris pada step 20 (dihapus di template, masih dipakai baris lokal). | integrasi | lulus |
+| TC-RULE-T04-1 | Baris tertaut dilepas dari template tanpa alasan. | integrasi | lulus |
+| TC-RULE-W01-1 | Menganalisis step rework menghilangkan temuan demo. | integrasi | lulus |
+| TC-RULE-W02-1 | Final inspection tanpa cabang NG. | integrasi | lulus |
+| TC-RULE-W04-1 | Review terbaru menghilangkan temuan demo. | integrasi | lulus |
 
 ## TC-RULE-BASE-1 — Semua aturan pada PS-07 menghasilkan tepat 14 temuan baseline
 
@@ -55,7 +55,8 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   (F11, K05, R02, R03, R04, R06, S04), 2 info (F12, W04), dengan objek dan field seperti tabel
   di `docs/06-rules.md` §5. Mulai M8 pesan bahasa Inggris yang dirender juga harus sama persis.
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestBaseline/TC-RULE-BASE-1`
-- **Status:** belum dibuat (query sudah diverifikasi saat spesifikasi ditulis)
+- **Status:** lulus untuk aturan, objek, field dan jumlah per level (M1); pesan yang dirender
+  dibandingkan mulai M8
 
 ## TC-RULE-BASE-2 — Semua aturan pada GENERAL tidak menghasilkan temuan
 
@@ -64,7 +65,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Langkah:** jalankan ke-32 aturan Tahap 1 pada paket GENERAL.
 - **Hasil yang diharapkan:** tidak ada hasil.
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestBaseline/TC-RULE-BASE-2`
-- **Status:** belum dibuat (query sudah diverifikasi saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-C01-1 — Sample size dan reaction plan kosong pada baris CP step 90.
 
@@ -78,7 +79,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `cp_lines` · `sampleSize` dengan charNo = "90-01"
   - `cp_lines` · `reactionPlan` dengan charNo = "90-01"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-C01-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-F01-1 — Teks failure mode kosong dan D tidak diisi.
 
@@ -92,7 +93,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `failure_modes` · `text` dengan label = "Failure mode", opNo = "50"
   - `failure_chains` · `d` dengan label = "Detection (D)", opNo = "50"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-F01-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-F02-1 — Dua failure mode diketik dalam satu sel.
 
@@ -105,7 +106,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Hasil yang diharapkan:** aturan F02 mengembalikan tepat 1 hasil:
   - `failure_modes` · `text` dengan text = "Burr / crack"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-F02-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-F03-1 — Teks effect yang sama dinilai 6 sekali dan 7 dua kali.
 
@@ -120,7 +121,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `failure_effects` · `s` dengan s = 7, values = "6, 7"
   - `failure_effects` · `s` dengan s = 6, values = "6, 7"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-F03-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-F07-1 — S dinaikkan menjadi 9 pada chain tanpa aksi atau justifikasi.
 
@@ -133,7 +134,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Hasil yang diharapkan:** aturan F07 mengembalikan tepat 1 hasil:
   - `failure_chains` · `s` dengan s = 9, opNo = "60"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-F07-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-F08-1 — Customer B menetapkan ambang RPN 100; chain dengan RPN >= 100 tanpa aksi dilaporkan.
 
@@ -149,7 +150,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `failure_chains` · `rpn` dengan rpn = 105
   - `failure_chains` · `rpn` dengan rpn = 105
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-F08-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-F09-1 — Aksi selesai tanpa D baru.
 
@@ -162,7 +163,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Hasil yang diharapkan:** aturan F09 mengembalikan tepat 1 hasil:
   - `actions` · `newD` dengan label = "new D"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-F09-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-F10-1 — S baru lebih rendah dari S saat ini tanpa catatan perubahan desain.
 
@@ -175,7 +176,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Hasil yang diharapkan:** aturan F10 mengembalikan tepat 1 hasil:
   - `actions` · `designChangeNote` dengan s = 5, newS = 4
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-F10-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-F11-1 — Aksi kedua yang lewat target.
 
@@ -189,7 +190,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `actions` · `targetDate` dengan daysLate = 13
   - `actions` · `targetDate` dengan daysLate = 7
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-F11-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-F12-1 — Nomor dokumen diketik di sel kontrol.
 
@@ -203,7 +204,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `failure_causes` · `text` dengan term = "operator error"
   - `controls` · `text` dengan term = "WI-"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-F12-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-K01-1 — Step baru tanpa failure mode dilaporkan.
 
@@ -216,7 +217,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Hasil yang diharapkan:** aturan K01 mengembalikan tepat 1 hasil:
   - `process_steps` · `name` dengan opNo = "95"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-K01-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-K02-1 — Menghapus baris CP 50-03 menambah K02 kedua di samping baseline demo 60-03.
 
@@ -230,7 +231,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `characteristics` · `name` dengan charNo = "60-03"
   - `characteristics` · `name` dengan charNo = "50-03"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-K02-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-K03-1 — Failure mode step 50 yang menunjuk karakteristik milik step 60.
 
@@ -243,7 +244,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Hasil yang diharapkan:** aturan K03 mengembalikan tepat 1 hasil:
   - `failure_modes` · `characteristicId` dengan opNo = "50", charNo = "60-01", charOpNo = "60"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-K03-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-K05-1 — Mesin tak terdaftar kedua pada baris CP.
 
@@ -257,7 +258,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `cp_lines` · `machines` dengan opNo = "90", unknown = "Lux meter"
   - `cp_lines` · `machines` dengan opNo = "50", unknown = "Glue dispenser"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-K05-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-K06-1 — Header PFMEA kini juga berbeda dengan data part (part number).
 
@@ -271,7 +272,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `documents` · `header` dengan docType = "CP", docChangeLevel = "A"
   - `documents` · `header` dengan docType = "PFMEA", docPartNo = "PS-08"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-K06-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-R01-1 — Menghapus baris CP 60-01 membuat detection control-nya tidak tercakup.
 
@@ -285,7 +286,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `controls` · `text` dengan charNo = "60-03", control = "AOI 100%"
   - `controls` · `text` dengan charNo = "60-01", control = "AOI 100% + ICT"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-R01-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-R02-1 — Menandai zone temperature alarm sebagai kontrol sistem menghilangkan temuan demo.
 
@@ -297,7 +298,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   3. Rollback transaksi.
 - **Hasil yang diharapkan:** aturan R02 tidak mengembalikan hasil apa pun (temuan demo hilang).
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-R02-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-R03-1 — Memutus tautan baris CP AOI dari PFMEA menambah R03 kedua.
 
@@ -311,7 +312,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `cp_lines` · `controlId` dengan charNo = "75-01"
   - `cp_lines` · `controlId` dengan charNo = "70-01"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-R03-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-R04-1 — D di step 90 diperbaiki; D terlalu optimis di step 50 (AOI hanya membenarkan D >= 3).
 
@@ -324,7 +325,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Hasil yang diharapkan:** aturan R04 mengembalikan tepat 1 hasil:
   - `failure_chains` · `d` dengan opNo = "50", d = 2, dMin = 3
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-R04-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-R05-1 — O = 3 dengan satu-satunya prevention control dihapus.
 
@@ -337,7 +338,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Hasil yang diharapkan:** aturan R05 mengembalikan tepat 1 hasil:
   - `failure_chains` · `o` dengan o = 3, opNo = "60"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-R05-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-R06-1 — Menambah frekuensi verifikasi menghilangkan temuan demo.
 
@@ -349,7 +350,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   3. Rollback transaksi.
 - **Hasil yang diharapkan:** aturan R06 tidak mengembalikan hasil apa pun (temuan demo hilang).
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-R06-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-S01-1 — Karakteristik SC baru yang belum ada di PFMEA maupun CP.
 
@@ -363,7 +364,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `characteristics` · `scSymbolId` dengan charNo = "60-05", missingIn = "PFMEA"
   - `characteristics` · `scSymbolId` dengan charNo = "60-05", missingIn = "Control Plan"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-S01-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-S02-1 — Karakteristik CC kedua di paket Customer B (Customer B tidak punya pemetaan CC).
 
@@ -377,7 +378,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `characteristics` · `scSymbolId` dengan charNo = "60-02", symbol = "CC"
   - `characteristics` · `scSymbolId` dengan charNo = "50-01", symbol = "CC"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-S02-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-S03-1 — Menandai 90-01 sebagai SC memperlihatkan kontrolnya yang lemah (visual 100%).
 
@@ -390,7 +391,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Hasil yang diharapkan:** aturan S03 mengembalikan tepat 1 hasil:
   - `cp_lines` · `controlMethod` dengan charNo = "90-01", symbol = "SC"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-S03-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-S04-1 — Menurunkan syarat CC customer menjadi 8 menghilangkan temuan demo.
 
@@ -402,7 +403,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   3. Rollback transaksi.
 - **Hasil yang diharapkan:** aturan S04 tidak mengembalikan hasil apa pun (temuan demo hilang).
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-S04-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-T01-1 — Step Shipping tertaut (wajib di rev 1) dihapus dari paket model.
 
@@ -415,7 +416,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Hasil yang diharapkan:** aturan T01 mengembalikan tepat 1 hasil:
   - `packages` · `steps` dengan opNo = "110", rev = 1
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-T01-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-T02-1 — Template General merilis rev 2 tetapi paket model masih mengikuti rev 1.
 
@@ -428,7 +429,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Hasil yang diharapkan:** aturan T02 mengembalikan tepat 1 hasil:
   - `packages` · `templateRev` dengan syncedRev = 1, latestRev = 2
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-T02-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-T03-1 — Dua konflik sinkron yang belum diselesaikan: konflik override kolom pada baris CP 20-02 dan konflik baris pada step 20 (dihapus di template, masih dipakai baris lokal).
 
@@ -442,7 +443,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   - `cp_lines` · `sampleFreq` dengan column = "sampleFreq", rev = 2, localValue = "Every 3 reels", templateValue = "Every reel"
   - `process_steps` · `(seluruh baris)` dengan column = "", rev = 2, label = "20 IQC"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-T03-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-T04-1 — Baris tertaut dilepas dari template tanpa alasan.
 
@@ -455,7 +456,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Hasil yang diharapkan:** aturan T04 mengembalikan tepat 1 hasil:
   - `cp_lines` · `detachReason`
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-T04-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-W01-1 — Menganalisis step rework menghilangkan temuan demo.
 
@@ -467,7 +468,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   3. Rollback transaksi.
 - **Hasil yang diharapkan:** aturan W01 tidak mengembalikan hasil apa pun (temuan demo hilang).
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-W01-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-W02-1 — Final inspection tanpa cabang NG.
 
@@ -480,7 +481,7 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
 - **Hasil yang diharapkan:** aturan W02 mengembalikan tepat 1 hasil:
   - `process_steps` · `ngFlow` dengan opNo = "90"
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-W02-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus
 
 ## TC-RULE-W04-1 — Review terbaru menghilangkan temuan demo.
 
@@ -492,4 +493,4 @@ Aturan baru atau perubahan aturan menambah case di file ini lebih dulu (lihat `/
   3. Rollback transaksi.
 - **Hasil yang diharapkan:** aturan W04 tidak mengembalikan hasil apa pun (temuan demo hilang).
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFixtures/TC-RULE-W04-1` (dibuat di M1)
-- **Status:** belum dibuat (fixture SQL sudah lulus saat spesifikasi ditulis)
+- **Status:** lulus

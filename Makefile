@@ -89,10 +89,14 @@ dev:
 	trap 'kill $$air_pid $$vite_pid 2>/dev/null || true' EXIT INT TERM; \
 	wait -n
 
-# test menjalankan test Go (dengan -race) dan Vitest.
-## test: Go tests (with -race) + Vitest
+# RULE_TESTS adalah test fixture dan baseline aturan (docs/06-rules.md §7). `make test`
+# melewatinya dan `make test-rules` menjalankannya, supaya kegagalan aturan terlihat terpisah.
+RULE_TESTS := ^(TestRuleFixtures|TestBaseline)$$
+
+# test menjalankan test Go (dengan -race, tanpa fixture aturan) dan Vitest.
+## test: Go tests (with -race, without the rule fixtures) + Vitest
 test:
-	go test -race $(GO_PKGS)
+	go test -race -skip '$(RULE_TESTS)' $(GO_PKGS)
 	cd web && npm run test
 
 # lint menjalankan golangci-lint, svelte-check, eslint dan redocly.
@@ -148,10 +152,10 @@ migrate-down:
 seed:
 	$(LOAD_ENV) $(PFMEA) seed-demo $(if $(filter 1,$(RESET)),--reset)
 
-# Target berikut tersedia mulai M1.
-## test-rules: available from M1
+# test-rules menjalankan fixture setiap aturan dan baseline data demo di PostgreSQL 18.
+## test-rules: rule fixtures and the demo baseline (PS-07 = 14 findings, GENERAL = 0)
 test-rules:
-	@echo "make $@: available from M1"
+	go test -race -run '$(RULE_TESTS)' ./backend/internal/rules/
 
 # e2e tersedia mulai M2.
 ## e2e: available from M2

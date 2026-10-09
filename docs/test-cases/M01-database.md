@@ -22,7 +22,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 | TC-M01-007 | `seed-demo` memuat data demo sekali | integrasi | lulus |
 | TC-M01-008 | `seed-demo --reset` memulai dari nol | integrasi | lulus |
 | TC-M01-009 | `/readyz` memeriksa database dan migrasi | integrasi | lulus |
-| TC-M01-010 | Target Makefile M1 berjalan | integrasi | belum dibuat |
+| TC-M01-010 | Target Makefile M1 berjalan | integrasi | lulus |
 | TC-M01-011 | `make db migrate seed` dan `make migrate-down` di CI | integrasi | belum dibuat |
 | TC-M01-012 | `testdb.New` memberi database demo yang terisolasi | integrasi | lulus |
 | TC-M01-013 | `testdb.NewEmpty` memberi database kosong | integrasi | lulus |
@@ -41,8 +41,8 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 | TC-M01-026 | Hapus baris yang masih dipakai ditolak (RESTRICT, SQLSTATE 23001) | integrasi | lulus |
 | TC-M01-027 | Referensi lintas paket ditolak | integrasi | lulus |
 | TC-M01-028 | `snake_to_camel` | integrasi | lulus |
-| TC-M01-029 | Parser fixture dan pencocokan hasil aturan | unit | belum dibuat |
-| TC-M01-030 | Satu file SQL dan satu fixture untuk setiap aturan Tahap 1 | unit | belum dibuat |
+| TC-M01-029 | Parser fixture dan pencocokan hasil aturan | unit | lulus |
+| TC-M01-030 | Satu file SQL dan satu fixture untuk setiap aturan Tahap 1 | unit | lulus |
 
 ## TC-M01-001 — File migrasi dan seed tertanam di binary
 
@@ -187,7 +187,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   fixture aturan dengan `-skip`; `test-rules` menjalankannya dengan `-run`. Hanya `e2e` (M2) dan
   `perf` (M13) yang masih mencetak "available from".
 - **Test otomatis:** `backend/internal/repotest/makefile_test.go` › `TestTargets_TC_M01_010`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-011 — `make db migrate seed` dan `make migrate-down` di CI
 
@@ -437,7 +437,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Hasil yang diharapkan:** error yang jelas untuk fixture salah; matcher menolak/menerima sesuai
   aturan multiset, termasuk kasus backtracking.
 - **Test otomatis:** `backend/internal/rules/fixture_test.go` › `TestFixtureMatcher_TC_M01_029`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-030 — Satu file SQL dan satu fixture untuk setiap aturan Tahap 1
 
@@ -448,4 +448,4 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Hasil yang diharapkan:** 32 file SQL, 32 fixture dengan nama sama; header `-- rule:` sama
   dengan nama file; kode aturan sesuai daftar Tahap 1 di `docs/06-rules.md` §4.
 - **Test otomatis:** `backend/internal/rules/rules_test.go` › `TestRuleFiles_TC_M01_030`
-- **Status:** belum dibuat
+- **Status:** lulus
