@@ -3,7 +3,7 @@
 Milestone: M0 · Kebutuhan: P1-13 (konfigurasi lewat environment variable, endpoint health),
 `docs/10-milestones.md` M0, `docs/03-architecture.md` §2–3, §8 · User story: — (E2E Playwright
 baru dipakai mulai M2)
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 9 dari 26 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 12 dari 26 lulus
 
 ## Ringkasan
 
@@ -17,10 +17,10 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 9 dari 26 lulus
 | TC-M00-006 | `DATABASE_URL` dan `APP_BASE_URL` kosong dilaporkan sekaligus | unit | lulus |
 | TC-M00-007 | Semua nilai konfigurasi yang salah dilaporkan sekaligus | unit | lulus |
 | TC-M00-008 | `DEV_FAKE_TODAY` hanya dipakai bila `DEV_MODE=true` | unit | lulus |
-| TC-M00-009 | SPA belum di-build → "UI not built yet" | unit | belum dibuat |
-| TC-M00-010 | Path non-API yang tidak dikenal mendapat `index.html` | unit | belum dibuat |
+| TC-M00-009 | SPA belum di-build → "UI not built yet" | unit | lulus |
+| TC-M00-010 | Path non-API yang tidak dikenal mendapat `index.html` | unit | lulus |
 | TC-M00-011 | Path `/api/...` yang tidak dikenal mendapat 404 Problem, bukan `index.html` | unit | lulus |
-| TC-M00-012 | Aset ber-hash mendapat header cache permanen; aset yang tidak ada 404 | unit | belum dibuat |
+| TC-M00-012 | Aset ber-hash mendapat header cache permanen; aset yang tidak ada 404 | unit | lulus |
 | TC-M00-013 | Binary `pfmea`: usage, subcommand milestone berikutnya, konfigurasi salah | unit | belum dibuat |
 | TC-M00-014 | `pfmea serve` berjalan, menjawab `/healthz`, lalu berhenti dengan rapi | integrasi | belum dibuat |
 | TC-M00-015 | Target Makefile yang berjalan di M0 tersedia | integrasi | belum dibuat |
@@ -171,7 +171,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 9 dari 26 lulus
 - **Hasil yang diharapkan:**
   - Status 503, `Content-Type: text/plain; charset=utf-8`, body memuat "UI not built yet".
 - **Test otomatis:** `backend/internal/webui/webui_test.go` › `TestHandler_TC_M00_009`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-010 — Path non-API yang tidak dikenal mendapat `index.html`
 
@@ -191,7 +191,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 9 dari 26 lulus
   3. Status 200 dengan isi `robots.txt` (file yang ada disajikan apa adanya).
   4. Status 405 dengan header `Allow: GET, HEAD`.
 - **Test otomatis:** `backend/internal/webui/webui_test.go` › `TestHandler_TC_M00_010`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-011 — Path `/api/...` yang tidak dikenal mendapat 404 Problem, bukan `index.html`
 
@@ -223,7 +223,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 9 dari 26 lulus
   2. Status 404 (bukan `index.html`, bukan daftar isi folder).
   3. Isi `index.html` (dotfile tidak pernah disajikan sebagai file).
 - **Test otomatis:** `backend/internal/webui/webui_test.go` › `TestHandler_TC_M00_012`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-013 — Binary `pfmea`: usage, subcommand milestone berikutnya, konfigurasi salah
 
