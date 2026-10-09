@@ -28,6 +28,7 @@ needed (they are not imported on purpose).
 | `docs/test-cases/` | Test cases written before the code (format in its README; content in Indonesian) |
 | `docs/build-guide.md` | Build stages and installation guide for the team (Indonesian; written in the first session) |
 | `docs/prompts/start-project.md` | Prompt of the first session: GitHub setup, build guide, M0 |
+| `docs/spec-package.md` | Description of the original Phase 1 specification package (formerly `README.md`; Indonesian) |
 | `docs/mockups/` | Static HTML mockups of the end state with Indonesian labels (layout reference only) |
 
 Already written and executed while preparing this spec (on PostgreSQL 16 with a `uuidv7()`
@@ -82,7 +83,7 @@ Demo users (development only, never production): `admin`, `rsaputri` (approver),
 | Comments in every hand-written file (Go, TypeScript, JavaScript, Svelte, HTML, CSS, SQL, Makefile, YAML, Dockerfile, shell) | Bahasa Indonesia |
 | Identifiers, file and folder names, API fields, database names, log messages, commit messages | English |
 | Specification docs for the AI (`CLAUDE.md`, `docs/0*.md`, `docs/1*.md`) | English |
-| Docs for the team (`README.md`, `docs/build-guide.md`, `docs/test-cases/*.md`) | Bahasa Indonesia (file names English) |
+| Docs for the team (`README.md`, `docs/build-guide.md`, `docs/spec-package.md`, `docs/test-cases/*.md`) | Bahasa Indonesia (file names English) |
 
 Comments are there so the team can follow the code, so write them everywhere: a short header
 comment in every hand-written file saying what it is for, a comment on every function, type,
