@@ -239,13 +239,14 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 27 dari 27 lulus
 - **Langkah:**
   1. Tanpa argumen.
   2. `pfmea help`.
-  3. `pfmea migrate up`.
+  3. `pfmea init` (sebelum M1: `pfmea migrate up`).
   4. `pfmea unknown`.
   5. `pfmea serve` dengan environment kosong.
 - **Hasil yang diharapkan:**
   1. Usage (memuat `serve`) di stderr, kode keluar 2.
   2. Usage di stdout, kode keluar 0.
-  3. "pfmea migrate: available from M1" di stderr, kode keluar 2.
+  3. "pfmea init: available from M2" di stderr, kode keluar 2. (Diperbarui di M1: `migrate`
+     dan `seed-demo` sudah tersedia, lihat TC-M01-002 sampai TC-M01-008.)
   4. Pesan "unknown command" + usage, kode keluar 2.
   5. Kode keluar 1; stderr memuat "DATABASE_URL is required" dan "APP_BASE_URL is required"
      sekaligus.
@@ -297,11 +298,13 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 27 dari 27 lulus
   "available from M<n>" dan keluar 0 sampai milestone-nya)
 - **Prasyarat:** root repository; `make` terpasang.
 - **Langkah:**
-  1. Jalankan `make migrate`, `make migrate-down`, `make seed`, `make test-rules`, `make gen`.
+  1. (Hanya berlaku di M0) Jalankan `make migrate`, `make migrate-down`, `make seed`,
+     `make test-rules`, `make gen`.
   2. Jalankan `make e2e`.
   3. Jalankan `make perf`.
 - **Hasil yang diharapkan:**
-  1. Masing-masing mencetak "available from M1", kode keluar 0.
+  1. Di M0 masing-masing mencetak "available from M1", kode keluar 0. Diperbarui di M1: target
+     ini sudah berjalan dan diuji oleh TC-M01-010, jadi langkah 1 tidak diuji lagi.
   2. Mencetak "available from M2", kode keluar 0.
   3. Mencetak "available from M13", kode keluar 0.
 - **Test otomatis:** `backend/internal/repotest/makefile_test.go` › `TestPlaceholders_TC_M00_016`
