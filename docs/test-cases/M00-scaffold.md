@@ -3,7 +3,7 @@
 Milestone: M0 · Kebutuhan: P1-13 (konfigurasi lewat environment variable, endpoint health),
 `docs/10-milestones.md` M0, `docs/03-architecture.md` §2–3, §8 · User story: — (E2E Playwright
 baru dipakai mulai M2)
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 26 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 27 lulus
 
 ## Ringkasan
 
@@ -35,6 +35,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 26 lulus
 | TC-M00-024 | `make dev` menampilkan app shell di :5173 dan `/healthz` di :8080 | manual | belum dibuat |
 | TC-M00-025 | Clone baru mengikuti panduan instalasi sampai `make check` hijau | manual | belum dibuat |
 | TC-M00-026 | Komentar bahasa Indonesia dan teks tampilan bahasa Inggris | manual | belum dibuat |
+| TC-M00-027 | Path SPA yang tidak dikenal menampilkan halaman error bahasa Inggris dari `en.ts` | unit | belum dibuat |
 
 ## TC-M00-001 — `/healthz` menjawab 200 selama proses berjalan
 
@@ -382,7 +383,8 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 26 lulus
      yang dirujuk `index.html`.
 - **Hasil yang diharapkan:**
   - `/` dan deep link → 200 HTML SvelteKit (`index.html` hasil build) yang merujuk aset
-    dengan path absolut `/_app/`.
+    dengan path absolut `/_app/`; tidak ada sisa placeholder `%sveltekit` (semua placeholder
+    template terganti, tidak ada yang tertelan komentar HTML).
   - Aset → 200 dengan `Cache-Control: public, max-age=31536000, immutable`.
   - `/healthz` → 200.
 - **Test otomatis:** `.github/workflows/ci.yml` › langkah
@@ -469,4 +471,22 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 26 lulus
   - Tidak ada temuan blocker atau major tentang bahasa; semua teks UI dan server berbahasa
     Inggris, semua komentar berbahasa Indonesia.
 - **Test otomatis:** — (manual; agen `spec-reviewer`)
+- **Status:** belum dibuat
+
+## TC-M00-027 — Path SPA yang tidak dikenal menampilkan halaman error bahasa Inggris dari `en.ts`
+
+- **Level:** unit (Vitest) + pemeriksaan di browser · **Kebutuhan:** M0 Done when ("every
+  visible text is English"), `CLAUDE.md` (teks UI hanya di `en.ts`). Ditambahkan saat M0
+  dikerjakan: uji `make dev` menunjukkan deep link ke route yang belum ada (misalnya
+  `/packages/PS-07/pfmea`, dibuat di M6) memakai halaman error bawaan SvelteKit yang teksnya
+  bukan dari `en.ts`.
+- **Prasyarat:** fungsi `errorTitle` di `src/lib/i18n/en.ts` dan `src/routes/+error.svelte`.
+- **Langkah:**
+  1. Panggil `errorTitle(404)` dan `errorTitle(500)`.
+  2. Di browser, buka `/packages/PS-07/pfmea` lewat `make dev`.
+- **Hasil yang diharapkan:**
+  1. 404 → "Page not found"; status lain → "Something went wrong".
+  2. App shell tetap tampil, halaman menampilkan "Page not found" dan tautan "Back to Dashboard".
+- **Test otomatis:** `web/src/lib/i18n/en.test.ts` ›
+  `TC-M00-027 unknown SPA routes show an English error page`
 - **Status:** belum dibuat
