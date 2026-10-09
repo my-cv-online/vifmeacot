@@ -2,7 +2,7 @@
 
 Milestone: M1 · Kebutuhan: P1-13 (operasional), `docs/10-milestones.md` M1,
 `docs/04-data-model.md`, `docs/06-rules.md` §1, §5, §7, `docs/11-testing.md` §2–3 · User story: —
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 1 dari 30 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 3 dari 30 lulus
 
 Test aturan (fixture 32 aturan dan baseline) ada di `rules.md` (`TC-RULE-*`) dan diotomatisasi di
 milestone ini. Test karakterisasi trigger (TC-M01-021 sampai 028) menguji skema yang sudah ada
@@ -24,8 +24,8 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 | TC-M01-009 | `/readyz` memeriksa database dan migrasi | integrasi | belum dibuat |
 | TC-M01-010 | Target Makefile M1 berjalan | integrasi | belum dibuat |
 | TC-M01-011 | `make db migrate seed` dan `make migrate-down` di CI | integrasi | belum dibuat |
-| TC-M01-012 | `testdb.New` memberi database demo yang terisolasi | integrasi | belum dibuat |
-| TC-M01-013 | `testdb.NewEmpty` memberi database kosong | integrasi | belum dibuat |
+| TC-M01-012 | `testdb.New` memberi database demo yang terisolasi | integrasi | lulus |
+| TC-M01-013 | `testdb.NewEmpty` memberi database kosong | integrasi | lulus |
 | TC-M01-014 | `WithTx` mengisi `app.*` tanpa bocor | integrasi | belum dibuat |
 | TC-M01-015 | `WithTx` commit, rollback dan panic | integrasi | belum dibuat |
 | TC-M01-016 | `WithTx` mengulang 40001/40P01 | integrasi | belum dibuat |
@@ -214,7 +214,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   - Database test dihapus setelah test selesai; template dibuat sekali per hash isi migrasi+seed.
   - Tanpa Docker dan tanpa `TEST_DATABASE_URL` test gagal dengan pesan jelas (tidak di-skip).
 - **Test otomatis:** `backend/internal/testdb/testdb_test.go` › `TestNew_TC_M01_012`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-013 — `testdb.NewEmpty` memberi database kosong
 
@@ -223,7 +223,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Langkah:** `testdb.NewEmpty`, hitung relasi di skema `public`.
 - **Hasil yang diharapkan:** 0 relasi; URL bisa dipakai perintah CLI.
 - **Test otomatis:** `backend/internal/testdb/testdb_test.go` › `TestNewEmpty_TC_M01_013`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-014 — `WithTx` mengisi `app.*` tanpa bocor
 
