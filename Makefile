@@ -46,7 +46,7 @@ define go-install
 	fi
 endef
 
-.PHONY: help tools test lint check gen migrate migrate-down seed test-rules e2e perf
+.PHONY: help tools test lint build check gen migrate migrate-down seed test-rules e2e perf
 
 ## help: tampilkan daftar target
 help:
@@ -76,6 +76,15 @@ lint:
 	cd web && npm run lint
 	REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true \
 		"$(NODE_BIN)/redocly" lint api/openapi.yaml --config api/redocly.yaml
+
+## build: build web → salin ke backend/internal/webui/dist → go build bin/pfmea
+# Isi dist/ lama dihapus dulu (kecuali .keep) supaya aset build sebelumnya tidak ikut tertanam.
+# Binary dibangun statis (CGO_ENABLED=0) untuk image distroless di M13.
+build:
+	cd web && npm run build
+	find backend/internal/webui/dist -mindepth 1 -maxdepth 1 ! -name .keep -exec rm -rf {} +
+	cp -R web/build/. backend/internal/webui/dist/
+	CGO_ENABLED=0 go build -trimpath -o "$(BIN)/pfmea" ./backend/cmd/pfmea
 
 ## check: gen + lint + test + test-rules (wajib hijau sebelum setiap commit dan push)
 # Dijalankan berurutan lewat sub-make, bukan sebagai prasyarat, supaya `make -j` tidak

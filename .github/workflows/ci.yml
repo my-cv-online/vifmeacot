@@ -60,3 +60,26 @@ jobs:
         run: |
           git status --porcelain
           test -z "$(git status --porcelain)"
+
+      # Test case TC-M00-021: binary hasil `make build` menyajikan SPA yang tertanam di :8080.
+      # File sementara ditulis ke RUNNER_TEMP supaya working tree tetap bersih.
+      - name: TC-M00-021 build binary and serve SPA
+        env:
+          DATABASE_URL: postgres://pfmea:unused@127.0.0.1:5432/pfmea
+          APP_BASE_URL: http://localhost:8080
+          HTTP_ADDR: 127.0.0.1:8080
+        run: |
+          make build
+          ./bin/pfmea serve > "$RUNNER_TEMP/serve.log" 2>&1 &
+          server=$!
+          # Tunggu sampai server menjawab (maksimal sekitar 10 detik).
+          for i in $(seq 1 50); do curl -fsS http://127.0.0.1:8080/healthz > /dev/null && break; sleep 0.2; done
+          curl -fsS http://127.0.0.1:8080/healthz
+          curl -fsS http://127.0.0.1:8080/ -o "$RUNNER_TEMP/index.html"
+          # Deep link mendapat index.html yang sama; aset dirujuk dengan path absolut /_app/.
+          curl -fsS http://127.0.0.1:8080/packages/PS-07/pfmea | cmp - "$RUNNER_TEMP/index.html"
+          asset=$(grep -o '"/_app/immutable/[^"]*\.js"' "$RUNNER_TEMP/index.html" | head -1 | tr -d '"')
+          test -n "$asset"
+          curl -fsSI "http://127.0.0.1:8080$asset" | tee "$RUNNER_TEMP/asset.headers"
+          grep -qi '^cache-control: public, max-age=31536000, immutable' "$RUNNER_TEMP/asset.headers"
+          kill "$server"

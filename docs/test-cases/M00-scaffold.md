@@ -3,7 +3,7 @@
 Milestone: M0 · Kebutuhan: P1-13 (konfigurasi lewat environment variable, endpoint health),
 `docs/10-milestones.md` M0, `docs/03-architecture.md` §2–3, §8 · User story: — (E2E Playwright
 baru dipakai mulai M2)
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 17 dari 26 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 18 dari 26 lulus
 
 ## Ringkasan
 
@@ -29,7 +29,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 17 dari 26 lulus
 | TC-M00-018 | App shell menampilkan teks bahasa Inggris dari `en.ts` | unit | lulus |
 | TC-M00-019 | Menu aktif dan breadcrumb sesuai halaman | unit | lulus |
 | TC-M00-020 | Proxy dev Vite meneruskan `/api` (termasuk WebSocket) ke server Go | unit | lulus |
-| TC-M00-021 | `make build` lalu `./bin/pfmea serve` menyajikan SPA di :8080 | integrasi | belum dibuat |
+| TC-M00-021 | `make build` lalu `./bin/pfmea serve` menyajikan SPA di :8080 | integrasi | lulus |
 | TC-M00-022 | `make db` menjalankan PostgreSQL 18 yang sehat dengan JIT mati | integrasi | belum dibuat |
 | TC-M00-023 | `make tools` + `make check` hijau di CI dan tidak mengubah file | integrasi | belum dibuat |
 | TC-M00-024 | `make dev` menampilkan app shell di :5173 dan `/healthz` di :8080 | manual | belum dibuat |
@@ -387,7 +387,7 @@ Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 17 dari 26 lulus
   - `/healthz` → 200.
 - **Test otomatis:** `.github/workflows/ci.yml` › langkah
   `TC-M00-021 build binary and serve SPA`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M00-022 — `make db` menjalankan PostgreSQL 18 yang sehat dengan JIT mati
 
