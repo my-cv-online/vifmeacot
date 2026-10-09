@@ -35,7 +35,7 @@ comment.
 ## Checklist
 
 - [x] M0 Scaffold
-- [ ] M1 Database, seed, sqlc, test harness
+- [x] M1 Database, seed, sqlc, test harness
 - [ ] M2 API contract, auth, users
 - [ ] M3 Master data
 - [ ] M4 Packages, app shell, create from template
@@ -162,6 +162,8 @@ extension remain.
   `LockPackage` first makes that lock order explicit (`package_links` → package → content rows).
 - Test databases: `docs/11-testing.md` §2 (template `pfmea_tpl_<hash>`, failure without
   Docker). `make test` skips `TestRuleFixtures` and `TestBaseline`, `make test-rules` runs them.
+- Open for M2 (ask before deciding): `docs/05-api.md` §2 does not say which Problem
+  `ErrNotNull` (23502) and `ErrInvalidValue` (class 22) become.
 
 ## M2 · API contract, auth, users
 

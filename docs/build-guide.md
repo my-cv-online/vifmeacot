@@ -145,7 +145,7 @@ rencana dan ditetapkan saat milestone itu dikerjakan.
 | Milestone | Isi singkat | File test case | User story E2E | Input dari perusahaan | Status |
 | --- | --- | --- | --- | --- | --- |
 | M0 Scaffold | Repository kosong yang bisa dijalankan: `go.mod`, `pfmea serve` (`/healthz`, `/readyz`), konfigurasi, Makefile, Docker Compose, CI, kerangka SvelteKit, SPA tertanam | `M00-scaffold.md` | — (unit dengan Vitest) | — | selesai (9 Oktober 2026) |
-| M1 Database | Migrasi (goose), seed demo, `store.WithTx`, sqlc, harness test database, test trigger, `make test-rules` | `M01-database.md`, `rules.md` | — | — | sedang dikerjakan (review) |
+| M1 Database | Migrasi (goose), seed demo, `store.WithTx`, sqlc, harness test database, test trigger, `make test-rules` | `M01-database.md`, `rules.md` | — | — | selesai (9 Oktober 2026) |
 | M2 API dan auth | `make gen`, kerangka API hasil generator (operasi lain 501), login, sesi, pengguna, `pfmea init`, halaman login | `M02-api-auth.md` | Login/logout `apratama` (Playwright) | — | belum mulai |
 | M3 Master data | Customer, kelas, part, library kontrol, kriteria, istilah terlarang, aturan, pengaturan; layar `/master/*` | `M03-master-data.md` | Admin mengedit tabel simbol Customer B (Playwright) | Daftar customer, tabel konversi simbol, ambang CSR (RPN, S minimum untuk CC); teks kriteria S/O/D AIAG 4th dari manual berlisensi | belum mulai |
 | M4 Paket | Daftar, buat dari Template General, nomor dokumen, ringkasan paket, sidebar | `M04-packages.md` | US-01 (tanpa klausul cek) | — | belum mulai |
