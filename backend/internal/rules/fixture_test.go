@@ -220,6 +220,7 @@ func TestFixtureMatcher_TC_M01_029(t *testing.T) {
 		}
 	})
 
+	// step membuat hasil process_steps.name dengan opNo dan params tambahan.
 	step := func(opNo string, extra map[string]any) result {
 		p := map[string]any{"opNo": opNo}
 		for k, v := range extra {
@@ -227,6 +228,7 @@ func TestFixtureMatcher_TC_M01_029(t *testing.T) {
 		}
 		return result{ObjectType: "process_steps", Field: "name", Params: p}
 	}
+	// item membuat item expect process_steps.name dengan params yang diberikan.
 	item := func(params map[string]any) expectItem {
 		return expectItem{ObjectType: "process_steps", Field: "name", Params: params}
 	}

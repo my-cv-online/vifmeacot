@@ -81,7 +81,7 @@ func seedDemo(ctx context.Context, databaseURL string, reset bool, stdout, stder
 		if !errors.As(err, &schemaErr) {
 			return err
 		}
-		_, _ = fmt.Fprintf(stderr, i18n.SeedNotMigrated+"\n", schemaErr)
+		_, _ = fmt.Fprintf(stderr, i18n.SeedNotMigrated+"\n", schemaErr.Current, schemaErr.Latest)
 		return errRefused
 	}
 	var hasData bool

@@ -83,6 +83,7 @@ func TestChainSeverity_TC_M01_021(t *testing.T) {
 	fm70 := failureModeID(t, pool, "Defect escapes AOI") // dua chain, satu effect S 7
 	fm90 := failureModeID(t, pool, "Cosmetic defect not detected")
 
+	// check membandingkan s semua chain failure mode dengan nilai yang diharapkan (-1 = NULL).
 	check := func(fm uuid.UUID, want ...int) {
 		t.Helper()
 		if got := chainSeverities(t, pool, fm); !slices.Equal(got, want) {
@@ -109,6 +110,15 @@ func TestChainSeverity_TC_M01_021(t *testing.T) {
 	exec(t, pool, "UPDATE failure_effects SET failure_mode_id = $1 WHERE failure_mode_id = $2", fm90, fm70)
 	check(fm70, -1, -1, -1)
 	check(fm90, 7)
+
+	// Failure mode baru tanpa effect: chain pertamanya mendapat s NULL saat dibuat.
+	step := stepID(t, pool, ps07, "90")
+	fresh := scalar[uuid.UUID](t, pool,
+		`INSERT INTO failure_modes (package_id, step_id, characteristic_id, text)
+		SELECT $1, $2, id, 'Label missing' FROM characteristics WHERE package_id = $1 AND step_id = $2 ORDER BY char_no LIMIT 1
+		RETURNING id`, ps07, step)
+	addChain(t, pool, fresh, "Printer out of labels")
+	check(fresh, -1)
 }
 
 // TestRPN_TC_M01_022 memastikan rpn dan new_rpn dihitung database (S × O × D) dan NULL bila ada
@@ -118,6 +128,7 @@ func TestRPN_TC_M01_022(t *testing.T) {
 	pool := db.Pool
 	fm := failureModeID(t, pool, "Missing component") // S 7, O 4, D 4
 	chain := scalar[uuid.UUID](t, pool, "SELECT id FROM failure_chains WHERE failure_mode_id = $1", fm)
+	// rpn membaca rpn chain yang diuji.
 	rpn := func() *int {
 		return scalar[*int](t, pool, "SELECT rpn FROM failure_chains WHERE id = $1", chain)
 	}
@@ -135,6 +146,7 @@ func TestRPN_TC_M01_022(t *testing.T) {
 
 	action := scalar[uuid.UUID](t, pool,
 		"INSERT INTO actions (package_id, failure_chain_id, text, new_s, new_o, new_d) VALUES ($1, $2, 'Add AOI', 7, 2, 3) RETURNING id", ps07, chain)
+	// newRPN membaca new_rpn aksi yang diuji.
 	newRPN := func() *int {
 		return scalar[*int](t, pool, "SELECT new_rpn FROM actions WHERE id = $1", action)
 	}
@@ -155,6 +167,7 @@ func TestVersion_TC_M01_023(t *testing.T) {
 	fm := failureModeID(t, pool, "Missing component")
 	chain := scalar[uuid.UUID](t, pool, "SELECT id FROM failure_chains WHERE failure_mode_id = $1", fm)
 	effect := scalar[uuid.UUID](t, pool, "SELECT id FROM failure_effects WHERE failure_mode_id = $1", fm)
+	// version membaca kolom version satu baris.
 	version := func(table string, id uuid.UUID) int {
 		return scalar[int](t, pool, "SELECT version FROM "+pgx.Identifier{table}.Sanitize()+" WHERE id = $1", id)
 	}
@@ -188,6 +201,7 @@ func TestVersion_TC_M01_023(t *testing.T) {
 func TestContentVersion_TC_M01_024(t *testing.T) {
 	db, _ := newStore(t)
 	pool := db.Pool
+	// cv membaca content_version paket.
 	cv := func(pkg uuid.UUID) int64 {
 		return scalar[int64](t, pool, "SELECT content_version FROM packages WHERE id = $1", pkg)
 	}
@@ -236,6 +250,9 @@ func auditRows(t *testing.T, pool *pgxpool.Pool, table string, afterID int64) []
 	if err != nil {
 		t.Fatal(err)
 	}
+	// Ditutup juga saat t.Fatal di dalam loop, supaya koneksi kembali ke pool dan cleanup tidak
+	// menggantung.
+	defer rows.Close()
 	var out []auditRow
 	for rows.Next() {
 		var r auditRow
@@ -266,6 +283,7 @@ func TestAudit_TC_M01_025(t *testing.T) {
 	pool := db.Pool
 	step := stepID(t, pool, ps07, "50")
 	actor := store.Actor{UserID: apratama, RequestID: "req-audit", Source: store.SourceAPI}
+	// in menjalankan satu statement lewat WithTx dengan actor audit di atas.
 	in := func(sql string, args ...any) {
 		t.Helper()
 		err := st.WithTx(ctx, actor, func(ctx context.Context, tx pgx.Tx) error {
@@ -276,6 +294,7 @@ func TestAudit_TC_M01_025(t *testing.T) {
 			t.Fatalf("exec %q: %v", sql, err)
 		}
 	}
+	// mark mengembalikan id audit terakhir sebagai batas baris audit berikutnya.
 	mark := func() int64 { return scalar[int64](t, pool, "SELECT coalesce(max(id), 0) FROM audit_log") }
 
 	m := mark()
@@ -321,6 +340,7 @@ func TestRestrict_TC_M01_026(t *testing.T) {
 	db, _ := newStore(t)
 	pool := db.Pool
 	step50 := stepID(t, pool, ps07, "50")
+	// count menjalankan query hitung.
 	count := func(sql string, args ...any) int { return scalar[int](t, pool, sql, args...) }
 	fmBefore := count("SELECT count(*) FROM failure_modes WHERE step_id = $1", step50)
 

@@ -107,9 +107,9 @@ const (
 	// SeedNeedsDevMode menolak seed-demo di luar mode pengembangan (data demo bukan untuk
 	// produksi).
 	SeedNeedsDevMode = "pfmea seed-demo requires DEV_MODE=true"
-	// SeedNotMigrated dipakai bila versi skema tidak sama dengan migrasi terbaru; argumen adalah
-	// keterangan versinya.
-	SeedNotMigrated = "pfmea seed-demo: %v; run pfmea migrate up first"
+	// SeedNotMigrated dipakai bila versi skema tidak sama dengan migrasi terbaru; argumennya versi
+	// di database lalu versi yang diharapkan binary.
+	SeedNotMigrated = "pfmea seed-demo: database schema is at version %d, this binary expects version %d; run pfmea migrate up first"
 	// SeedHasData menolak memuat data demo di atas data yang sudah ada.
 	SeedHasData = "pfmea seed-demo: database already contains data; use --reset to drop everything and start again"
 	// SeedSchemaReset melaporkan bahwa skema public sudah dihapus dan dibuat lagi (--reset).

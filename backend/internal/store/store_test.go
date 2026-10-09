@@ -6,6 +6,7 @@ package store_test
 import (
 	"context"
 	"errors"
+	"runtime"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -128,6 +129,29 @@ func TestWithTxCommitRollback_TC_M01_015(t *testing.T) {
 	}()
 	if got := name(); got != "Committed" {
 		t.Errorf("name = %q, the panicking transaction was not rolled back", got)
+	}
+
+	// runtime.Goexit (dipanggil t.Fatal di dalam fn) mengakhiri goroutine tanpa panic dan tanpa
+	// error; transaksi tetap harus di-rollback supaya koneksi dan lock-nya tidak tertahan.
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		_ = st.WithTx(ctx, store.Actor{}, func(ctx context.Context, tx pgx.Tx) error {
+			_ = setName("Goexit")(ctx, tx)
+			runtime.Goexit()
+			return nil
+		})
+	}()
+	<-done
+	if got := name(); got != "Committed" {
+		t.Errorf("name = %q, the transaction ended by Goexit was not rolled back", got)
+	}
+	if n := db.Pool.Stat().AcquiredConns(); n != 0 {
+		t.Errorf("%d connections still acquired after Goexit, want 0", n)
+	}
+	if n := scalar[int](t, db.Pool, `SELECT count(*) FROM pg_stat_activity
+		WHERE datname = current_database() AND state = 'idle in transaction'`); n != 0 {
+		t.Errorf("%d sessions idle in transaction after Goexit, want 0", n)
 	}
 }
 
@@ -299,6 +323,12 @@ func TestErrorMapping_TC_M01_017(t *testing.T) {
 	err = exec("DELETE FROM process_steps WHERE id = $1", step50)
 	if !errors.Is(err, store.ErrForeignKey) || !errors.As(err, &dbErr) || dbErr.Code != "23001" {
 		t.Errorf("restrict delete: err = %v, want ErrForeignKey with SQLSTATE 23001", err)
+	}
+
+	// 7. Nilai enum yang tidak dikenal (SQLSTATE 22P02, kelas 22).
+	err = exec("INSERT INTO process_steps (package_id, op_no, seq, name, symbol) VALUES ($1, '98', 980, 'Bad symbol', 'teleport')", ps07)
+	if !errors.Is(err, store.ErrInvalidValue) || !errors.As(err, &dbErr) || !strings.HasPrefix(dbErr.Code, "22") {
+		t.Errorf("invalid enum: err = %v, want ErrInvalidValue with a class 22 SQLSTATE", err)
 	}
 }
 

@@ -98,13 +98,14 @@ func (s *Store) WithTx(ctx context.Context, actor Actor, fn TxFunc) error {
 		if err == nil {
 			return nil
 		}
-		if !isRetryable(err) || ctx.Err() != nil {
+		if !isRetryable(err) {
 			return mapError(err)
 		}
 		if attempt == maxRetries {
 			return conflictAfterRetries(err)
 		}
-		// Jeda bertambah per percobaan, ditambah jitter acak.
+		// Jeda bertambah per percobaan, ditambah jitter acak. Konteks yang sudah atau baru
+		// dibatalkan menghentikan penantian dan tidak diulang.
 		delay := retryBaseDelay*time.Duration(attempt+1) + time.Duration(rand.Int64N(int64(retryBaseDelay)))
 		select {
 		case <-ctx.Done():
@@ -114,22 +115,17 @@ func (s *Store) WithTx(ctx context.Context, actor Actor, fn TxFunc) error {
 	}
 }
 
-// runTx menjalankan satu percobaan transaksi. Bila fn panic, transaksi di-rollback dan panic
-// diteruskan ke pemanggil.
-func (s *Store) runTx(ctx context.Context, actor Actor, fn TxFunc) (err error) {
+// runTx menjalankan satu percobaan transaksi. Transaksi yang tidak di-commit selalu di-rollback,
+// juga bila fn panic (panic diteruskan ke pemanggil) atau mengakhiri goroutine dengan
+// runtime.Goexit (misalnya t.Fatal di test), supaya koneksi dan lock-nya tidak tertahan.
+func (s *Store) runTx(ctx context.Context, actor Actor, fn TxFunc) error {
 	tx, err := s.pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("begin transaction: %w", err)
 	}
-	defer func() {
-		if p := recover(); p != nil {
-			_ = tx.Rollback(context.Background())
-			panic(p)
-		}
-		if err != nil {
-			_ = tx.Rollback(context.Background())
-		}
-	}()
+	// Setelah Commit yang sukses, Rollback hanya mengembalikan pgx.ErrTxClosed. Konteks baru
+	// dipakai karena ctx bisa sudah dibatalkan.
+	defer func() { _ = tx.Rollback(context.Background()) }()
 
 	userID := ""
 	if actor.UserID != uuid.Nil {

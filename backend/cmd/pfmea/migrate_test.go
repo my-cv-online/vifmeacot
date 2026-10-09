@@ -98,8 +98,15 @@ func TestMigrateDown_TC_M01_003(t *testing.T) {
 	if n := count(t, d.Pool, "SELECT count(*) FROM pg_tables WHERE schemaname = 'public' AND tablename = 'goose_db_version'"); n != 1 {
 		t.Errorf("goose_db_version should remain")
 	}
-	if n := count(t, d.Pool, "SELECT count(*) FROM pg_extension WHERE extname = 'pg_trgm'"); n != 1 {
-		t.Errorf("extension pg_trgm should remain")
+	if v := count(t, d.Pool, "SELECT max(version_id)::int FROM goose_db_version"); v != 0 {
+		t.Errorf("schema version after migrate down = %d, want 0", v)
+	}
+	var extensions string
+	if err := d.Pool.QueryRow(ctx, "SELECT string_agg(extname, ',' ORDER BY extname) FROM pg_extension").Scan(&extensions); err != nil {
+		t.Fatal(err)
+	}
+	if extensions != "pg_trgm,plpgsql" {
+		t.Errorf("extensions after migrate down = %q, want only pg_trgm and plpgsql", extensions)
 	}
 
 	// Siklus naik lagi: migrate up dan seed demo berjalan di atas database yang sudah turun.

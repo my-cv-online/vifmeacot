@@ -244,6 +244,7 @@ func TestBaseline(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		defer rows.Close()
 		for rows.Next() {
 			var code, level string
 			if err := rows.Scan(&code, &level); err != nil {

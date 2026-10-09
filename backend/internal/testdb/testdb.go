@@ -64,8 +64,8 @@ type server struct {
 	container *tcpostgres.PostgresContainer
 }
 
-// State per proses test. Ini satu-satunya state global harness: server dan template sengaja
-// dibuat sekali per proses (sync.Once) karena mahal, dan dibersihkan oleh Main.
+// State per proses test. Selain runContainer, ini satu-satunya state global harness: server dan
+// template sengaja dibuat sekali per proses (sync.Once) karena mahal, dan dibersihkan oleh Main.
 var (
 	srvOnce sync.Once
 	srv     *server
@@ -137,20 +137,7 @@ func startServer(ctx context.Context, getenv func(string) string) (*server, erro
 		return &server{adminURL: raw, admin: admin}, nil
 	}
 
-	// Image bawaan modul postgres sudah menjalankan "postgres -c fsync=off"; argumen berikut
-	// ditambahkan di belakangnya.
-	ctr, err := tcpostgres.Run(ctx, pgImage,
-		tcpostgres.WithDatabase("postgres"),
-		tcpostgres.WithUsername("pfmea"),
-		tcpostgres.WithPassword("pfmea-test"),
-		tcpostgres.BasicWaitStrategies(),
-		testcontainers.WithCmdArgs(
-			"-c", "jit=off",
-			"-c", "synchronous_commit=off",
-			"-c", "full_page_writes=off",
-			"-c", "max_connections=300",
-		),
-	)
+	ctr, err := runContainer(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("start %s test container (is Docker running? otherwise set TEST_DATABASE_URL): %w", pgImage, err)
 	}
@@ -165,6 +152,25 @@ func startServer(ctx context.Context, getenv func(string) string) (*server, erro
 		return nil, fmt.Errorf("connect to the test container: %w", err)
 	}
 	return &server{adminURL: raw, admin: admin, container: ctr}, nil
+}
+
+// runContainer menjalankan container postgres:18 untuk test. Variabel (bukan fungsi biasa)
+// supaya test harness bisa mensimulasikan Docker yang tidak berjalan di proses anak.
+var runContainer = func(ctx context.Context) (*tcpostgres.PostgresContainer, error) {
+	// Image bawaan modul postgres sudah menjalankan "postgres -c fsync=off"; argumen berikut
+	// ditambahkan di belakangnya.
+	return tcpostgres.Run(ctx, pgImage,
+		tcpostgres.WithDatabase("postgres"),
+		tcpostgres.WithUsername("pfmea"),
+		tcpostgres.WithPassword("pfmea-test"),
+		tcpostgres.BasicWaitStrategies(),
+		testcontainers.WithCmdArgs(
+			"-c", "jit=off",
+			"-c", "synchronous_commit=off",
+			"-c", "full_page_writes=off",
+			"-c", "max_connections=300",
+		),
+	)
 }
 
 // connect membuka pool administratif kecil dan memastikan server menjawab.
@@ -344,11 +350,24 @@ func withDatabase(raw, name string) (string, error) {
 	return u.String(), nil
 }
 
-// redact menyamarkan kata sandi di connection string untuk pesan error.
+// redact menyamarkan kata sandi di connection string untuk pesan error: bagian user:sandi@ dan
+// parameter password/sslpassword. Bentuk key=value (bukan URL) tidak ditampilkan sama sekali
+// karena kata sandinya tidak bisa dipisahkan dengan aman.
 func redact(raw string) string {
 	u, err := url.Parse(raw)
-	if err != nil {
-		return "invalid URL"
+	if err != nil || (u.Scheme != "postgres" && u.Scheme != "postgresql") {
+		return "connection string hidden"
+	}
+	q := u.Query()
+	changed := false
+	for _, k := range []string{"password", "sslpassword"} {
+		if q.Has(k) {
+			q.Set(k, "xxxxx")
+			changed = true
+		}
+	}
+	if changed {
+		u.RawQuery = q.Encode()
 	}
 	return u.Redacted()
 }
