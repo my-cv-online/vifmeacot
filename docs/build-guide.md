@@ -52,13 +52,13 @@ git config user.name && git config user.email
 
 | # | Perintah | Hasil | Tersedia mulai |
 | --- | --- | --- | --- |
-| 1 | `gh repo clone my-cv-online/vifmeacot && cd vifmeacot` | Salinan repository di komputer | — |
-| 2 | `make tools` | Alat Go yang versinya dipatok (sqlc, goose, oapi-codegen, golangci-lint) terpasang, dependensi web terpasang dengan `npm ci` di `web/`; mulai M2 juga Playwright Chromium | M0 |
-| 3 | `cp .env.example .env` | File konfigurasi lokal (tidak pernah di-commit) | M0 |
-| 4 | `make db` | PostgreSQL 18 berjalan di Docker (dengan healthcheck dan volume data) | M0 |
+| 1 | `gh repo clone my-cv-online/vifmeacot && cd vifmeacot` (atau `git clone https://github.com/my-cv-online/vifmeacot.git && cd vifmeacot`) | Salinan repository di komputer | — |
+| 2 | `make tools` | Alat Go yang versinya dipatok (sqlc, goose, oapi-codegen, golangci-lint, dan air untuk live reload `make dev`) terpasang di `bin/` project, dependensi web terpasang dengan `npm ci` di `web/`; mulai M2 juga Playwright Chromium. Pertama kali ±3–5 menit; berikutnya hanya alat yang versinya berubah yang dipasang ulang | M0 |
+| 3 | `cp .env.example .env` | File konfigurasi lokal (tidak pernah di-commit); wajib sebelum `make dev` | M0 |
+| 4 | `make db` | PostgreSQL 18 berjalan di Docker (dengan healthcheck dan volume data), hanya terbuka di `127.0.0.1:5432`; perintah selesai setelah database sehat | M0 |
 | 5 | `make migrate` | Skema database terpasang (`db/migrations`) | M1 |
 | 6 | `make seed` | Data demo dimuat (`db/seed/demo.sql`) | M1 |
-| 7 | `make dev` | Server Go di http://localhost:8080 dan Vite di http://localhost:5173 (proxy `/api` ke :8080) | M0 |
+| 7 | `make dev` | Server Go di http://localhost:8080 (dibangun ulang otomatis bila file Go berubah) dan Vite di http://localhost:5173 (proxy `/api` ke :8080); hentikan dengan Ctrl+C | M0 |
 | 8 | Buka http://localhost:5173 | M0: kerangka aplikasi (app shell) dengan halaman placeholder; mulai M2: halaman login | M0 |
 | 9 | `make check` | Semua pemeriksaan hijau (wajib sebelum setiap commit) | M0 |
 
@@ -184,7 +184,7 @@ mengubah folder terminal Anda):
 ```bash
 go test ./backend/... -run TC_M00_001 -v                                    # test Go (nama fungsi memuat TC_M00_001)
 go test ./backend/internal/rules/ -run 'TestRuleFixtures/TC-RULE-K01-1' -v   # subtest: sebutkan juga nama test induknya
-(cd web && npx vitest run -t "TC-M00-016")                                   # test Vitest
+(cd web && npx vitest run -t "TC-M00-018")                                   # test Vitest
 (cd web && npx playwright test -g "TC-M04-001")                              # test Playwright (mulai M2)
 ```
 
@@ -248,8 +248,8 @@ tetap bahasa Inggris karena menjadi dokumentasi API.
 | Masalah | Penyebab / solusi |
 | --- | --- |
 | `make db` gagal: *Cannot connect to the Docker daemon* | Docker belum berjalan. Nyalakan Docker Desktop (Windows/macOS; di Windows aktifkan integrasi WSL2 untuk distro Anda) atau `sudo systemctl start docker` (Linux; di WSL2 tanpa systemd: `sudo service docker start`), lalu ulangi. Cek dengan `docker info`. |
-| Port 5432 sudah terpakai | Ada PostgreSQL lain di komputer. Hentikan (`sudo systemctl stop postgresql`, atau `sudo service postgresql stop` di WSL2 tanpa systemd), atau jalankan database project di port lain: ubah `PG_PORT` dan port di `DATABASE_URL` pada `.env` (mulai M0), lalu `make db` lagi. Cari pemakai port dengan `sudo lsof -i :5432` atau `sudo ss -ltnp 'sport = :5432'`. |
-| Port 8080 sudah terpakai | Cari PID-nya dengan `sudo lsof -i :8080` (atau `sudo ss -ltnp 'sport = :8080'`), lalu hentikan dengan `kill <PID>`. Atau ubah `HTTP_ADDR` di `.env` (misalnya `:8081`); proxy `/api` Vite di `make dev` membaca `HTTP_ADDR` yang sama (mulai M0). |
+| Port 5432 sudah terpakai | Ada PostgreSQL lain di komputer. Hentikan (`sudo systemctl stop postgresql`, atau `sudo service postgresql stop` di WSL2 tanpa systemd), atau jalankan database project di port lain: ubah `PG_PORT` dan port di `DATABASE_URL` pada `.env`, lalu `make db` lagi. Cari pemakai port dengan `sudo lsof -i :5432` atau `sudo ss -ltnp 'sport = :5432'`. |
+| Port 8080 sudah terpakai | Cari PID-nya dengan `sudo lsof -i :8080` (atau `sudo ss -ltnp 'sport = :8080'`), lalu hentikan dengan `kill <PID>`. Atau ubah `HTTP_ADDR` di `.env` (misalnya `:8081`); proxy `/api` Vite di `make dev` membaca `HTTP_ADDR` yang sama. |
 | Port 5173 sudah terpakai | Biasanya `make dev` lama masih berjalan; Vite lalu pindah ke 5174 dan mencetak alamat barunya. Hentikan yang lama (Ctrl+C di terminalnya, atau `sudo lsof -i :5173` lalu `kill <PID>`) dan jalankan `make dev` lagi. |
 | `make check` gagal karena `make gen` mengubah file | Hasil generator di repository tidak sama dengan kontrak/query. Jalankan `make gen`, periksa `git diff`, lalu commit file hasil generator bersama perubahan kontrak/query-nya. File hasil generator tidak boleh diedit manual. |
 | CI merah | `gh run list`, lalu `gh run view <id> --log-failed`. Reproduksi di lokal dengan `make check`, perbaiki, commit dan push lagi. Jangan menonaktifkan atau melemahkan test. |
@@ -257,4 +257,6 @@ tetap bahasa Inggris karena menjadi dokumentasi API.
 | Semua perintah lambat di WSL2 | Folder project berada di `/mnt/c/...` (file system Windows). Pindahkan/clone ulang ke file system Linux, misalnya `~/projects/vifmeacot`, dan buka dari sana (VS Code: "WSL: Open Folder"). |
 | `make test` gagal: *-race requires cgo* | Compiler C belum terpasang. Ubuntu/WSL2: `sudo apt install build-essential`. |
 | `go` mengunduh toolchain atau mengeluh versi | `go.mod` meminta Go 1.27. Go 1.21+ bisa mengunduh toolchain 1.27 otomatis bila `GOTOOLCHAIN=auto`. Go dari `apt` Ubuntu memakai `GOTOOLCHAIN=local` (pesan berisi *GOTOOLCHAIN=local*), jadi tidak mengunduh: jalankan `go env -w GOTOOLCHAIN=auto`, atau lebih baik pasang Go 1.27 dari https://go.dev/dl/ (juga bila jaringan memblokir unduhan). |
+| `make dev` gagal: *missing .env* | Jalankan `cp .env.example .env` dulu (langkah 3). |
+| Halaman di :8080 menampilkan "UI not built yet" | Binary dibangun tanpa hasil build web. Jalankan `make build` (bukan `go build` langsung), lalu jalankan `./bin/pfmea serve` lagi. Saat pengembangan, buka http://localhost:5173 (`make dev`). |
 | `npm ci` gagal: versi Node terlalu lama | Pasang Node.js 24 LTS (minimal 22.17), misalnya dengan `nvm install 24`. |
