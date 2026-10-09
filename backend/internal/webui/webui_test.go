@@ -123,6 +123,10 @@ func TestHandler_TC_M00_012(t *testing.T) {
 		if strings.Contains(rec.Body.String(), "INDEX") {
 			t.Errorf("%s: dijawab dengan index.html", target)
 		}
+		// Teks 404 berasal dari i18n (bahasa Inggris), bukan teks bawaan net/http.
+		if got := strings.TrimSpace(rec.Body.String()); got != "Not found" {
+			t.Errorf("%s: body = %q, ingin \"Not found\"", target, got)
+		}
 	}
 
 	// Dotfile diperlakukan seperti path yang tidak dikenal: SPA, bukan isi file.

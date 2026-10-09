@@ -82,14 +82,42 @@ func TestLoad_TC_M00_005(t *testing.T) {
 	if !strings.Contains(logged, "localhost:5432") {
 		t.Errorf("LogValue tidak memuat host database: %s", logged)
 	}
+
+	// Kata sandi juga bisa dikirim lewat parameter query yang dibaca pgx.
+	t.Run("password in query", func(t *testing.T) {
+		env := requiredOnly()
+		env["DATABASE_URL"] = "postgres://pfmea@localhost:5432/pfmea?password=topsecret&sslpassword=keypass&sslmode=require"
+		cfg, err := Load(envOf(env))
+		if err != nil {
+			t.Fatalf("Load gagal: %v", err)
+		}
+		logged := cfg.LogValue().String()
+		for _, secret := range []string{"topsecret", "keypass"} {
+			if strings.Contains(logged, secret) {
+				t.Errorf("LogValue membocorkan %q: %s", secret, logged)
+			}
+		}
+		if !strings.Contains(logged, "sslmode=require") {
+			t.Errorf("parameter lain seharusnya tetap tampil: %s", logged)
+		}
+	})
+
+	// URL socket Unix (host kosong, socket di parameter host) adalah bentuk pgx yang sah.
+	t.Run("unix socket", func(t *testing.T) {
+		env := requiredOnly()
+		env["DATABASE_URL"] = "postgres:///pfmea?host=/var/run/postgresql"
+		if _, err := Load(envOf(env)); err != nil {
+			t.Errorf("URL socket Unix ditolak: %v", err)
+		}
+	})
 }
 
 // TestLoad_TC_M00_006 memastikan dua variabel wajib yang kosong dilaporkan sekaligus dalam satu
 // error (bukan berhenti di masalah pertama). Nilai berisi spasi saja dianggap kosong.
 func TestLoad_TC_M00_006(t *testing.T) {
 	for name, env := range map[string]map[string]string{
-		"tidak di-set": {},
-		"spasi saja":   {"DATABASE_URL": "  ", "APP_BASE_URL": "\t"},
+		"not set":         {},
+		"whitespace only": {"DATABASE_URL": "  ", "APP_BASE_URL": "\t"},
 	} {
 		t.Run(name, func(t *testing.T) {
 			_, err := Load(envOf(env))
@@ -157,6 +185,30 @@ func TestLoad_TC_M00_007(t *testing.T) {
 			t.Errorf("pesan RULE_PARALLELISM tidak menyebut RULE_POOL_SIZE: %q", p)
 		}
 	}
+
+	// APP_BASE_URL dibandingkan dengan header Origin mulai M2, jadi harus berupa origin murni:
+	// skema + host (+ port), tanpa path, query atau fragment.
+	for _, bad := range []string{"http://:8080", "http://localhost:5173/app", "http://localhost:5173?x=1", "http://localhost:5173#top"} {
+		t.Run("APP_BASE_URL "+bad, func(t *testing.T) {
+			env := requiredOnly()
+			env["APP_BASE_URL"] = bad
+			_, err := Load(envOf(env))
+			if err == nil {
+				t.Fatalf("APP_BASE_URL=%q seharusnya ditolak", bad)
+			}
+			if p := problemsOf(t, err); len(p) != 1 || !strings.HasPrefix(p[0], "APP_BASE_URL ") {
+				t.Errorf("masalah = %q", p)
+			}
+		})
+	}
+	t.Run("APP_BASE_URL trailing slash", func(t *testing.T) {
+		env := requiredOnly()
+		env["APP_BASE_URL"] = "http://localhost:5173/"
+		cfg, err := Load(envOf(env))
+		if err != nil || cfg.AppBaseURL != "http://localhost:5173" {
+			t.Errorf("AppBaseURL = %q, err = %v", cfg.AppBaseURL, err)
+		}
+	})
 }
 
 // TestLoad_TC_M00_008 memastikan DEV_FAKE_TODAY hanya dipakai bila DEV_MODE=true, diabaikan
@@ -171,7 +223,7 @@ func TestLoad_TC_M00_008(t *testing.T) {
 		return env
 	}
 
-	t.Run("DEV_MODE true", func(t *testing.T) {
+	t.Run("dev mode on", func(t *testing.T) {
 		cfg, err := Load(envOf(with(map[string]string{"DEV_MODE": "true", "DEV_FAKE_TODAY": "2026-10-08"})))
 		if err != nil {
 			t.Fatalf("Load gagal: %v", err)
@@ -184,7 +236,7 @@ func TestLoad_TC_M00_008(t *testing.T) {
 		}
 	})
 
-	t.Run("DEV_MODE false", func(t *testing.T) {
+	t.Run("dev mode off", func(t *testing.T) {
 		cfg, err := Load(envOf(with(map[string]string{"DEV_MODE": "false", "DEV_FAKE_TODAY": "2026-10-08"})))
 		if err != nil {
 			t.Fatalf("Load gagal: %v", err)
@@ -197,7 +249,7 @@ func TestLoad_TC_M00_008(t *testing.T) {
 		}
 	})
 
-	t.Run("format salah", func(t *testing.T) {
+	t.Run("wrong format", func(t *testing.T) {
 		_, err := Load(envOf(with(map[string]string{"DEV_MODE": "true", "DEV_FAKE_TODAY": "08-10-2026"})))
 		if err == nil {
 			t.Fatal("Load seharusnya gagal")

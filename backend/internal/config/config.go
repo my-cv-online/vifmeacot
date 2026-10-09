@@ -182,32 +182,37 @@ func (l *loader) boolean(key string, def bool) bool {
 }
 
 // postgresURL memvalidasi DATABASE_URL: wajib dan berskema postgres:// atau postgresql://.
+// Host boleh kosong bila socket Unix diberikan lewat parameter host (bentuk yang sah di pgx,
+// misalnya postgres:///pfmea?host=/var/run/postgresql).
 func (l *loader) postgresURL(key string) string {
 	v, ok := l.required(key)
 	if !ok {
 		return ""
 	}
 	u, err := url.Parse(v)
-	if err != nil || (u.Scheme != "postgres" && u.Scheme != "postgresql") || u.Host == "" {
+	if err != nil || (u.Scheme != "postgres" && u.Scheme != "postgresql") ||
+		(u.Host == "" && u.Query().Get("host") == "") {
 		l.fail(i18n.ConfigPostgresURL, key)
 		return ""
 	}
 	return v
 }
 
-// absoluteURL memvalidasi APP_BASE_URL: wajib, http(s), dengan host. Garis miring di akhir
-// dibuang supaya perbandingan dengan header Origin (M2) sederhana.
-func (l *loader) absoluteURL(key string) string {
+// originURL memvalidasi APP_BASE_URL sebagai origin: wajib, http(s), dengan nama host, tanpa
+// path, query atau fragment. Nilai disimpan sebagai skema://host[:port] karena mulai M2
+// dibandingkan langsung dengan header Origin browser.
+func (l *loader) originURL(key string) string {
 	v, ok := l.required(key)
 	if !ok {
 		return ""
 	}
 	u, err := url.Parse(v)
-	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
+	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Hostname() == "" ||
+		u.User != nil || (u.Path != "" && u.Path != "/") || u.RawQuery != "" || u.ForceQuery || u.Fragment != "" {
 		l.fail(i18n.ConfigAbsoluteURL, key)
 		return ""
 	}
-	return strings.TrimSuffix(v, "/")
+	return u.Scheme + "://" + u.Host
 }
 
 // listenAddr memvalidasi alamat host:port; port 0 diizinkan (port acak, dipakai test).
@@ -282,7 +287,7 @@ func Load(getenv func(string) string) (Config, error) {
 
 	c.DatabaseURL = l.postgresURL("DATABASE_URL")
 	c.HTTPAddr = l.listenAddr("HTTP_ADDR", defaultHTTPAddr)
-	c.AppBaseURL = l.absoluteURL("APP_BASE_URL")
+	c.AppBaseURL = l.originURL("APP_BASE_URL")
 	c.SessionTTL = l.duration("SESSION_TTL", defaultSessionTTL)
 	c.ExportDir = l.stringOr("EXPORT_DIR", defaultExportDir)
 	c.ExportTemplateDir = l.stringOr("EXPORT_TEMPLATE_DIR", defaultExportTemplateDir)
@@ -317,10 +322,22 @@ func Load(getenv func(string) string) (Config, error) {
 }
 
 // LogValue menyiapkan konfigurasi untuk dicatat ke log saat start; kata sandi di DATABASE_URL
-// disamarkan supaya tidak pernah tersimpan di file log.
+// (bagian user:sandi@ maupun parameter query) disamarkan supaya tidak pernah tersimpan di log.
 func (c Config) LogValue() slog.Value {
 	dbURL := ""
 	if u, err := url.Parse(c.DatabaseURL); err == nil {
+		q := u.Query()
+		changed := false
+		// Parameter query berisi rahasia yang juga dibaca pgx.
+		for _, k := range []string{"password", "sslpassword"} {
+			if q.Has(k) {
+				q.Set(k, "xxxxx")
+				changed = true
+			}
+		}
+		if changed {
+			u.RawQuery = q.Encode()
+		}
 		dbURL = u.Redacted()
 	}
 	prefixes := make([]string, len(c.MetricsAllow))

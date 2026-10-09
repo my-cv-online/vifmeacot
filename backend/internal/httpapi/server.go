@@ -39,7 +39,9 @@ func NewHandler(opts Options) http.Handler {
 		opts.ReadinessTimeout = defaultReadinessTimeout
 	}
 	if opts.UI == nil {
-		opts.UI = http.NotFoundHandler()
+		opts.UI = http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			http.Error(w, i18n.NotFound, http.StatusNotFound)
+		})
 	}
 
 	mux := http.NewServeMux()

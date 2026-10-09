@@ -12,8 +12,8 @@ const (
 	ConfigRequired = "%s is required"
 	// ConfigPostgresURL dipakai bila DATABASE_URL bukan URL PostgreSQL.
 	ConfigPostgresURL = "%s must be a postgres:// or postgresql:// URL"
-	// ConfigAbsoluteURL dipakai bila APP_BASE_URL bukan URL http(s) absolut.
-	ConfigAbsoluteURL = "%s must be an absolute http:// or https:// URL"
+	// ConfigAbsoluteURL dipakai bila APP_BASE_URL bukan origin http(s) (skema dan host saja).
+	ConfigAbsoluteURL = "%s must be an origin such as https://pfmea.example.com or http://localhost:5173 (no path or query)"
 	// ConfigListenAddr dipakai bila alamat listen tidak berbentuk host:port.
 	ConfigListenAddr = "%s must be host:port, for example :8080"
 	// ConfigDuration dipakai bila durasi tidak bisa dibaca atau tidak positif.
@@ -38,6 +38,8 @@ const (
 const (
 	// ProblemNotFoundTitle adalah judul Problem Details untuk kode not_found (docs/05-api.md §2).
 	ProblemNotFoundTitle = "Not found"
+	// NotFound adalah body teks biasa untuk file atau path yang tidak ada (misalnya aset SPA).
+	NotFound = "Not found"
 	// UINotBuilt ditampilkan bila binary dibangun tanpa hasil build web (dist/ kosong).
 	UINotBuilt = "UI not built yet. Run make build to embed the web application."
 	// MethodNotAllowed ditampilkan bila halaman web diminta dengan method selain GET/HEAD.
@@ -58,4 +60,7 @@ Commands:
 	CLIUnknownCommand = "pfmea: unknown command %q"
 	// CLINotAvailable dipakai untuk subcommand yang baru dibuat di milestone berikutnya.
 	CLINotAvailable = "pfmea %s: available from %s"
+	// CLICommandFailed dipakai bila subcommand gagal sebelum log JSON aktif (misalnya
+	// konfigurasi salah); argumen kedua adalah pesan error.
+	CLICommandFailed = "pfmea %s: %v"
 )

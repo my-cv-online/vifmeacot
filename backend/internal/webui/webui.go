@@ -94,7 +94,7 @@ func (s *spa) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Aset SvelteKit yang tidak ada harus 404: menjawabnya dengan index.html membuat browser
 	// menerima HTML sebagai JavaScript dan error-nya sulit dilacak.
 	if strings.HasPrefix(name+"/", appDir) {
-		http.NotFound(w, r)
+		http.Error(w, i18n.NotFound, http.StatusNotFound)
 		return
 	}
 	s.serveIndex(w, r)

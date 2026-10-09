@@ -6,6 +6,7 @@ describe('apiProxy', () => {
 	// TC-M00-020: /api (termasuk WebSocket /api/v1/ws) diteruskan ke server Go di port HTTP_ADDR,
 	// dan header Origin asli dipertahankan untuk cek Origin mulai M2.
 	test('TC-M00-020 dev proxy forwards /api and WebSocket to the Go server', () => {
+		// expected membuat konfigurasi proxy yang diharapkan untuk port server Go tertentu.
 		const expected = (port: number) => ({
 			'/api': { target: `http://127.0.0.1:${port}`, ws: true, changeOrigin: false }
 		});

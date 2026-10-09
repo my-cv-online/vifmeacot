@@ -24,6 +24,11 @@ describe('navigation', () => {
 		expect(labels('/template-general')).toBe('Dashboard / Template General');
 		// Halaman detail paket baru ada di M4; sampai saat itu breadcrumb berhenti di Packages.
 		expect(labels('/packages/PS-07')).toBe('Dashboard / Packages');
+		// Path yang tidak dikenal, termasuk nama properti bawaan objek JavaScript, hanya Dashboard.
+		expect(labels('/nope')).toBe('Dashboard');
+		expect(labels('/constructor')).toBe('Dashboard');
+		expect(labels('/toString')).toBe('Dashboard');
+		expect(labels('/__proto__/x')).toBe('Dashboard');
 
 		// Dashboard hanya aktif di "/" persis; menu lain juga aktif untuk sub-path-nya.
 		expect(isActive('/', '/')).toBe(true);

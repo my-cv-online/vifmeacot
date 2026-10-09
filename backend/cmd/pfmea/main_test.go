@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"net"
 	"net/http"
 	"strings"
 	"sync"
@@ -52,13 +53,13 @@ func TestRun_TC_M00_013(t *testing.T) {
 		wantStdout []string
 		wantStderr []string
 	}{
-		{"tanpa argumen", nil, 2, nil, []string{"Usage: pfmea", "serve"}},
+		{"no arguments", nil, 2, nil, []string{"Usage: pfmea", "serve"}},
 		{"help", []string{"help"}, 0, []string{"Usage: pfmea", "serve"}, nil},
 		{"migrate", []string{"migrate", "up"}, 2, nil, []string{"pfmea migrate: available from M1"}},
 		{"seed-demo", []string{"seed-demo"}, 2, nil, []string{"pfmea seed-demo: available from M1"}},
 		{"init", []string{"init"}, 2, nil, []string{"pfmea init: available from M2"}},
-		{"tidak dikenal", []string{"unknown"}, 2, nil, []string{`unknown command "unknown"`, "Usage: pfmea"}},
-		{"serve tanpa konfigurasi", []string{"serve"}, 1, nil, []string{"DATABASE_URL is required", "APP_BASE_URL is required"}},
+		{"unknown command", []string{"unknown"}, 2, nil, []string{`unknown command "unknown"`, "Usage: pfmea"}},
+		{"serve without configuration", []string{"serve"}, 1, nil, []string{"DATABASE_URL is required", "APP_BASE_URL is required"}},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -148,5 +149,61 @@ func TestServe_TC_M00_014(t *testing.T) {
 
 	if strings.Contains(stdout.String()+stderr.String(), "secret") {
 		t.Errorf("log membocorkan kata sandi database:\n%s", stdout.String())
+	}
+}
+
+// TestServeShutdown_TC_M00_014 memastikan klien yang mengirim header Content-Length tetapi tidak
+// pernah mengirim body tidak bisa menahan shutdown: setelah batas waktu shutdown koneksinya
+// diputus paksa dan proses tetap selesai dengan kode 0.
+func TestServeShutdown_TC_M00_014(t *testing.T) {
+	env := envOf(map[string]string{
+		"DATABASE_URL": "postgres://pfmea:secret@localhost:5432/pfmea",
+		"APP_BASE_URL": "http://localhost:8080",
+		"HTTP_ADDR":    "127.0.0.1:0",
+	})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	var stdout, stderr syncBuffer
+	done := make(chan int, 1)
+	go func() {
+		done <- serveWith(ctx, env, &stdout, &stderr, serveOptions{shutdownTimeout: 200 * time.Millisecond})
+	}()
+
+	var addr string
+	for deadline := time.Now().Add(10 * time.Second); addr == "" && time.Now().Before(deadline); {
+		time.Sleep(20 * time.Millisecond)
+		addr = listeningAddr(stdout.String())
+	}
+	if addr == "" {
+		t.Fatalf("log \"listening\" tidak muncul\nstdout: %s", stdout.String())
+	}
+
+	// Klien lambat: header lengkap dengan body 10 byte yang tidak pernah dikirim.
+	conn, err := net.Dial("tcp", addr)
+	if err != nil {
+		t.Fatalf("dial: %v", err)
+	}
+	defer func() { _ = conn.Close() }()
+	if _, err := conn.Write([]byte("GET /packages HTTP/1.1\r\nHost: x\r\nContent-Length: 10\r\n\r\n")); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	time.Sleep(100 * time.Millisecond)
+
+	start := time.Now()
+	cancel()
+	select {
+	case code := <-done:
+		if code != 0 {
+			t.Errorf("kode keluar = %d, ingin 0\nstdout: %s", code, stdout.String())
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("klien lambat menahan shutdown")
+	}
+	if elapsed := time.Since(start); elapsed > 3*time.Second {
+		t.Errorf("shutdown butuh %v", elapsed)
+	}
+	if !strings.Contains(stdout.String(), "forcing close") {
+		t.Errorf("log tidak mencatat penutupan paksa:\n%s", stdout.String())
 	}
 }

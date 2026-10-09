@@ -18,7 +18,7 @@
 <div class="shell">
 	<header class="topbar">
 		<a class="brand" href="/">
-			<span class="logo" aria-hidden="true">P</span>
+			<span class="logo" aria-hidden="true">{en.app.logoMark}</span>
 			<span>{en.app.name}</span>
 		</a>
 		<!-- Pencarian global dihubungkan ke GET /search di M11; sampai saat itu nonaktif. -->
@@ -114,7 +114,7 @@
 
 	.search {
 		width: min(420px, 40vw);
-		min-height: 36px;
+		min-height: var(--touch-target);
 		padding: 0 12px;
 		border: 1px solid #2c333b;
 		border-radius: 6px;

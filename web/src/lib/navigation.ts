@@ -62,7 +62,9 @@ export function isActive(pathname: string, href: string): boolean {
 export function breadcrumbFor(pathname: string): Crumb[] {
 	const crumbs: Crumb[] = [{ href: '/', label: en.pages.dashboard }];
 	const first = pathname.split('/').filter(Boolean)[0];
-	const section = first ? sectionPages[first] : undefined;
+	// Object.hasOwn mencegah segmen seperti "constructor" atau "__proto__" terbaca sebagai
+	// properti bawaan objek JavaScript.
+	const section = first && Object.hasOwn(sectionPages, first) ? sectionPages[first] : undefined;
 	if (section) {
 		crumbs.push(section);
 	}

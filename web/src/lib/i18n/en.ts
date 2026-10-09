@@ -5,7 +5,9 @@
 export const en = {
 	// Identitas aplikasi di top bar dan judul tab browser.
 	app: {
-		name: 'PFD · PFMEA · CP System'
+		name: 'PFD · PFMEA · CP System',
+		// Huruf di kotak logo top bar (dekoratif, disembunyikan dari pembaca layar).
+		logoMark: 'P'
 	},
 	// Top bar.
 	topbar: {
