@@ -2,7 +2,7 @@
 
 Milestone: M1 · Kebutuhan: P1-13 (operasional), `docs/10-milestones.md` M1,
 `docs/04-data-model.md`, `docs/06-rules.md` §1, §5, §7, `docs/11-testing.md` §2–3 · User story: —
-Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 3 dari 30 lulus
+Ditulis sebelum kode pada: 9 Oktober 2026 · Status terakhir: 9 dari 30 lulus
 
 Test aturan (fixture 32 aturan dan baseline) ada di `rules.md` (`TC-RULE-*`) dan diotomatisasi di
 milestone ini. Test karakterisasi trigger (TC-M01-021 sampai 028) menguji skema yang sudah ada
@@ -26,12 +26,12 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 | TC-M01-011 | `make db migrate seed` dan `make migrate-down` di CI | integrasi | belum dibuat |
 | TC-M01-012 | `testdb.New` memberi database demo yang terisolasi | integrasi | lulus |
 | TC-M01-013 | `testdb.NewEmpty` memberi database kosong | integrasi | lulus |
-| TC-M01-014 | `WithTx` mengisi `app.*` tanpa bocor | integrasi | belum dibuat |
-| TC-M01-015 | `WithTx` commit, rollback dan panic | integrasi | belum dibuat |
-| TC-M01-016 | `WithTx` mengulang 40001/40P01 | integrasi | belum dibuat |
-| TC-M01-017 | Pemetaan error PostgreSQL, termasuk saat COMMIT | integrasi | belum dibuat |
-| TC-M01-018 | `LockPackage` mengunci baris paket | integrasi | belum dibuat |
-| TC-M01-019 | `store.Open` membuat pool dengan pengaturan sesi | integrasi | belum dibuat |
+| TC-M01-014 | `WithTx` mengisi `app.*` tanpa bocor | integrasi | lulus |
+| TC-M01-015 | `WithTx` commit, rollback dan panic | integrasi | lulus |
+| TC-M01-016 | `WithTx` mengulang 40001/40P01 | integrasi | lulus |
+| TC-M01-017 | Pemetaan error PostgreSQL, termasuk saat COMMIT | integrasi | lulus |
+| TC-M01-018 | `LockPackage` mengunci baris paket | integrasi | lulus |
+| TC-M01-019 | `store.Open` membuat pool dengan pengaturan sesi | integrasi | lulus |
 | TC-M01-020 | Query sqlc pengguna dan paket | integrasi | belum dibuat |
 | TC-M01-021 | `failure_chains.s` mengikuti severity effect | integrasi | belum dibuat |
 | TC-M01-022 | `rpn` dan `new_rpn` dihitung database | integrasi | belum dibuat |
@@ -239,7 +239,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   2. user id NULL, request id NULL, source `system`.
   3. Kosong (tidak bocor).
 - **Test otomatis:** `backend/internal/store/store_test.go` › `TestWithTxSettings_TC_M01_014`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-015 — `WithTx` commit, rollback dan panic
 
@@ -250,7 +250,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Hasil yang diharapkan:** perubahan tersimpan; tidak tersimpan dan error diteruskan; tidak
   tersimpan dan panic diteruskan ke pemanggil.
 - **Test otomatis:** `backend/internal/store/store_test.go` › `TestWithTxCommitRollback_TC_M01_015`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-016 — `WithTx` mengulang 40001/40P01
 
@@ -268,7 +268,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   3. Tanpa retry.
   4. Kedua transaksi akhirnya sukses.
 - **Test otomatis:** `backend/internal/store/store_test.go` › `TestWithTxRetry_TC_M01_016`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-017 — Pemetaan error PostgreSQL, termasuk saat COMMIT
 
@@ -289,7 +289,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
   5. `ErrNotNull` dengan kolom `name`.
   - Error asli `*pgconn.PgError` tetap bisa diambil dengan `errors.As`.
 - **Test otomatis:** `backend/internal/store/store_test.go` › `TestErrorMapping_TC_M01_017`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-018 — `LockPackage` mengunci baris paket
 
@@ -304,7 +304,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Hasil yang diharapkan:** 1. `ErrNotFound`. 2. Keduanya gagal dengan 55P03 (lock not
   available). 3. Sukses.
 - **Test otomatis:** `backend/internal/store/store_test.go` › `TestLockPackage_TC_M01_018`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-019 — `store.Open` membuat pool dengan pengaturan sesi
 
@@ -316,7 +316,7 @@ sementara (misalnya trigger dimatikan) sebelum di-commit.
 - **Hasil yang diharapkan:** Open ke port tertutup tidak gagal (koneksi dibuat saat dipakai);
   `jit` = off, `application_name` = `pfmea`, MaxConns sesuai argumen.
 - **Test otomatis:** `backend/internal/store/store_test.go` › `TestOpen_TC_M01_019`
-- **Status:** belum dibuat
+- **Status:** lulus
 
 ## TC-M01-020 — Query sqlc pengguna dan paket
 
